@@ -1,8 +1,3 @@
-/* =========================
-   HORIKAWA LAST RECORD
-   glass.css
-========================= */
-
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;500;700&display=swap');
 
 *{
@@ -11,73 +6,30 @@
     box-sizing:border-box;
 }
 
-:root{
-
-    /* 夜色 */
-    --bg1:#05070c;
-    --bg2:#0d1420;
-    --bg3:#182231;
-
-    /* 月光 */
-    --moon:rgba(220,235,255,.08);
-
-    /* 文字 */
-    --text:#e8ecef;
-    --muted:#b8c2cf;
-
-    /* ガラス */
-    --glass:rgba(255,255,255,.055);
-    --border:rgba(255,255,255,.09);
-
-    /* 光 */
-    --glow:rgba(255,255,255,.42);
-
-    /* 影 */
-    --shadow:rgba(0,0,0,.55);
-}
-
-html{
-    scroll-behavior:smooth;
-}
-
 body{
-
-    font-family:
-        "Noto Serif JP",
-        serif;
-
+    font-family:"Noto Serif JP",serif;
     min-height:100vh;
-    padding:70px 30px;
-
-    color:var(--text);
+    padding:60px;
+    color:#e7edf5;
     overflow-x:hidden;
 
     background:
-        radial-gradient(
-            circle at 15% 10%,
-            rgba(120,160,220,.12),
-            transparent 25%
-        ),
-
-        radial-gradient(
-            circle at 85% 20%,
-            rgba(255,255,255,.03),
-            transparent 20%
-        ),
+        radial-gradient(circle at 20% 15%,
+        rgba(130,170,255,.12),
+        transparent 25%),
 
         linear-gradient(
-            160deg,
-            var(--bg3),
-            var(--bg2) 40%,
-            var(--bg1)
-        );
+        145deg,
+        #05070c,
+        #0b1320 45%,
+        #111827);
 
     position:relative;
 }
 
-/* 微粒子 */
-body::before{
+/* 星塵 */
 
+body::before{
     content:"";
     position:fixed;
     inset:0;
@@ -86,24 +38,22 @@ body::before{
 
     background-image:
         radial-gradient(
-            rgba(255,255,255,.035) 1px,
+            rgba(255,255,255,.04) 1px,
             transparent 1px
         );
 
     background-size:4px 4px;
-    opacity:.4;
 }
 
 /* 月光 */
-body::after{
 
+body::after{
     content:"";
     position:fixed;
-    width:600px;
-    height:600px;
     top:-180px;
-    right:-140px;
-
+    right:-120px;
+    width:520px;
+    height:520px;
     border-radius:50%;
     z-index:-2;
     pointer-events:none;
@@ -112,231 +62,128 @@ body::after{
         radial-gradient(
             circle,
             rgba(255,255,255,.08),
-            rgba(255,255,255,.02),
             transparent 70%
         );
 
-    filter:blur(50px);
+    filter:blur(55px);
 }
 
-/* =========================
-   マウス魂火
-========================= */
+/* 魂火 */
 
 .cursor-glow{
-
     position:fixed;
     width:420px;
     height:420px;
     border-radius:50%;
-
     pointer-events:none;
     z-index:-1;
 
     background:
         radial-gradient(
             circle,
-            rgba(255,255,255,.38) 0%,
-            rgba(255,255,255,.12) 32%,
-            rgba(255,255,255,0) 72%
+            rgba(255,255,255,.32) 0%,
+            rgba(255,255,255,.10) 35%,
+            transparent 72%
         );
 
     filter:blur(55px);
     transform:translate(-50%,-50%);
-
     mix-blend-mode:screen;
 }
 
-/* =========================
-   遺文ガラス
-========================= */
+/* 遺文 */
 
 .glass{
-
-    width:min(980px,92vw);
+    width:min(920px,92vw);
     margin:auto;
-
-    padding:64px 72px;
+    padding:64px;
 
     background:
         linear-gradient(
             180deg,
-            rgba(255,255,255,.07),
-            rgba(255,255,255,.04)
+            rgba(255,255,255,.08),
+            rgba(255,255,255,.035)
         );
 
-    backdrop-filter:blur(26px);
-    -webkit-backdrop-filter:blur(26px);
+    backdrop-filter:blur(28px);
+    -webkit-backdrop-filter:blur(28px);
 
-    border:1px solid var(--border);
+    border:1px solid rgba(255,255,255,.10);
     border-radius:34px;
 
     box-shadow:
-
-        0 25px 60px
-        rgba(0,0,0,.48),
-
-        inset 0 1px 0
-        rgba(255,255,255,.08),
-
-        inset 0 -1px 0
-        rgba(255,255,255,.02);
+        0 30px 70px rgba(0,0,0,.48),
+        inset 0 1px 0 rgba(255,255,255,.08);
 
     position:relative;
     overflow:hidden;
 }
 
-/* ガラス上の薄い光筋 */
+/* 光筋 */
 
 .glass::before{
-
     content:"";
     position:absolute;
     inset:0;
+    pointer-events:none;
 
     background:
         linear-gradient(
             120deg,
             transparent 20%,
-            rgba(255,255,255,.035) 40%,
+            rgba(255,255,255,.03) 40%,
             transparent 60%
         );
-
-    pointer-events:none;
 }
 
-/* 和紙っぽさ */
+/* 和紙 */
 
 .glass::after{
-
     content:"";
     position:absolute;
     inset:0;
     pointer-events:none;
+    opacity:.06;
 
-    background:
-        url("https://www.transparenttextures.com/patterns/rice-paper-3.png");
+    background-image:
+        radial-gradient(
+            rgba(255,255,255,.05) 1px,
+            transparent 1px
+        );
 
-    opacity:.08;
-    mix-blend-mode:soft-light;
+    background-size:7px 7px;
 }
 
-/* =========================
-   本文
-========================= */
+/* 本文 */
 
 pre.glass{
-
     white-space:pre-wrap;
-    word-break:break-word;
-
-    font-size:17px;
     line-height:2.45;
-    letter-spacing:.04em;
-
-    color:var(--text);
+    letter-spacing:.05em;
+    font-size:17px;
+    color:#edf2f8;
 
     text-shadow:
-        0 0 1px rgba(255,255,255,.02);
+        0 0 1px rgba(255,255,255,.03);
 }
 
-/* 署名 */
-
-pre.glass{
-
-    animation:
-        fadeIn 1.4s ease;
-}
-
-@keyframes fadeIn{
-
-    from{
-        opacity:0;
-        transform:translateY(12px);
-    }
-
-    to{
-        opacity:1;
-        transform:none;
-    }
-}
-
-/* =========================
-   記事リンク
-========================= */
+/* 記事 */
 
 .post-list{
-
-    width:min(980px,92vw);
-    margin:28px auto 0;
-    padding:24px 34px;
-
+    width:min(920px,92vw);
+    margin:26px auto 0;
     list-style:none;
-}
-
-.post-list li{
-    list-style:none;
+    padding:18px 6px;
 }
 
 .post-list a{
-
-    color:#dbe7ff;
+    color:#d7e6ff;
     text-decoration:none;
-
-    display:inline-block;
-    position:relative;
-
-    transition:.35s;
-}
-
-.post-list a::after{
-
-    content:"";
-    position:absolute;
-    left:0;
-    bottom:-4px;
-
-    width:0;
-    height:1px;
-
-    background:
-        rgba(255,255,255,.7);
-
-    transition:.35s;
+    transition:.3s;
 }
 
 .post-list a:hover{
-
     color:white;
-
     text-shadow:
-        0 0 12px rgba(255,255,255,.25);
+        0 0 12px rgba(255,255,255,.3);
 }
-
-.post-list a:hover::after{
-    width:100%;
-}
-
-/* =========================
-   モバイル
-========================= */
-
-@media(max-width:768px){
-
-    body{
-        padding:32px 16px;
-    }
-
-    .glass{
-        padding:34px 26px;
-        border-radius:24px;
-    }
-
-    pre.glass{
-        font-size:15px;
-        line-height:2.2;
-    }
-}
-
-
-
