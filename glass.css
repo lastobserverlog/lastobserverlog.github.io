@@ -1,6 +1,7 @@
+```css
 /* =========================
-   HORIKAWA LAST RECORD
-   glass.css
+   LAST OBSERVER / HORIKAWA
+   FULL CINEMATIC GLASS
 ========================= */
 
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;500;700&display=swap');
@@ -12,17 +13,21 @@
 }
 
 :root{
+    --bg1:#04060b;
+    --bg2:#0b1220;
+    --bg3:#182232;
 
-    --bg1:#05070c;
-    --bg2:#0b1320;
-    --bg3:#182231;
+    --text:#edf3fa;
+    --muted:#b9c7d8;
 
-    --text:#edf2f8;
+    --glass1:rgba(255,255,255,.085);
+    --glass2:rgba(255,255,255,.035);
+
     --border:rgba(255,255,255,.10);
 }
 
 /* =========================
-   全体
+   BASE
 ========================= */
 
 html{
@@ -42,64 +47,127 @@ body{
     overflow-x:hidden;
 
     background:
-
         radial-gradient(
-            circle at 18% 14%,
-            rgba(130,170,255,.12),
+            circle at 20% 15%,
+            rgba(120,170,255,.12),
             transparent 25%
         ),
 
         radial-gradient(
-            circle at 82% 16%,
-            rgba(255,255,255,.03),
-            transparent 20%
+            circle at 82% 12%,
+            rgba(255,255,255,.04),
+            transparent 18%
         ),
 
         linear-gradient(
-            150deg,
+            155deg,
             var(--bg3),
-            var(--bg2) 45%,
+            var(--bg2) 40%,
             var(--bg1)
         );
 
     position:relative;
 }
 
-/* 星塵 */
+/* =========================
+   MOVING FOG
+========================= */
 
 body::before{
 
     content:"";
     position:fixed;
-    inset:0;
+    inset:-20%;
+    z-index:-5;
     pointer-events:none;
-    z-index:-3;
 
-    background-image:
+    background:
         radial-gradient(
-            rgba(255,255,255,.035) 1px,
-            transparent 1px
+            circle at 30% 40%,
+            rgba(255,255,255,.03),
+            transparent 35%
+        ),
+
+        radial-gradient(
+            circle at 70% 60%,
+            rgba(120,150,255,.035),
+            transparent 30%
         );
 
-    background-size:4px 4px;
-    opacity:.45;
+    filter:blur(60px);
+
+    animation:
+        fogMove 40s linear infinite;
 }
 
-/* 月光 */
+@keyframes fogMove{
+
+    0%{
+        transform:translateX(-4%) translateY(0%);
+    }
+
+    50%{
+        transform:translateX(3%) translateY(-2%);
+    }
+
+    100%{
+        transform:translateX(-4%) translateY(0%);
+    }
+}
+
+/* =========================
+   STAR DUST
+========================= */
 
 body::after{
 
     content:"";
     position:fixed;
+    inset:0;
+    z-index:-4;
+    pointer-events:none;
 
-    top:-180px;
+    background-image:
+        radial-gradient(
+            rgba(255,255,255,.045) 1px,
+            transparent 1px
+        );
+
+    background-size:4px 4px;
+    opacity:.45;
+
+    animation:
+        starsFloat 18s ease-in-out infinite;
+}
+
+@keyframes starsFloat{
+
+    0%,100%{
+        transform:translateY(0);
+        opacity:.4;
+    }
+
+    50%{
+        transform:translateY(-10px);
+        opacity:.55;
+    }
+}
+
+/* =========================
+   MOON
+========================= */
+
+.moon{
+
+    position:fixed;
+    top:-160px;
     right:-120px;
 
     width:560px;
     height:560px;
 
     border-radius:50%;
-    z-index:-2;
+    z-index:-3;
     pointer-events:none;
 
     background:
@@ -114,36 +182,16 @@ body::after{
 }
 
 /* =========================
-   マウス魂火
+   GLASS WRAP
 ========================= */
 
-.cursor-glow{
-
-    position:fixed;
-
-    width:420px;
-    height:420px;
-
-    border-radius:50%;
-    pointer-events:none;
-    z-index:-1;
-
-    background:
-        radial-gradient(
-            circle,
-            rgba(255,255,255,.34) 0%,
-            rgba(255,255,255,.10) 35%,
-            rgba(255,255,255,0) 72%
-        );
-
-    filter:blur(58px);
-
-    transform:translate(-50%,-50%);
-    mix-blend-mode:screen;
+.glass-wrap{
+    position:relative;
+    transform-style:preserve-3d;
 }
 
 /* =========================
-   遺文ガラス
+   MAIN GLASS
 ========================= */
 
 .glass{
@@ -156,43 +204,60 @@ body::after{
     background:
         linear-gradient(
             180deg,
-            rgba(255,255,255,.085),
-            rgba(255,255,255,.035)
+            var(--glass1),
+            var(--glass2)
         );
 
-    backdrop-filter:blur(28px);
-    -webkit-backdrop-filter:blur(28px);
+    backdrop-filter:blur(30px);
+    -webkit-backdrop-filter:blur(30px);
 
     border:1px solid var(--border);
-    border-radius:34px;
+    border-radius:36px;
 
     box-shadow:
-        0 30px 70px rgba(0,0,0,.50),
-        inset 0 1px 0 rgba(255,255,255,.08);
+
+        0 30px 80px rgba(0,0,0,.55),
+
+        inset 0 1px 0
+        rgba(255,255,255,.08);
 
     position:relative;
     overflow:hidden;
 }
 
-/* 光筋 */
+/* glass reflection */
 
 .glass::before{
 
     content:"";
     position:absolute;
-    inset:0;
+    inset:-20%;
     pointer-events:none;
 
     background:
         linear-gradient(
             120deg,
-            transparent 20%,
-            rgba(255,255,255,.03) 40%,
-            transparent 60%
+            transparent 35%,
+            rgba(255,255,255,.04) 50%,
+            transparent 65%
         );
+
+    animation:
+        shine 14s linear infinite;
 }
 
-/* 和紙粒子 */
+@keyframes shine{
+
+    from{
+        transform:translateX(-30%);
+    }
+
+    to{
+        transform:translateX(30%);
+    }
+}
+
+/* rice texture */
 
 .glass::after{
 
@@ -208,15 +273,14 @@ body::after{
         );
 
     background-size:7px 7px;
-
-    opacity:.08;
+    opacity:.07;
 }
 
 /* =========================
-   本文
+   TEXT
 ========================= */
 
-pre.glass{
+pre.record{
 
     white-space:pre-wrap;
     word-break:break-word;
@@ -231,14 +295,14 @@ pre.glass{
         0 0 1px rgba(255,255,255,.03);
 
     animation:
-        fadeIn 1.2s ease;
+        fadeUp 1.4s ease;
 }
 
-@keyframes fadeIn{
+@keyframes fadeUp{
 
     from{
         opacity:0;
-        transform:translateY(10px);
+        transform:translateY(14px);
     }
 
     to{
@@ -248,20 +312,36 @@ pre.glass{
 }
 
 /* =========================
-   記事リンク
+   SIGNATURE
+========================= */
+
+.signature{
+
+    opacity:.72;
+
+    animation:
+        pulse 8s ease-in-out infinite;
+}
+
+@keyframes pulse{
+
+    0%,100%{
+        opacity:.65;
+    }
+
+    50%{
+        opacity:.92;
+    }
+}
+
+/* =========================
+   LINK
 ========================= */
 
 .post-list{
 
     width:min(960px,92vw);
-
     margin:26px auto 0;
-    padding:22px 10px;
-
-    list-style:none;
-}
-
-.post-list li{
     list-style:none;
 }
 
@@ -269,7 +349,6 @@ pre.glass{
 
     color:#dbe7ff;
     text-decoration:none;
-
     transition:.35s;
 }
 
@@ -278,17 +357,17 @@ pre.glass{
     color:white;
 
     text-shadow:
-        0 0 12px rgba(255,255,255,.28);
+        0 0 12px rgba(255,255,255,.3);
 }
 
 /* =========================
-   スマホ
+   MOBILE
 ========================= */
 
 @media(max-width:768px){
 
     body{
-        padding:32px 14px;
+        padding:30px 14px;
     }
 
     .glass{
@@ -296,13 +375,9 @@ pre.glass{
         border-radius:24px;
     }
 
-    pre.glass{
+    pre.record{
         font-size:15px;
         line-height:2.2;
     }
-
-    .cursor-glow{
-        width:260px;
-        height:260px;
-    }
 }
+```
