@@ -34,8 +34,7 @@ html{
     scroll-behavior:smooth;
 }
 
-body{
-
+body {
     font-family:
         "Noto Serif JP",
         serif;
@@ -46,6 +45,9 @@ body{
     color:var(--text);
     overflow-x:hidden;
     position:relative;
+
+    /* ▼▼▼ ココにこれを追加して、過去の白背景の記憶を強制的に消し飛ばす ▼▼▼ */
+    background-color: #04060b !important;
 
     background:
         radial-gradient(
