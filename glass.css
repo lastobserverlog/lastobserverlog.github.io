@@ -1,6 +1,6 @@
 /* =========================
    LAST OBSERVER / HORIKAWA
-   FULL CINEMATIC GLASS
+   FINAL CINEMATIC GLASS
 ========================= */
 
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;500;700&display=swap');
@@ -12,6 +12,7 @@
 }
 
 :root{
+
     --bg1:#04060b;
     --bg2:#0b1220;
     --bg3:#182232;
@@ -44,16 +45,17 @@ body{
 
     color:var(--text);
     overflow-x:hidden;
+    position:relative;
 
     background:
         radial-gradient(
-            circle at 20% 15%,
-            rgba(120,170,255,.12),
-            transparent 25%
+            circle at 18% 15%,
+            rgba(120,170,255,.10),
+            transparent 26%
         ),
 
         radial-gradient(
-            circle at 82% 12%,
+            circle at 82% 14%,
             rgba(255,255,255,.04),
             transparent 18%
         ),
@@ -61,56 +63,56 @@ body{
         linear-gradient(
             155deg,
             var(--bg3),
-            var(--bg2) 40%,
+            var(--bg2) 42%,
             var(--bg1)
         );
-
-    position:relative;
 }
 
 /* =========================
-   MOVING FOG
+   FOG
 ========================= */
 
 body::before{
 
     content:"";
     position:fixed;
-    inset:-20%;
+    inset:-25%;
     z-index:-5;
     pointer-events:none;
 
     background:
+
         radial-gradient(
             circle at 30% 40%,
-            rgba(255,255,255,.03),
-            transparent 35%
+            rgba(255,255,255,.025),
+            transparent 34%
         ),
 
         radial-gradient(
-            circle at 70% 60%,
-            rgba(120,150,255,.035),
+            circle at 70% 55%,
+            rgba(120,150,255,.03),
             transparent 30%
         );
 
-    filter:blur(60px);
+    filter:blur(80px);
 
     animation:
-        fogMove 40s linear infinite;
+        fogMove 42s linear infinite;
 }
 
 @keyframes fogMove{
 
     0%{
-        transform:translateX(-4%) translateY(0%);
+        transform:translateX(-4%);
     }
 
     50%{
-        transform:translateX(3%) translateY(-2%);
+        transform:translateX(3%)
+                   translateY(-2%);
     }
 
     100%{
-        transform:translateX(-4%) translateY(0%);
+        transform:translateX(-4%);
     }
 }
 
@@ -133,7 +135,7 @@ body::after{
         );
 
     background-size:4px 4px;
-    opacity:.45;
+    opacity:.35;
 
     animation:
         starsFloat 18s ease-in-out infinite;
@@ -143,12 +145,10 @@ body::after{
 
     0%,100%{
         transform:translateY(0);
-        opacity:.4;
     }
 
     50%{
-        transform:translateY(-10px);
-        opacity:.55;
+        transform:translateY(-12px);
     }
 }
 
@@ -178,6 +178,20 @@ body::after{
         );
 
     filter:blur(60px);
+
+    animation:
+        moonPulse 14s ease-in-out infinite;
+}
+
+@keyframes moonPulse{
+
+    0%,100%{
+        opacity:.8;
+    }
+
+    50%{
+        opacity:1;
+    }
 }
 
 /* =========================
@@ -185,12 +199,14 @@ body::after{
 ========================= */
 
 .glass-wrap{
+
     position:relative;
     transform-style:preserve-3d;
+    transition:transform .25s ease;
 }
 
 /* =========================
-   MAIN GLASS
+   GLASS
 ========================= */
 
 .glass{
@@ -215,7 +231,7 @@ body::after{
 
     box-shadow:
 
-        0 30px 80px rgba(0,0,0,.55),
+        0 30px 90px rgba(0,0,0,.55),
 
         inset 0 1px 0
         rgba(255,255,255,.08);
@@ -224,39 +240,39 @@ body::after{
     overflow:hidden;
 }
 
-/* glass reflection */
+/* reflection */
 
 .glass::before{
 
     content:"";
     position:absolute;
-    inset:-20%;
+    inset:-30%;
     pointer-events:none;
 
     background:
         linear-gradient(
             120deg,
             transparent 35%,
-            rgba(255,255,255,.04) 50%,
+            rgba(255,255,255,.035) 50%,
             transparent 65%
         );
 
     animation:
-        shine 14s linear infinite;
+        shine 16s linear infinite;
 }
 
 @keyframes shine{
 
     from{
-        transform:translateX(-30%);
+        transform:translateX(-35%);
     }
 
     to{
-        transform:translateX(30%);
+        transform:translateX(35%);
     }
 }
 
-/* rice texture */
+/* rice paper */
 
 .glass::after{
 
@@ -272,7 +288,7 @@ body::after{
         );
 
     background-size:7px 7px;
-    opacity:.07;
+    opacity:.06;
 }
 
 /* =========================
@@ -301,7 +317,7 @@ pre.record{
 
     from{
         opacity:0;
-        transform:translateY(14px);
+        transform:translateY(12px);
     }
 
     to{
@@ -329,12 +345,64 @@ pre.record{
     }
 
     50%{
-        opacity:.92;
+        opacity:.95;
     }
 }
 
 /* =========================
-   LINK
+   CURSOR SOUL LIGHT
+========================= */
+
+.cursor-glow{
+
+    position:fixed;
+    left:0;
+    top:0;
+
+    width:420px;
+    height:420px;
+
+    border-radius:50%;
+    pointer-events:none;
+
+    z-index:2;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(255,255,255,.24) 0%,
+            rgba(255,255,255,.08) 38%,
+            transparent 72%
+        );
+
+    filter:blur(60px);
+
+    transform:translate(-50%,-50%);
+    mix-blend-mode:screen;
+
+    opacity:.95;
+}
+
+.cursor-glow.secondary{
+
+    width:640px;
+    height:640px;
+
+    opacity:.35;
+    z-index:1;
+
+    filter:blur(95px);
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(160,190,255,.10),
+            transparent 72%
+        );
+}
+
+/* =========================
+   LINKS
 ========================= */
 
 .post-list{
@@ -366,7 +434,7 @@ pre.record{
 @media(max-width:768px){
 
     body{
-        padding:30px 14px;
+        padding:32px 14px;
     }
 
     .glass{
@@ -378,45 +446,14 @@ pre.record{
         font-size:15px;
         line-height:2.2;
     }
-}
-/* 副魂火 */
 
-.cursor-glow{
+    .cursor-glow{
+        width:260px;
+        height:260px;
+    }
 
-    position:fixed;
-    width:420px;
-    height:420px;
-    border-radius:50%;
-    pointer-events:none;
-    z-index:-2;
-
-    background:
-        radial-gradient(
-            circle,
-            rgba(255,255,255,.32) 0%,
-            rgba(255,255,255,.10) 35%,
-            transparent 72%
-        );
-
-    filter:blur(58px);
-
-    transform:translate(-50%,-50%);
-    mix-blend-mode:screen;
-}
-
-.cursor-glow.secondary{
-
-    width:620px;
-    height:620px;
-
-    opacity:.45;
-
-    filter:blur(95px);
-
-    background:
-        radial-gradient(
-            circle,
-            rgba(120,160,255,.12),
-            transparent 72%
-        );
+    .cursor-glow.secondary{
+        width:420px;
+        height:420px;
+    }
 }
