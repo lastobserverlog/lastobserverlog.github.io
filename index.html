@@ -1,165 +1,186 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>堀川終記</title>
-    
-    <style>
-    @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;600;900&display=swap');
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>堀川終記</title>
 
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;600;900&display=swap');
 
-    /* ==========================================
-       【死にゆく視界】外側から狭まる圧倒的な闇
-       ========================================== */
-    body {
-        font-family: "Noto Serif JP", serif;
-        min-height: 100vh;
-        /* ベースは完全な漆黒 */
-        background-color: #050404 !important;
-        
-        /* 巨大なグラデーションで「意識が遠のき、周囲から暗くなっていく」視界を表現 */
-        background-image: radial-gradient(circle at center, rgba(20, 16, 15, 0.6) 0%, #000000 80%) !important;
-        background-attachment: fixed;
-        
-        overflow-x: hidden;
-        padding: 80px 24px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-    /* 絶え絶えな呼吸、または視界のノイズ（煤煙の粒子） */
-    body::after {
-        content: "";
-        position: fixed;
-        inset: 0;
-        z-index: 100;
-        pointer-events: none;
-        background-image: radial-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px);
-        background-size: 16px 16px;
-        opacity: 0.7;
-    }
+/* =========================
+   ■ 世界のベース崩壊
+========================= */
+body {
+    font-family: "Noto Serif JP", serif;
+    min-height: 100vh;
+    background: radial-gradient(circle at center, #1a1414 0%, #000 70%);
+    overflow-x: hidden;
+    padding: 80px 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: breathe 8s infinite ease-in-out;
+    filter: contrast(1.3) brightness(0.85);
+}
 
-    .glass-wrap {
-        width: min(760px, 92vw);
-        position: relative;
-    }
+@keyframes breathe {
+    0% { filter: contrast(1.1) brightness(0.8); }
+    50% { filter: contrast(1.6) brightness(0.95); }
+    100% { filter: contrast(1.2) brightness(0.82); }
+}
 
-    /* ==========================================
-       【空間】紙を捨て、虚空に浮かぶ意識のレイヤー
-       ========================================== */
-    .glass {
-        width: 100%;
-        padding: 40px 20px;
-        background: transparent !important; /* 「紙」の存在を完全パージ */
-        border: none !important;
-        box-shadow: none !important;
-        position: relative;
-    }
+/* ノイズ */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(255,255,255,0.03),
+        transparent 3px
+    );
+    opacity: 0.4;
+    pointer-events: none;
+    mix-blend-mode: overlay;
+    animation: noise 0.1s infinite linear;
+}
 
-    /* ==========================================
-       【魂の燐光】マウスを追従する、消え入りそうな光
-       ========================================== */
-    .cursor-soul {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 320px;
-        height: 320px;
-        /* 中心は命の灯火（微かな橙）、外側は血に染まる闇 */
-        background: radial-gradient(circle, rgba(240, 90, 40, 0.12) 0%, rgba(150, 0, 0, 0.04) 40%, transparent 70%);
-        border-radius: 50%;
-        pointer-events: none;
-        z-index: 1;
-        transform: translate(-50%, -50%);
-        mix-blend-mode: screen; /* 闇の中で文字を微かに照らす */
-        /* pointer-events: none と JS のイージングで、生霊のようにヌルッと遅れて動く */
-        transition: transform 0.2s cubic-bezier(0.1, 0.8, 0.2, 1);
-        will-change: transform;
-    }
+@keyframes noise {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(8px); }
+}
 
-    /* ==========================================
-       【遺言】脳裏に焼き付く、薄れゆく文字
-       ========================================== */
+/* =========================
+   ■ 光（追従する何か）
+========================= */
+.cursor-soul {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    pointer-events: none;
+    background: radial-gradient(circle,
+        rgba(255,120,80,0.12),
+        rgba(120,0,0,0.05),
+        transparent 70%);
+    mix-blend-mode: screen;
+    filter: blur(25px);
+    transform: translate(-50%, -50%);
+    transition: transform 0.15s ease-out;
+    animation: flicker 1.4s infinite alternate;
+}
+
+@keyframes flicker {
+    0% { opacity: 0.25; }
+    100% { opacity: 0.6; }
+}
+
+/* =========================
+   ■ 本体（文章）
+========================= */
+.glass-wrap {
+    width: min(760px, 92vw);
+}
+
+.glass {
+    background: transparent;
+}
+
+pre.record {
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-size: 18px;
+    line-height: 2.6;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+    color: rgba(245,242,238,0.82);
+    text-shadow:
+        0 0 8px rgba(255,255,255,0.25),
+        0 0 18px rgba(180,0,0,0.45);
+
+    animation:
+        drift 4s infinite ease-in-out,
+        fadeIn 3s ease-out forwards;
+}
+
+@keyframes drift {
+    0% { transform: translate(0px,0px) skewX(0deg); }
+    50% { transform: translate(1px,-2px) skewX(0.8deg); }
+    100% { transform: translate(-1px,2px) skewX(-0.6deg); }
+}
+
+@keyframes fadeIn {
+    0% { opacity: 0; filter: blur(10px); }
+    60% { opacity: 0.7; filter: blur(0px); }
+    100% { opacity: 0.9; }
+}
+
+/* =========================
+   ■ 署名
+========================= */
+.signature {
+    display: block;
+    text-align: right;
+    margin-top: 60px;
+    color: rgba(120,20,15,0.6);
+    text-shadow: 0 0 10px rgba(120,20,15,0.25);
+}
+
+/* =========================
+   ■ リンク（現実への穴）
+========================= */
+.post-list {
+    margin-top: 60px;
+    text-align: center;
+}
+
+.post-list a {
+    color: rgba(139,0,0,0.5);
+    text-decoration: none;
+    font-size: 14px;
+    letter-spacing: 0.1em;
+    transition: 0.5s;
+    animation: linkPulse 2s infinite;
+}
+
+.post-list a:hover {
+    color: rgba(255,255,255,0.8);
+    text-shadow: 0 0 12px rgba(255,255,255,0.4);
+}
+
+@keyframes linkPulse {
+    0%,100% { opacity: 0.4; }
+    50% { opacity: 1; }
+}
+
+/* =========================
+   ■ スマホ調整（現実への保険）
+========================= */
+@media (max-width: 768px) {
     pre.record {
-        white-space: pre-wrap;
-        word-break: break-word;
-        font-size: 18px;
-        font-weight: 600; /* ★ 300から600に上げて、文字の線を少し太く（くっきり） */
-        line-height: 2.8;
-        letter-spacing: 0.08em;
-        
-        /* ★【ここ！】文字色をほぼ不透明な白（0.35 → 0.8）に引き上げる */
-        color: rgba(245, 242, 238, 0.8) !important;
-        
-        /* ★ 文字の後ろの発光（白と赤）を強くして、闇から浮かび上がらせる */
-        text-shadow: 
-            0 0 8px rgba(255, 255, 255, 0.3),
-            0 0 20px rgba(180, 0, 0, 0.6) !important;
-            
-        position: relative;
-        z-index: 2;
-        background: transparent !important;
-        
-        /* アニメーションの最終的な透明度（opacity）も上げるために微調整 */
-        animation: fade-away 4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    }
-
-    @keyframes fade-away {
-        0% { opacity: 0; filter: blur(8px); transform: scale(0.98); }
-        50% { opacity: 0.6; filter: blur(0px); }
-        100% { opacity: 0.45; filter: blur(0.2px); transform: scale(1); }
-    }
-
-    .signature {
-        display: block;
-        text-align: right;
-        margin-top: 60px;
-        font-size: 17px;
-        font-weight: 600;
-        /* 署名は消えかけた血痕のような暗い赤 */
-        color: rgba(120, 20, 15, 0.6) !important;
-        text-shadow: 0 0 10px rgba(120, 20, 15, 0.2) !important;
-    }
-
-    /* お札・彼岸への境界をイメージしたリンク */
-    .post-list {
-        margin-top: 60px;
-        padding-top: 30px;
-        border-top: 1px solid rgba(139, 0, 0, 0.15);
-        list-style: none;
-        text-align: center;
-    }
-    .post-list a {
-        display: inline-block;
-        color: rgba(139, 0, 0, 0.5) !important;
-        text-decoration: none;
-        font-weight: 300;
         font-size: 15px;
-        letter-spacing: 0.1em;
-        transition: 0.5s;
+        line-height: 2.3;
     }
-    .post-list a:hover {
-        color: rgba(255, 255, 255, 0.8) !important;
-        text-shadow: 0 0 15px rgba(255, 255, 255, 0.4) !important;
+    .cursor-soul {
+        width: 300px;
+        height: 300px;
     }
-
-    @media (max-width: 768px) {
-        body { padding: 40px 16px; }
-        pre.record { font-size: 15px; line-height: 2.4; }
-        .cursor-soul { width: 200px; height: 200px; } /* スマホでは光を小さく */
-    }
-    </style>
+}
+</style>
 </head>
+
 <body>
 
-<div class="cursor-soul" id="soulGlow"></div>
+<div class="cursor-soul" id="soul"></div>
 
 <div class="glass-wrap">
     <div class="glass">
@@ -377,146 +398,39 @@ Githabの無料頁を借りて記す。
 われのすべてにて候。
 
 ---
+
         <span class="signature">— 佐伯 忠之 記</span>
         </pre>
     </div>
-      
+
     <ul class="post-list">
-        <li>
-            <a href="posts/first-post.md">2026-05-29：最初の記事のタイトル</a>
-        </li>
+        <li><a href="posts/first-post.md">2026-05-29：最初の記事のタイトル</a></li>
     </ul>
 </div>
 
 <script>
-    // 魂の追従処理（滑らかに動くように少しディレイをかける）
-    const soulGlow = document.getElementById('soulGlow');
-    let mouseX = 0, mouseY = 0;
-    let ballX = 0, ballY = 0;
-    const speed = 0.08; // 数値が小さいほど、魂がヌルッと遅れて付いてくる
+const soul = document.getElementById("soul");
 
-    document.addEventListener('mousemove', (e) => {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
-    });
+let mx = 0, my = 0;
+let x = 0, y = 0;
 
-    function animate() {
-        // 現在位置からマウス位置へジワジワ近づける計算
-        ballX += (mouseX - ballX) * speed;
-        ballY += (mouseY - ballY) * speed;
-        
-        soulGlow.style.transform = `translate(calc(${ballX}px - 50%), calc(${ballY}px - 50%))`;
-        
-        requestAnimationFrame(animate);
-    }
-    animate();
+document.addEventListener("mousemove", (e) => {
+    mx = e.clientX;
+    my = e.clientY;
+});
+
+function loop() {
+    x += (mx - x) * 0.08;
+    y += (my - y) * 0.08;
+
+    soul.style.transform = `translate(${x}px,${y}px) translate(-50%,-50%)`;
+
+    requestAnimationFrame(loop);
+}
+
+loop();
 </script>
 
-    /* ==========================================
-   ■ 世界そのものを歪ませるレイヤー
-========================================== */
-body {
-    animation: worldPulse 6s infinite alternate ease-in-out;
-    filter: contrast(1.3) brightness(0.85) saturate(0.8);
-}
-
-@keyframes worldPulse {
-    0% {
-        filter: contrast(1.2) brightness(0.8) hue-rotate(0deg);
-    }
-    100% {
-        filter: contrast(1.6) brightness(0.9) hue-rotate(8deg);
-    }
-}
-
-/* ==========================================
-   ■ 視界ノイズ（もう“粒”じゃなくて“干渉”）
-========================================== */
-body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    z-index: 99;
-    pointer-events: none;
-
-    background: repeating-linear-gradient(
-        0deg,
-        rgba(255,255,255,0.03),
-        rgba(255,255,255,0.03) 1px,
-        transparent 2px,
-        transparent 4px
-    );
-
-    mix-blend-mode: overlay;
-    animation: scanline 0.08s infinite linear;
-    opacity: 0.4;
-}
-
-@keyframes scanline {
-    0% { transform: translateY(0); }
-    100% { transform: translateY(10px); }
-}
-
-/* ==========================================
-   ■ 文字が“安定して存在しない”
-========================================== */
-pre.record {
-    animation: textWobble 0.6s infinite alternate ease-in-out,
-               fade-away 4s forwards;
-    filter: blur(0.3px);
-}
-
-@keyframes textWobble {
-    0% {
-        transform: translate(0px, 0px) skewX(0deg);
-        letter-spacing: 0.08em;
-    }
-    50% {
-        transform: translate(1px, -1px) skewX(1deg);
-        letter-spacing: 0.12em;
-    }
-    100% {
-        transform: translate(-1px, 1px) skewX(-1deg);
-        letter-spacing: 0.06em;
-    }
-}
-
-/* ==========================================
-   ■ カーソル＝存在の暴走
-========================================== */
-.cursor-soul {
-    width: 600px;
-    height: 600px;
-    mix-blend-mode: screen;
-    filter: blur(30px) contrast(2);
-    animation: soulFlicker 1.2s infinite alternate;
-}
-
-@keyframes soulFlicker {
-    0% {
-        opacity: 0.2;
-        transform: scale(0.8) translate(-50%, -50%);
-    }
-    100% {
-        opacity: 0.6;
-        transform: scale(1.3) translate(-50%, -50%);
-    }
-}
-
-/* ==========================================
-   ■ リンクが“読めない記号化”
-========================================== */
-.post-list a {
-    text-shadow:
-        0 0 5px rgba(255,0,0,0.5),
-        0 0 15px rgba(255,255,255,0.2);
-    animation: linkFlicker 2s infinite;
-}
-
-@keyframes linkFlicker {
-    0%, 100% { opacity: 0.4; }
-    50% { opacity: 1; }
-}
-    
 </body>
 </html>
+
