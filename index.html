@@ -6,7 +6,7 @@
     <title>堀川終記</title>
     
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@600;900&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;600;900&display=swap');
 
     * {
         margin: 0;
@@ -15,135 +15,151 @@
     }
 
     /* ==========================================
-       【やりすぎ背景】CSSだけで組む重厚な黒木目
+       【死にゆく視界】外側から狭まる圧倒的な闇
        ========================================== */
     body {
         font-family: "Noto Serif JP", serif;
         min-height: 100vh;
-        /* フリー素材の軽い木目をパージし、怨念の似合う暗い木目をCSSだけで生成 */
-        background-color: #1a110b;
-        background-image: 
-            linear-gradient(90deg, rgba(25, 18, 12, 0.5) 0%, transparent 50%, rgba(25, 18, 12, 0.5) 100%),
-            repeating-linear-gradient(90deg, #1f150e 0px, #1f150e 4px, #1a110b 4px, #1a110b 10px);
+        /* ベースは完全な漆黒 */
+        background-color: #050404 !important;
+        
+        /* 巨大なグラデーションで「意識が遠のき、周囲から暗くなっていく」視界を表現 */
+        background-image: radial-gradient(circle at center, rgba(20, 16, 15, 0.6) 0%, #000000 80%) !important;
+        background-attachment: fixed;
+        
         overflow-x: hidden;
-        padding: 60px 16px;
+        padding: 80px 24px;
         display: flex;
         flex-direction: column;
         align-items: center;
     }
 
+    /* 絶え絶えな呼吸、または視界のノイズ（煤煙の粒子） */
+    body::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        pointer-events: none;
+        background-image: radial-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+        background-size: 16px 16px;
+        opacity: 0.7;
+    }
+
     .glass-wrap {
-        width: min(840px, 96vw);
-        filter: drop-shadow(0 25px 35px rgba(0, 0, 0, 0.8)); /* 古紙全体のリアルな影 */
+        width: min(760px, 92vw);
+        position: relative;
     }
 
     /* ==========================================
-       【本題】CSSだけで再現する、リアルな古ぼけた紙
+       【空間】紙を捨て、虚空に浮かぶ意識のレイヤー
        ========================================== */
     .glass {
         width: 100%;
-        padding: 60px 50px;
-        
-        /* 単色塗りを廃止。
-          何重ものグラデーションを重ねて、経年劣化の「シミ」「日焼け」「中央の擦れ」を偽装 
-        */
-        background: 
-            /* レイカ1：中央から外側へ向けての、ドス黒い日焼け・色むら */
-            radial-gradient(circle at 70% 30%, rgba(138, 110, 77, 0.2), transparent 60%),
-            radial-gradient(circle at 20% 80%, rgba(110, 85, 55, 0.25), transparent 50%),
-            /* レイヤー2：外側（四隅）を焼きつかせたような、濃いセピアのグラデーション */
-            radial-gradient(circle, #ecdcb9 30%, #d3be93 70%, #9c8052 100%);
-        
-        /* 綺麗すぎる直線を破壊。周囲をボロボロに引き裂いたエッジ（clip-path） */
-        clip-path: polygon(
-            0% 1%, 5% 0%, 12% 2%, 20% 0%, 28% 3%, 37% 1%, 45% 2%, 56% 0%, 68% 2%, 79% 0%, 88% 3%, 95% 1%, 100% 0%,
-            99% 12%, 100% 25%, 98% 38%, 99% 55%, 97% 72%, 100% 89%, 98% 100%,
-            92% 99%, 81% 100%, 70% 97%, 58% 99%, 44% 97%, 32% 100%, 19% 98%, 8% 100%, 0% 98%,
-            1% 85%, 0% 69%, 2% 53%, 0% 36%, 1% 18%
-        );
-
-        position: relative;
+        padding: 40px 20px;
+        background: transparent !important; /* 「紙」の存在を完全パージ */
         border: none !important;
-        border-radius: 0px !important;
+        box-shadow: none !important;
+        position: relative;
     }
 
-    /* 古紙の表面に浮き出る「長年の汚れ・煤」を擬似要素でブレンド */
-    .glass::before {
-        content: "";
-        position: absolute;
-        inset: 0;
+    /* ==========================================
+       【魂の燐光】マウスを追従する、消え入りそうな光
+       ========================================== */
+    .cursor-soul {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 320px;
+        height: 320px;
+        /* 中心は命の灯火（微かな橙）、外側は血に染まる闇 */
+        background: radial-gradient(circle, rgba(240, 90, 40, 0.12) 0%, rgba(150, 0, 0, 0.04) 40%, transparent 70%);
+        border-radius: 50%;
         pointer-events: none;
-        background: 
-            /* 細かい手垢や煤のような汚れの斑点 */
-            radial-gradient(circle at 40% 15%, rgba(0,0,0,0.06) 0%, transparent 80px),
-            radial-gradient(circle at 85% 75%, rgba(0,0,0,0.08) 0%, transparent 120px),
-            /* 左側からうっすら染み出す、乾ききった血の痕跡（視認性を邪魔しないレベル） */
-            linear-gradient(to right, rgba(90, 10, 10, 0.08) 0%, transparent 25%);
         z-index: 1;
+        transform: translate(-50%, -50%);
+        mix-blend-mode: screen; /* 闇の中で文字を微かに照らす */
+        /* pointer-events: none と JS のイージングで、生霊のようにヌルッと遅れて動く */
+        transition: transform 0.2s cubic-bezier(0.1, 0.8, 0.2, 1);
+        will-change: transform;
     }
 
-    /* 遺言テキスト（完全なる漆黒・クッキリ） */
+    /* ==========================================
+       【遺言】脳裏に焼き付く、薄れゆく文字
+       ========================================== */
     pre.record {
         white-space: pre-wrap;
         word-break: break-word;
-        font-size: 19px;
-        font-weight: 600;
-        line-height: 2.6;
-        letter-spacing: 0.06em;
+        font-size: 18px;
+        font-weight: 300; /* あえて細くして、消えそうな儚さを出す */
+        line-height: 2.8;
+        letter-spacing: 0.08em;
         
-        /* 混じり気のない漆黒に。和紙のテクスチャの上でも絶対に読める視認性 */
-        color: #0d0906 !important;
-        text-shadow: none !important; 
-        background: transparent !important;
+        /* 完全に真っ白ではなく、闇に溶けかけの朧げな白グレー */
+        color: rgba(220, 215, 210, 0.35) !important;
         
+        /* 文字の周りに、微かに体温を感じさせる赤黒い残像（グロウ） */
+        text-shadow: 
+            0 0 12px rgba(255, 255, 255, 0.05),
+            0 0 20px rgba(139, 0, 0, 0.3) !important;
+            
         position: relative;
         z-index: 2;
+        background: transparent !important;
+        
+        /* 意識が覚醒してから薄れていくようなフェードインアニメーション */
+        animation: fade-away 4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes fade-away {
+        0% { opacity: 0; filter: blur(8px); transform: scale(0.98); }
+        50% { opacity: 0.6; filter: blur(0px); }
+        100% { opacity: 0.45; filter: blur(0.2px); transform: scale(1); }
     }
 
     .signature {
         display: block;
         text-align: right;
-        margin-top: 50px;
-        font-size: 19px;
-        font-weight: 900;
-        color: #5c110c !important; /* 署名だけは、乾いた血の赤 */
-        position: relative;
-        z-index: 2;
+        margin-top: 60px;
+        font-size: 17px;
+        font-weight: 600;
+        /* 署名は消えかけた血痕のような暗い赤 */
+        color: rgba(120, 20, 15, 0.6) !important;
+        text-shadow: 0 0 10px rgba(120, 20, 15, 0.2) !important;
     }
 
-    /* お札（ふだ）をイメージした、古びたリンクボタン */
+    /* お札・彼岸への境界をイメージしたリンク */
     .post-list {
-        margin-top: 40px;
-        padding: 20px;
-        background: #c5b28b !important;
-        background-image: radial-gradient(circle, transparent 50%, #ad9971 100%) !important;
-        clip-path: polygon(1% 0%, 99% 4%, 100% 96%, 0% 100%) !important;
+        margin-top: 60px;
+        padding-top: 30px;
+        border-top: 1px solid rgba(139, 0, 0, 0.15);
         list-style: none;
+        text-align: center;
     }
     .post-list a {
-        display: block;
-        color: #1a110b !important;
+        display: inline-block;
+        color: rgba(139, 0, 0, 0.5) !important;
         text-decoration: none;
-        font-weight: 900;
-        text-align: center;
-        font-size: 16px;
+        font-weight: 300;
+        font-size: 15px;
         letter-spacing: 0.1em;
+        transition: 0.5s;
     }
     .post-list a:hover {
-        color: #6e120a !important;
+        color: rgba(255, 255, 255, 0.8) !important;
+        text-shadow: 0 0 15px rgba(255, 255, 255, 0.4) !important;
     }
 
     @media (max-width: 768px) {
-        body { padding: 30px 8px; }
-        .glass { 
-            padding: 40px 20px; 
-            clip-path: polygon(0 1%, 100% 0, 99% 99%, 1% 100%); /* スマホ用微調整 */
-        }
-        pre.record { font-size: 16px; line-height: 2.3; }
+        body { padding: 40px 16px; }
+        pre.record { font-size: 15px; line-height: 2.4; }
+        .cursor-soul { width: 200px; height: 200px; } /* スマホでは光を小さく */
     }
     </style>
 </head>
 <body>
+
+<div class="cursor-soul" id="soulGlow"></div>
 
 <div class="glass-wrap">
     <div class="glass">
@@ -254,7 +270,7 @@
 堀川のほとりに至り候。
 
 水の音はあるようでなく、
-近くにありながら遠し候.
+近くにありながら遠し候。
 
 傷は深く、
 身体は次第に軽くなりゆく感覚あり候。
@@ -269,7 +285,7 @@
 紙には残せず候。
 
 墨も持たず、
-筆もまたなし候.
+筆もまたなし候。
 
 血をもって葉に記すことも思い浮かび候へど、
 それも現実には叶わぬことにて候。
@@ -292,7 +308,7 @@ Githabの無料頁を借りて記す。
 父としても、夫としても、
 至らぬことばかりにて候。
 
-約束守れぬ日もあり候。
+約束守れぬ日もあり候.
 帰れぬ夜もあり候。
 言葉足らずも多かりし候。
 
@@ -351,7 +367,6 @@ Githabの無料頁を借りて記す。
 ---
 
 どうか生きてあられよ。
-
 少しでも穏やかにあられよ。
 
 ---
@@ -373,5 +388,28 @@ Githabの無料頁を借りて記す。
     </ul>
 </div>
 
+<script>
+    // 魂の追従処理（滑らかに動くように少しディレイをかける）
+    const soulGlow = document.getElementById('soulGlow');
+    let mouseX = 0, mouseY = 0;
+    let ballX = 0, ballY = 0;
+    const speed = 0.08; // 数値が小さいほど、魂がヌルッと遅れて付いてくる
+
+    document.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+    });
+
+    function animate() {
+        // 現在位置からマウス位置へジワジワ近づける計算
+        ballX += (mouseX - ballX) * speed;
+        ballY += (mouseY - ballY) * speed;
+        
+        soulGlow.style.transform = `translate(calc(${ballX}px - 50%), calc(${ballY}px - 50%))`;
+        
+        requestAnimationFrame(animate);
+    }
+    animate();
+</script>
 </body>
 </html>
