@@ -8,171 +8,242 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;600;900&display=swap');
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
 }
 
-/* =========================
-   ■ 世界のベース崩壊
-========================= */
-body {
-    font-family: "Noto Serif JP", serif;
-    min-height: 100vh;
-    background: radial-gradient(circle at center, #1a1414 0%, #000 70%);
-    overflow-x: hidden;
-    padding: 80px 24px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    animation: breathe 8s infinite ease-in-out;
-    filter: contrast(1.3) brightness(0.85);
+/* ==========================================
+   世界
+========================================== */
+
+body{
+    font-family:"Noto Serif JP",serif;
+    min-height:100vh;
+    overflow-x:hidden;
+
+    background:
+        radial-gradient(circle at center,
+        rgba(20,16,15,.75) 0%,
+        #000 80%);
+
+    background-color:#050404;
+
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+
+    padding:80px 24px;
+
+    animation:breathe 9s ease-in-out infinite;
 }
 
-@keyframes breathe {
-    0% { filter: contrast(1.1) brightness(0.8); }
-    50% { filter: contrast(1.6) brightness(0.95); }
-    100% { filter: contrast(1.2) brightness(0.82); }
-}
-
-/* ノイズ */
-body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    background: repeating-linear-gradient(
-        0deg,
-        rgba(255,255,255,0.03),
-        transparent 3px
-    );
-    opacity: 0.4;
-    pointer-events: none;
-    mix-blend-mode: overlay;
-    animation: noise 0.1s infinite linear;
-}
-
-@keyframes noise {
-    0% { transform: translateY(0); }
-    100% { transform: translateY(8px); }
-}
-
-/* =========================
-   ■ 光（追従する何か）
-========================= */
-.cursor-soul {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 500px;
-    height: 500px;
-    border-radius: 50%;
-    pointer-events: none;
-    background: radial-gradient(circle,
-        rgba(255,120,80,0.12),
-        rgba(120,0,0,0.05),
-        transparent 70%);
-    mix-blend-mode: screen;
-    filter: blur(25px);
-    transform: translate(-50%, -50%);
-    transition: transform 0.15s ease-out;
-    animation: flicker 1.4s infinite alternate;
-}
-
-@keyframes flicker {
-    0% { opacity: 0.25; }
-    100% { opacity: 0.6; }
-}
-
-/* =========================
-   ■ 本体（文章）
-========================= */
-.glass-wrap {
-    width: min(760px, 92vw);
-}
-
-.glass {
-    background: transparent;
-}
-
-pre.record {
-    white-space: pre-wrap;
-    word-break: break-word;
-    font-size: 18px;
-    line-height: 2.6;
-    letter-spacing: 0.08em;
-    font-weight: 600;
-    color: rgba(245,242,238,0.82);
-    text-shadow:
-        0 0 8px rgba(255,255,255,0.25),
-        0 0 18px rgba(180,0,0,0.45);
-
-    animation:
-        drift 4s infinite ease-in-out,
-        fadeIn 3s ease-out forwards;
-}
-
-@keyframes drift {
-    0% { transform: translate(0px,0px) skewX(0deg); }
-    50% { transform: translate(1px,-2px) skewX(0.8deg); }
-    100% { transform: translate(-1px,2px) skewX(-0.6deg); }
-}
-
-@keyframes fadeIn {
-    0% { opacity: 0; filter: blur(10px); }
-    60% { opacity: 0.7; filter: blur(0px); }
-    100% { opacity: 0.9; }
-}
-
-/* =========================
-   ■ 署名
-========================= */
-.signature {
-    display: block;
-    text-align: right;
-    margin-top: 60px;
-    color: rgba(120,20,15,0.6);
-    text-shadow: 0 0 10px rgba(120,20,15,0.25);
-}
-
-/* =========================
-   ■ リンク（現実への穴）
-========================= */
-.post-list {
-    margin-top: 60px;
-    text-align: center;
-}
-
-.post-list a {
-    color: rgba(139,0,0,0.5);
-    text-decoration: none;
-    font-size: 14px;
-    letter-spacing: 0.1em;
-    transition: 0.5s;
-    animation: linkPulse 2s infinite;
-}
-
-.post-list a:hover {
-    color: rgba(255,255,255,0.8);
-    text-shadow: 0 0 12px rgba(255,255,255,0.4);
-}
-
-@keyframes linkPulse {
-    0%,100% { opacity: 0.4; }
-    50% { opacity: 1; }
-}
-
-/* =========================
-   ■ スマホ調整（現実への保険）
-========================= */
-@media (max-width: 768px) {
-    pre.record {
-        font-size: 15px;
-        line-height: 2.3;
+@keyframes breathe{
+    0%{
+        filter:brightness(.82) contrast(1.15);
     }
-    .cursor-soul {
-        width: 300px;
-        height: 300px;
+    50%{
+        filter:brightness(.95) contrast(1.45);
+    }
+    100%{
+        filter:brightness(.84) contrast(1.2);
+    }
+}
+
+/* 粒子 */
+
+body::after{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:50;
+
+    background-image:
+        radial-gradient(
+            rgba(255,255,255,.018) 1px,
+            transparent 1px);
+
+    background-size:15px 15px;
+    opacity:.55;
+}
+
+/* スキャンライン */
+
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:40;
+
+    background:
+        repeating-linear-gradient(
+            0deg,
+            rgba(255,255,255,.018),
+            rgba(255,255,255,.018) 1px,
+            transparent 3px,
+            transparent 5px
+        );
+
+    mix-blend-mode:overlay;
+    animation:scan .08s linear infinite;
+}
+
+@keyframes scan{
+    from{transform:translateY(0)}
+    to{transform:translateY(8px)}
+}
+
+/* ==========================================
+   魂の灯
+========================================== */
+
+.cursor-soul{
+    position:fixed;
+    top:0;
+    left:0;
+
+    width:420px;
+    height:420px;
+
+    border-radius:50%;
+    pointer-events:none;
+    z-index:1;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(255,120,70,.13) 0%,
+            rgba(130,0,0,.05) 40%,
+            transparent 72%
+        );
+
+    mix-blend-mode:screen;
+    filter:blur(22px);
+
+    transform:translate(-50%,-50%);
+}
+
+/* ==========================================
+   レイアウト
+========================================== */
+
+.glass-wrap{
+    width:min(760px,92vw);
+    position:relative;
+    z-index:2;
+}
+
+.glass{
+    padding:40px 20px;
+}
+
+/* ==========================================
+   本文
+========================================== */
+
+.record{
+    white-space:pre-wrap;
+    word-break:break-word;
+
+    font-size:18px;
+    font-weight:600;
+    line-height:2.7;
+    letter-spacing:.08em;
+
+    color:rgba(245,242,238,.88);
+
+    text-shadow:
+        0 0 7px rgba(255,255,255,.18),
+        0 0 18px rgba(160,0,0,.42);
+
+    opacity:0;
+    animation:appear 2s ease forwards;
+}
+
+@keyframes appear{
+    from{
+        opacity:0;
+        filter:blur(7px);
+    }
+    to{
+        opacity:1;
+        filter:blur(0);
+    }
+}
+
+/* カーソル */
+
+.type-cursor{
+    display:inline-block;
+    color:rgba(230,130,90,.85);
+
+    text-shadow:
+        0 0 8px rgba(255,120,80,.5),
+        0 0 20px rgba(180,0,0,.5);
+
+    animation:blink 1s infinite;
+}
+
+@keyframes blink{
+    0%,45%{opacity:1}
+    50%,100%{opacity:0}
+}
+
+/* 署名 */
+
+.signature{
+    display:block;
+    text-align:right;
+    margin-top:60px;
+
+    color:rgba(120,20,15,.65);
+
+    text-shadow:
+        0 0 10px rgba(120,20,15,.25);
+
+    opacity:0;
+    transition:2s;
+}
+
+/* リンク */
+
+.post-list{
+    margin-top:70px;
+    padding-top:30px;
+    border-top:1px solid rgba(139,0,0,.15);
+    text-align:center;
+    list-style:none;
+}
+
+.post-list a{
+    color:rgba(139,0,0,.5);
+    text-decoration:none;
+    letter-spacing:.1em;
+    transition:.5s;
+}
+
+.post-list a:hover{
+    color:rgba(255,255,255,.85);
+    text-shadow:0 0 12px rgba(255,255,255,.35);
+}
+
+@media(max-width:768px){
+
+    body{
+        padding:40px 16px;
+    }
+
+    .record{
+        font-size:15px;
+        line-height:2.4;
+    }
+
+    .cursor-soul{
+        width:240px;
+        height:240px;
     }
 }
 </style>
@@ -183,8 +254,10 @@ pre.record {
 <div class="cursor-soul" id="soul"></div>
 
 <div class="glass-wrap">
-    <div class="glass">
-        <pre class="record">
+
+<div class="glass">
+
+<pre class="record" id="recordText">
 天正十年六月二日
 
 京・堀川のほとり
@@ -399,38 +472,120 @@ Githabの無料頁を借りて記す。
 
 ---
 
-        <span class="signature">— 佐伯 忠之 記</span>
-        </pre>
-    </div>
 
-    <ul class="post-list">
-        <li><a href="posts/first-post.md">2026-05-29：最初の記事のタイトル</a></li>
-    </ul>
+<span class="signature" id="sig">— 佐伯 忠之 記</span>
+</pre>
+
+</div>
+
+<ul class="post-list">
+<li>
+<a href="posts/first-post.md">
+2026-05-29：最初の記事のタイトル
+</a>
+</li>
+</ul>
+
 </div>
 
 <script>
-const soul = document.getElementById("soul");
 
-let mx = 0, my = 0;
-let x = 0, y = 0;
+/* ==========================================
+   魂追従
+========================================== */
 
-document.addEventListener("mousemove", (e) => {
-    mx = e.clientX;
-    my = e.clientY;
+const soul=document.getElementById("soul");
+
+let mx=0,my=0;
+let x=0,y=0;
+
+document.addEventListener("mousemove",(e)=>{
+    mx=e.clientX;
+    my=e.clientY;
 });
 
-function loop() {
-    x += (mx - x) * 0.08;
-    y += (my - y) * 0.08;
+function soulLoop(){
 
-    soul.style.transform = `translate(${x}px,${y}px) translate(-50%,-50%)`;
+    x+=(mx-x)*0.06;
+    y+=(my-y)*0.06;
 
-    requestAnimationFrame(loop);
+    soul.style.transform=
+        `translate(${x}px,${y}px)
+         translate(-50%,-50%)`;
+
+    requestAnimationFrame(soulLoop);
 }
 
-loop();
+soulLoop();
+
+/* ==========================================
+   終記タイピング
+========================================== */
+
+const record=document.getElementById("recordText");
+const sig=document.getElementById("sig");
+
+const original=
+    record.innerText
+    .replace("— 佐伯 忠之 記","")
+    .trim();
+
+record.innerHTML=
+    '<span class="type-cursor">▍</span>';
+
+let i=0;
+
+function nextDelay(char){
+
+    if(char==="。"
+    || char==="、"
+    || char==="，")
+        return 320+Math.random()*180;
+
+    if(char==="\n")
+        return 120;
+
+    return 28+Math.random()*45;
+}
+
+function typeRecord(){
+
+    if(i<original.length){
+
+        const char=original[i];
+
+        const visible=
+            original
+            .substring(0,i+1)
+            .replace(/\n/g,"<br>");
+
+        record.innerHTML=
+            visible+
+            '<span class="type-cursor">▍</span>';
+
+        i++;
+
+        let delay=nextDelay(char);
+
+        /* --- は沈黙 */
+        if(original.substring(i-3,i)==="---"){
+            delay=1200;
+        }
+
+        setTimeout(typeRecord,delay);
+
+    }else{
+
+        record.innerHTML=
+            original.replace(/\n/g,"<br>");
+
+        sig.style.opacity=1;
+    }
+}
+
+setTimeout(typeRecord,1400);
+
 </script>
 
 </body>
 </html>
-
