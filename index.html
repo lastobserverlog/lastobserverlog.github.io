@@ -6,7 +6,7 @@
     <title>堀川終記</title>
     
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;600;900&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@600;900&display=swap');
 
     * {
         margin: 0;
@@ -14,231 +14,99 @@
         box-sizing: border-box;
     }
 
-    :root {
-        /* 本能寺が燃える夜の闇 */
-        --ambient-dark: #0c0a09; 
-        --ink-black: #1a110b;
-        --blood-red: rgba(115, 0, 0, 0.75);
-    }
-
     body {
         font-family: "Noto Serif JP", serif;
         min-height: 100vh;
-        background-color: var(--ambient-dark) !important;
-        color: var(--ink-black);
+        /* 背景を「真っ黒」から「落ち着いた深い焦げ茶」に変更。画面全体の威圧感を減らす */
+        background-color: #1e1a15 !important;
         overflow-x: hidden;
-        position: relative;
-        padding: 60px 16px;
+        padding: 40px 16px;
         display: flex;
         flex-direction: column;
         align-items: center;
     }
 
-    /* 遠くで燃える本能寺の炎の照り返し */
-    .light-orb {
-        position: fixed;
-        border-radius: 50%;
-        z-index: -2;
-        mix-blend-mode: color-dodge;
-        filter: blur(80px);
-        pointer-events: none;
-    }
-    .orb1 {
-        bottom: -10%; left: -10%; width: 600px; height: 600px;
-        background: radial-gradient(circle, rgba(215, 50, 10, 0.3) 0%, transparent 80%);
-        animation: honnoji-fire 12s ease-in-out infinite;
-    }
-    .orb2 {
-        top: -20%; right: -10%; width: 700px; height: 700px;
-        background: radial-gradient(circle, rgba(139, 0, 0, 0.4) 0%, transparent 70%);
-        animation: honnoji-fire 16s ease-in-out infinite reverse;
-    }
-    .orb3 {
-        top: 30%; left: 50%; width: 500px; height: 500px;
-        background: radial-gradient(circle, #000000 0%, transparent 60%);
-        mix-blend-mode: multiply;
-        animation: honnoji-fire 20s linear infinite 2s;
-    }
-    .orb4 { display: none; }
-
-    @keyframes honnoji-fire {
-        0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); opacity: 0.6; }
-        50% { transform: translate(-40px, 50px) scale(1.15) rotate(180deg); opacity: 0.9; }
-    }
-
-    /* 降り注ぐ火の粉と灰 */
-    body::after {
-        content: "";
-        position: fixed;
-        inset: 0;
-        z-index: 100;
-        pointer-events: none;
-        background-image: 
-            radial-gradient(rgba(235, 94, 40, 0.2) 2px, transparent 2px),
-            radial-gradient(rgba(0, 0, 0, 0.4) 1px, transparent 1px);
-        background-size: 32px 32px, 8px 8px;
-        opacity: 0.6;
-        animation: ash-fall 30s linear infinite;
-    }
-    @keyframes ash-fall {
-        0% { background-position: 0 0; }
-        100% { background-position: -100px 500px; }
-    }
-
     .glass-wrap {
-        position: relative;
-        width: min(840px, 94vw);
-        transform-style: preserve-3d;
-        perspective: 1200px;
+        width: min(800px, 96vw);
     }
 
     /* ==========================================
-       【修正】確実に発色する、泥まみれの古和紙
+       【超改善】完全に明るくした古和紙
        ========================================== */
     .glass {
         width: 100%;
-        padding: 60px 48px;
+        padding: 50px 32px;
         
-        /* ここを確実に発色するセピア古紙色に固定 */
-        background-color: #d1be9b !important;
-        background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.02) 0px, rgba(0,0,0,0.02) 2px, transparent 2px, transparent 10px) !important;
+        /* 圧倒的に明るいベージュ（生成り色）に変更 */
+        background-color: #f2e6ce !important;
+        background-image: none !important; /* バグの原因になるグラデーションは全削除 */
         
-        /* 縁をガタガタに引き裂く表現 */
+        /* 縁のガタガタは残しつつ、バグる原因の複雑な影やブレンドモードを完全排除 */
         clip-path: polygon(
             0% 2%, 4% 0%, 9% 3%, 15% 1%, 23% 4%, 30% 1%, 38% 3%, 45% 0%, 55% 2%, 62% 0%, 70% 4%, 81% 1%, 90% 3%, 96% 0%, 100% 2%,
             98% 15%, 100% 28%, 97% 42%, 99% 57%, 98% 71%, 100% 88%, 97% 100%,
             91% 98%, 82% 100%, 73% 97%, 64% 99%, 50% 96%, 38% 100%, 25% 98%, 12% 100%, 0% 97%,
             2% 82%, 0% 65%, 3% 51%, 1% 33%, 3% 18%
         );
-
-        /* 外側の影と、内側にじわっと滲む血痕 */
-        box-shadow: 
-            0 20px 50px rgba(0, 0, 0, 0.9),
-            inset 0 0 60px rgba(0, 0, 0, 0.4),
-            inset 40px 10px 80px var(--blood-red) !important;
-            
+        
+        /* シンプルでクッキリした影 */
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.7);
         position: relative;
-        overflow: hidden;
-        border: none !important;
-        border-radius: 0px !important;
     }
 
-    /* 和紙の表面に飛び散った血飛沫エフェクト */
-    .glass::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        pointer-events: none;
-        background: 
-            radial-gradient(circle at 80% 20%, var(--blood-red) 0%, transparent 6px),
-            radial-gradient(circle at 83% 24%, var(--blood-red) 0%, transparent 3px),
-            radial-gradient(circle at 15% 75%, rgba(70, 0, 0, 0.8) 0%, transparent 50px),
-            radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.15) 0%, transparent 80%);
-        z-index: 1;
-    }
-
-    /* 遺言テキスト（掠れた墨汁） */
+    /* 遺言テキスト（完全なる漆黒） */
     pre.record {
         white-space: pre-wrap;
         word-break: break-word;
-        font-size: 19px;
-        font-weight: 700;
-        line-height: 2.8;
-        letter-spacing: 0.06em;
+        font-size: 18px;
+        font-weight: 600;
+        line-height: 2.5;
+        letter-spacing: 0.05em;
         
-        /* 確実に視認できる濃い墨色 */
-        color: #110a06 !important;
-        text-shadow: 0.5px 0.5px 1px rgba(255,255,255,0.4) !important;
-            
-        position: relative;
-        z-index: 2;
-        box-shadow: none !important;
-        border: none !important;
+        /* 100%混じり気のない黒。これで読めないわけがない */
+        color: #000000 !important;
+        text-shadow: none !important; /* ぼやける原因の文字影を削除 */
         background: transparent !important;
-        
-        animation: death-written 2s ease-out forwards;
-    }
-    @keyframes death-written {
-        from { opacity: 0; filter: blur(5px); transform: scale(1.01); }
-        to { opacity: 1; filter: blur(0); transform: scale(1); }
     }
 
     .signature {
         display: block;
         text-align: right;
-        margin-top: 50px;
+        margin-top: 40px;
         font-size: 18px;
         font-weight: 900;
-        color: #5a0000 !important; /* 血文字の署名 */
-        text-shadow: 0.5px 0.5px 1px rgba(255,255,255,0.3) !important;
-        position: relative;
-        z-index: 2;
+        color: #800000 !important; /* 濃い赤 */
     }
 
-    /* マウス追従：命の灯火 */
-    .cursor-glow {
-        position: fixed;
-        top: 0; left: 0;
-        width: 250px; height: 250px;
-        background: radial-gradient(circle, rgba(255, 69, 0, 0.25) 0%, rgba(139, 0, 0, 0.05) 40%, transparent 70%);
-        border-radius: 50%;
-        pointer-events: none;
-        z-index: 3;
-        transform: translate(-50%, -50%);
-        mix-blend-mode: color-dodge;
-    }
-    .cursor-glow.secondary {
-        width: 500px; height: 500px;
-        background: radial-gradient(circle, rgba(0, 0, 0, 0.6) 0%, transparent 60%);
-        mix-blend-mode: multiply;
-        z-index: 0;
-    }
-
-    /* お札風のリンクボタン */
+    /* お札風のリンクボタン（見やすさ最優先） */
     .post-list {
-        margin-top: 40px;
+        margin-top: 30px;
         padding: 20px;
-        background: #baaa85 !important;
-        clip-path: polygon(2% 0%, 98% 5%, 100% 95%, 0% 100%) !important;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.6) !important;
-        border: none !important;
-        border-radius: 0px !important;
+        background: #dfcfad !important;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.5) !important;
+        list-style: none;
     }
     .post-list a {
         display: block;
-        color: #1c130c !important;
+        color: #000000 !important;
         text-decoration: none;
         font-weight: 900;
         text-align: center;
-        transition: 0.3s;
-    }
-    .post-list a:hover {
-        color: #7a0000 !important;
-        transform: scale(1.02);
+        font-size: 16px;
     }
 
     @media (max-width: 768px) {
-        body { padding: 30px 10px; }
-        .glass { 
-            padding: 40px 20px; 
-            clip-path: polygon(0 1%, 100% 0, 99% 99%, 1% 100%);
-        }
-        pre.record { font-size: 16px; line-height: 2.4; }
+        body { padding: 20px 8px; }
+        .glass { padding: 30px 16px; }
+        pre.record { font-size: 15px; line-height: 2.2; }
     }
     </style>
 </head>
 <body>
 
-<div class="light-orb orb1"></div>
-<div class="light-orb orb2"></div>
-<div class="light-orb orb3"></div>
-<div class="light-orb orb4"></div>
-
 <div class="glass-wrap">
-    <div class="cursor-glow"></div>
-    <div class="cursor-glow secondary"></div>
-
-    <pre class="glass record">
+    <div class="glass">
+        <pre class="record">
 天正十年六月二日
 
 京・堀川のほとり
@@ -281,7 +149,7 @@
 いずれも遠のきゆき候。
 
 人の気配もまた薄く、
-町そのものが息を止めたるように覚え候。
+町そのものが息を止めたるように覚え候.
 
 ---
 
@@ -384,7 +252,7 @@ Githabの無料頁を借りて記す。
 至らぬことばかりにて候。
 
 約束守れぬ日もあり候。
-帰れぬ夜もあり候。
+帰れぬ夜もあり候.
 言葉足らずも多かりし候。
 
 ---
@@ -407,7 +275,7 @@ Githabの無料頁を借りて記す。
 
 ---
 
-されど一つだけ確かにて候。
+されど一つだけ確かにて候.
 
 お前たちと過ごせし日々により、
 われは確かに救われおり候。
@@ -422,7 +290,7 @@ Githabの無料頁を借りて記す。
 されど、
 生きておりしことは確かにて候。
 
-お前たちと同じ時の中にて候.
+お前たちと同じ時の中にて候。
 
 これで十分にて候。
 
@@ -450,20 +318,19 @@ Githabの無料頁を借りて記す。
 ありがたきことにて候。
 
 お前たちの在りしこと、
-われのすべてにて候.
+われのすべてにて候。
 
 ---
-    </pre>
-
-    <span class="signature">— 佐伯 忠之 記</span>
+        <span class="signature">— 佐伯 忠之 記</span>
+        </pre>
+    </div>
+      
+    <ul class="post-list">
+        <li>
+            <a href="posts/first-post.md">2026-05-29：最初の記事のタイトル</a>
+        </li>
+    </ul>
 </div>
-  
-<ul class="glass post-list">
-    <li>
-        <a href="posts/first-post.md">2026-05-29：最初の記事のタイトル</a>
-    </li>
-</ul>
 
-<script src="mouse.js"></script>
 </body>
 </html>
