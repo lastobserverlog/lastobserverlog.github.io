@@ -14,91 +14,132 @@
         box-sizing: border-box;
     }
 
+    /* ==========================================
+       【やりすぎ背景】CSSだけで組む重厚な黒木目
+       ========================================== */
     body {
         font-family: "Noto Serif JP", serif;
         min-height: 100vh;
-        /* 背景を「真っ黒」から「落ち着いた深い焦げ茶」に変更。画面全体の威圧感を減らす */
-        background-color: #1e1a15 !important;
+        /* フリー素材の軽い木目をパージし、怨念の似合う暗い木目をCSSだけで生成 */
+        background-color: #1a110b;
+        background-image: 
+            linear-gradient(90deg, rgba(25, 18, 12, 0.5) 0%, transparent 50%, rgba(25, 18, 12, 0.5) 100%),
+            repeating-linear-gradient(90deg, #1f150e 0px, #1f150e 4px, #1a110b 4px, #1a110b 10px);
         overflow-x: hidden;
-        padding: 40px 16px;
+        padding: 60px 16px;
         display: flex;
         flex-direction: column;
         align-items: center;
     }
 
     .glass-wrap {
-        width: min(800px, 96vw);
+        width: min(840px, 96vw);
+        filter: drop-shadow(0 25px 35px rgba(0, 0, 0, 0.8)); /* 古紙全体のリアルな影 */
     }
 
     /* ==========================================
-       【超改善】完全に明るくした古和紙
+       【本題】CSSだけで再現する、リアルな古ぼけた紙
        ========================================== */
     .glass {
         width: 100%;
-        padding: 50px 32px;
+        padding: 60px 50px;
         
-        /* 圧倒的に明るいベージュ（生成り色）に変更 */
-        background-color: #f2e6ce !important;
-        background-image: none !important; /* バグの原因になるグラデーションは全削除 */
+        /* 単色塗りを廃止。
+          何重ものグラデーションを重ねて、経年劣化の「シミ」「日焼け」「中央の擦れ」を偽装 
+        */
+        background: 
+            /* レイカ1：中央から外側へ向けての、ドス黒い日焼け・色むら */
+            radial-gradient(circle at 70% 30%, rgba(138, 110, 77, 0.2), transparent 60%),
+            radial-gradient(circle at 20% 80%, rgba(110, 85, 55, 0.25), transparent 50%),
+            /* レイヤー2：外側（四隅）を焼きつかせたような、濃いセピアのグラデーション */
+            radial-gradient(circle, #ecdcb9 30%, #d3be93 70%, #9c8052 100%);
         
-        /* 縁のガタガタは残しつつ、バグる原因の複雑な影やブレンドモードを完全排除 */
+        /* 綺麗すぎる直線を破壊。周囲をボロボロに引き裂いたエッジ（clip-path） */
         clip-path: polygon(
-            0% 2%, 4% 0%, 9% 3%, 15% 1%, 23% 4%, 30% 1%, 38% 3%, 45% 0%, 55% 2%, 62% 0%, 70% 4%, 81% 1%, 90% 3%, 96% 0%, 100% 2%,
-            98% 15%, 100% 28%, 97% 42%, 99% 57%, 98% 71%, 100% 88%, 97% 100%,
-            91% 98%, 82% 100%, 73% 97%, 64% 99%, 50% 96%, 38% 100%, 25% 98%, 12% 100%, 0% 97%,
-            2% 82%, 0% 65%, 3% 51%, 1% 33%, 3% 18%
+            0% 1%, 5% 0%, 12% 2%, 20% 0%, 28% 3%, 37% 1%, 45% 2%, 56% 0%, 68% 2%, 79% 0%, 88% 3%, 95% 1%, 100% 0%,
+            99% 12%, 100% 25%, 98% 38%, 99% 55%, 97% 72%, 100% 89%, 98% 100%,
+            92% 99%, 81% 100%, 70% 97%, 58% 99%, 44% 97%, 32% 100%, 19% 98%, 8% 100%, 0% 98%,
+            1% 85%, 0% 69%, 2% 53%, 0% 36%, 1% 18%
         );
-        
-        /* シンプルでクッキリした影 */
-        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.7);
+
         position: relative;
+        border: none !important;
+        border-radius: 0px !important;
     }
 
-    /* 遺言テキスト（完全なる漆黒） */
+    /* 古紙の表面に浮き出る「長年の汚れ・煤」を擬似要素でブレンド */
+    .glass::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background: 
+            /* 細かい手垢や煤のような汚れの斑点 */
+            radial-gradient(circle at 40% 15%, rgba(0,0,0,0.06) 0%, transparent 80px),
+            radial-gradient(circle at 85% 75%, rgba(0,0,0,0.08) 0%, transparent 120px),
+            /* 左側からうっすら染み出す、乾ききった血の痕跡（視認性を邪魔しないレベル） */
+            linear-gradient(to right, rgba(90, 10, 10, 0.08) 0%, transparent 25%);
+        z-index: 1;
+    }
+
+    /* 遺言テキスト（完全なる漆黒・クッキリ） */
     pre.record {
         white-space: pre-wrap;
         word-break: break-word;
-        font-size: 18px;
+        font-size: 19px;
         font-weight: 600;
-        line-height: 2.5;
-        letter-spacing: 0.05em;
+        line-height: 2.6;
+        letter-spacing: 0.06em;
         
-        /* 100%混じり気のない黒。これで読めないわけがない */
-        color: #000000 !important;
-        text-shadow: none !important; /* ぼやける原因の文字影を削除 */
+        /* 混じり気のない漆黒に。和紙のテクスチャの上でも絶対に読める視認性 */
+        color: #0d0906 !important;
+        text-shadow: none !important; 
         background: transparent !important;
+        
+        position: relative;
+        z-index: 2;
     }
 
     .signature {
         display: block;
         text-align: right;
-        margin-top: 40px;
-        font-size: 18px;
+        margin-top: 50px;
+        font-size: 19px;
         font-weight: 900;
-        color: #800000 !important; /* 濃い赤 */
+        color: #5c110c !important; /* 署名だけは、乾いた血の赤 */
+        position: relative;
+        z-index: 2;
     }
 
-    /* お札風のリンクボタン（見やすさ最優先） */
+    /* お札（ふだ）をイメージした、古びたリンクボタン */
     .post-list {
-        margin-top: 30px;
+        margin-top: 40px;
         padding: 20px;
-        background: #dfcfad !important;
-        box-shadow: 0 10px 20px rgba(0,0,0,0.5) !important;
+        background: #c5b28b !important;
+        background-image: radial-gradient(circle, transparent 50%, #ad9971 100%) !important;
+        clip-path: polygon(1% 0%, 99% 4%, 100% 96%, 0% 100%) !important;
         list-style: none;
     }
     .post-list a {
         display: block;
-        color: #000000 !important;
+        color: #1a110b !important;
         text-decoration: none;
         font-weight: 900;
         text-align: center;
         font-size: 16px;
+        letter-spacing: 0.1em;
+    }
+    .post-list a:hover {
+        color: #6e120a !important;
     }
 
     @media (max-width: 768px) {
-        body { padding: 20px 8px; }
-        .glass { padding: 30px 16px; }
-        pre.record { font-size: 15px; line-height: 2.2; }
+        body { padding: 30px 8px; }
+        .glass { 
+            padding: 40px 20px; 
+            clip-path: polygon(0 1%, 100% 0, 99% 99%, 1% 100%); /* スマホ用微調整 */
+        }
+        pre.record { font-size: 16px; line-height: 2.3; }
     }
     </style>
 </head>
@@ -149,7 +190,7 @@
 いずれも遠のきゆき候。
 
 人の気配もまた薄く、
-町そのものが息を止めたるように覚え候.
+町そのものが息を止めたるように覚え候。
 
 ---
 
@@ -213,7 +254,7 @@
 堀川のほとりに至り候。
 
 水の音はあるようでなく、
-近くにありながら遠し候。
+近くにありながら遠し候.
 
 傷は深く、
 身体は次第に軽くなりゆく感覚あり候。
@@ -228,7 +269,7 @@
 紙には残せず候。
 
 墨も持たず、
-筆もまたなし候。
+筆もまたなし候.
 
 血をもって葉に記すことも思い浮かび候へど、
 それも現実には叶わぬことにて候。
@@ -252,7 +293,7 @@ Githabの無料頁を借りて記す。
 至らぬことばかりにて候。
 
 約束守れぬ日もあり候。
-帰れぬ夜もあり候.
+帰れぬ夜もあり候。
 言葉足らずも多かりし候。
 
 ---
@@ -275,7 +316,7 @@ Githabの無料頁を借りて記す。
 
 ---
 
-されど一つだけ確かにて候.
+されど一つだけ確かにて候。
 
 お前たちと過ごせし日々により、
 われは確かに救われおり候。
