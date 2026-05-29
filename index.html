@@ -91,23 +91,23 @@
         white-space: pre-wrap;
         word-break: break-word;
         font-size: 18px;
-        font-weight: 300; /* あえて細くして、消えそうな儚さを出す */
+        font-weight: 600; /* ★ 300から600に上げて、文字の線を少し太く（くっきり） */
         line-height: 2.8;
         letter-spacing: 0.08em;
         
-        /* 完全に真っ白ではなく、闇に溶けかけの朧げな白グレー */
-        color: rgba(220, 215, 210, 0.35) !important;
+        /* ★【ここ！】文字色をほぼ不透明な白（0.35 → 0.8）に引き上げる */
+        color: rgba(245, 242, 238, 0.8) !important;
         
-        /* 文字の周りに、微かに体温を感じさせる赤黒い残像（グロウ） */
+        /* ★ 文字の後ろの発光（白と赤）を強くして、闇から浮かび上がらせる */
         text-shadow: 
-            0 0 12px rgba(255, 255, 255, 0.05),
-            0 0 20px rgba(139, 0, 0, 0.3) !important;
+            0 0 8px rgba(255, 255, 255, 0.3),
+            0 0 20px rgba(180, 0, 0, 0.6) !important;
             
         position: relative;
         z-index: 2;
         background: transparent !important;
         
-        /* 意識が覚醒してから薄れていくようなフェードインアニメーション */
+        /* アニメーションの最終的な透明度（opacity）も上げるために微調整 */
         animation: fade-away 4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
