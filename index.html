@@ -102,36 +102,76 @@ body::before{
 
 /* 魂の光 */
 .cursor-soul{
-    position:fixed;
-    top:0;
-    left:0;
-    width:320px;
-    height:320px;
-    border-radius:50%;
-    pointer-events:none;
-    z-index:30;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    pointer-events: none;
 
-    background:radial-gradient(circle,
-        rgba(110,10,10,.15) 0%,
-        rgba(65,0,0,.08) 24%,
-        rgba(18,0,0,.03) 52%,
-        transparent 74%
+    transform: translate(-50%, -50%) scale(1);
+
+    /* ここが核心：視線反転 */
+    mix-blend-mode: difference;
+
+    /* “生っぽさ” */
+    background: radial-gradient(circle,
+        rgba(255,255,255,.10) 0%,
+        rgba(255,255,255,.04) 22%,
+        rgba(120,0,0,.05) 45%,
+        transparent 70%
     );
 
-    mix-blend-mode:screen;
-    filter:blur(48px) brightness(.65) contrast(1.08);
-    opacity:.72;
+    filter: blur(42px) contrast(1.25) brightness(0.9);
 
-    transform:translate(-50%,-50%);
-    animation:bloodPulse 5.5s ease-in-out infinite;
+    opacity: .75;
+
+    z-index: 30;
+
+    /* 呼吸の受け皿（JSでscaleだけ触る想定） */
+    will-change: transform, opacity;
+
+    /* ゆっくり“場に馴染む” */
+    transition: filter .3s ease;
 }
 
-@keyframes bloodPulse{
-    0%{transform:translate(-50%,-50%) scale(.94); opacity:.58;}
-    50%{transform:translate(-50%,-50%) scale(1.05); opacity:.9;}
-    100%{transform:translate(-50%,-50%) scale(.96); opacity:.62;}
+/* 外側の“視線のズレ層” */
+.cursor-soul::after{
+    content:"";
+    position:absolute;
+    inset:-40%;
+    border-radius:50%;
+
+    background: radial-gradient(circle,
+        rgba(255,255,255,.04),
+        rgba(80,0,0,.03),
+        transparent 75%
+    );
+
+    filter: blur(80px);
+
+    opacity: .6;
+    mix-blend-mode: difference;
+
+    animation: ghostBreath 6.5s ease-in-out infinite;
 }
 
+/* 呼吸の“残響” */
+@keyframes ghostBreath{
+    0%{
+        transform: scale(0.96);
+        opacity: .45;
+    }
+    50%{
+        transform: scale(1.08);
+        opacity: .75;
+    }
+    100%{
+        transform: scale(0.98);
+        opacity: .5;
+    }
+}
 /* レイアウト */
 .glass-wrap{
     width:min(760px,92vw);
