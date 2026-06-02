@@ -515,8 +515,8 @@ addEventListener("mousemove",e=>{
 });
 
 function loop(){
-    x+=(mx-x)*0.065;
-    y+=(my-y)*0.065;
+x += (mx - x) * 0.04;
+y += (my - y) * 0.04;
 
     soul.style.transform=
         `translate(${x}px,${y}px) translate(-50%,-50%)`;
