@@ -15,21 +15,17 @@
 }
 
 body{
-    font-family:
-    "Zen Old Mincho",
-    serif;
-    
+    font-family:"Zen Old Mincho", serif;
+
     min-height:100vh;
     overflow-x:hidden;
 
     background:
-        radial-gradient(
-            circle at center,
-            rgba(20,16,15,.75) 0%,
-            #000 82%
-        );
+        radial-gradient(circle at center,
+        rgba(18,14,14,.78) 0%,
+        #000 84%);
 
-    background-color:#050404;
+    background-color:#040303;
 
     display:flex;
     justify-content:center;
@@ -37,75 +33,51 @@ body{
 
     padding:80px 24px;
 
-    animation:breathe 10s ease-in-out infinite;
+    animation:breathe 12s ease-in-out infinite;
 }
 
 @keyframes breathe{
-    0%{
-        filter:brightness(.82) contrast(1.12);
-    }
-    50%{
-        filter:brightness(.96) contrast(1.38);
-    }
-    100%{
-        filter:brightness(.84) contrast(1.18);
-    }
+    0%{filter:brightness(.82) contrast(1.1);}
+    50%{filter:brightness(.95) contrast(1.32);}
+    100%{filter:brightness(.84) contrast(1.14);}
 }
 
-/* =====================================
-粒子
-===================================== */
-
+/* 粒子 */
 body::after{
     content:"";
     position:fixed;
     inset:0;
     pointer-events:none;
     z-index:70;
-
-    background-image:
-        radial-gradient(
-            rgba(255,255,255,.012) 1px,
-            transparent 1px
-        );
-
+    background-image:radial-gradient(rgba(255,255,255,.012) 1px, transparent 1px);
     background-size:15px 15px;
-    opacity:.45;
+    opacity:.42;
 }
 
-/* =====================================
-干渉ノイズ
-===================================== */
-
+/* ノイズ */
 body::before{
     content:"";
     position:fixed;
     inset:0;
     pointer-events:none;
     z-index:60;
-
-    background:
-        repeating-linear-gradient(
-            0deg,
-            rgba(255,255,255,.015),
-            rgba(255,255,255,.015) 1px,
-            transparent 3px,
-            transparent 5px
-        );
-
+    background:repeating-linear-gradient(
+        0deg,
+        rgba(255,255,255,.015),
+        rgba(255,255,255,.015) 1px,
+        transparent 3px,
+        transparent 5px
+    );
     mix-blend-mode:overlay;
     animation:scan .08s linear infinite;
 }
 
 @keyframes scan{
-    from{transform:translateY(0)}
-    to{transform:translateY(8px)}
+    from{transform:translateY(0);}
+    to{transform:translateY(8px);}
 }
 
-/* =====================================
-反射・屈折
-===================================== */
-
+/* 屈折 */
 .refraction{
     position:fixed;
     inset:-20%;
@@ -113,161 +85,72 @@ body::before{
     z-index:20;
 
     background:
-        radial-gradient(
-            ellipse at 20% 30%,
-            rgba(255,255,255,.02),
-            transparent 40%
-        ),
-        radial-gradient(
-            ellipse at 70% 60%,
-            rgba(120,0,0,.04),
-            transparent 45%
-        ),
-        radial-gradient(
-            ellipse at 50% 80%,
-            rgba(255,255,255,.015),
-            transparent 35%
-        );
+        radial-gradient(ellipse at 20% 30%, rgba(255,255,255,.02), transparent 40%),
+        radial-gradient(ellipse at 72% 58%, rgba(110,0,0,.05), transparent 48%),
+        radial-gradient(ellipse at 50% 82%, rgba(255,255,255,.014), transparent 36%);
 
     mix-blend-mode:screen;
-
-    filter:
-        blur(38px)
-        contrast(1.2);
-
-    animation:
-        refract 18s ease-in-out infinite alternate;
+    filter:blur(42px) contrast(1.18);
+    animation:refract 18s ease-in-out infinite alternate;
 }
 
 @keyframes refract{
-
-    0%{
-        transform:
-            translate(-1%,0)
-            scale(1)
-            rotate(.2deg);
-    }
-
-    50%{
-        transform:
-            translate(1%,-1%)
-            scale(1.03)
-            rotate(-.2deg);
-    }
-
-    100%{
-        transform:
-            translate(-1%,1%)
-            scale(1.01)
-            rotate(.15deg);
-    }
+    0%{transform:translate(-1%,0) scale(1) rotate(.2deg);}
+    50%{transform:translate(1%,-1%) scale(1.03) rotate(-.2deg);}
+    100%{transform:translate(-1%,1%) scale(1.01) rotate(.15deg);}
 }
 
-/* =====================================
-魂の光
-===================================== */
-
+/* 魂の光 */
 .cursor-soul{
     position:fixed;
     top:0;
     left:0;
-
     width:320px;
     height:320px;
-
     border-radius:50%;
     pointer-events:none;
     z-index:30;
 
-    background:
-        radial-gradient(
-            circle,
-
-            rgba(120,10,10,.14) 0%,
-            rgba(70,0,0,.08) 22%,
-            rgba(25,0,0,.04) 48%,
-            transparent 72%
-        );
+    background:radial-gradient(circle,
+        rgba(110,10,10,.15) 0%,
+        rgba(65,0,0,.08) 24%,
+        rgba(18,0,0,.03) 52%,
+        transparent 74%
+    );
 
     mix-blend-mode:screen;
-
-    filter:
-        blur(42px)
-        brightness(.65)
-        contrast(1.1);
-
+    filter:blur(48px) brightness(.65) contrast(1.08);
     opacity:.72;
 
-    transform:
-        translate(-50%,-50%);
+    transform:translate(-50%,-50%);
+    animation:bloodPulse 5.5s ease-in-out infinite;
 }
 
-    transform:
-        translate(-50%,-50%);
+@keyframes bloodPulse{
+    0%{transform:translate(-50%,-50%) scale(.94); opacity:.58;}
+    50%{transform:translate(-50%,-50%) scale(1.05); opacity:.9;}
+    100%{transform:translate(-50%,-50%) scale(.96); opacity:.62;}
 }
 
-/* =====================================
-空間揺れ
-===================================== */
-
+/* レイアウト */
 .glass-wrap{
     width:min(760px,92vw);
     position:relative;
     z-index:40;
-
-    animation:
-        waterDrift 10s ease-in-out infinite;
+    animation:waterDrift 10s ease-in-out infinite;
 }
 
 @keyframes waterDrift{
-
-    0%{
-        transform:
-            translateY(0)
-            skewX(0);
-    }
-
-    50%{
-        transform:
-            translateY(-2px)
-            skewX(.18deg);
-    }
-
-    100%{
-        transform:
-            translateY(0)
-            skewX(0);
-    }
+    0%{transform:translateY(0);}
+    50%{transform:translateY(-2px);}
+    100%{transform:translateY(0);}
 }
 
 .glass{
     padding:40px 20px;
 }
 
-/* =====================================
-記憶浮上
-===================================== */
-
-.memory{
-    opacity:.12;
-    transform:
-        translateY(40px);
-
-    transition:
-        opacity 1.8s ease,
-        transform 1.8s ease;
-}
-
-.memory.visible{
-    opacity:1;
-    transform:
-        translateY(0);
-}
-
-/* =====================================
-本文
-===================================== */
-
+/* 本文表示 */
 .record{
     white-space:pre-wrap;
     word-break:break-word;
@@ -277,166 +160,50 @@ body::before{
     letter-spacing:.08em;
     font-weight:600;
 
-    color:
-        rgba(210,205,198,.58);
-
-    text-shadow:
-        0 0 7px rgba(255,255,255,.14),
-        0 0 18px rgba(160,0,0,.38);
+    color:rgba(212,206,198,.56);
+    text-shadow:0 0 8px rgba(255,255,255,.12),
+                0 0 18px rgba(120,0,0,.32);
 }
 
-/* =====================================
-文字浮上
-===================================== */
-
+/* 霧文字 */
 .char{
     opacity:0;
-    display:inline;
-    filter:blur(10px);
-
-    transition:
-        color .25s ease,
-        filter .25s ease,
-        text-shadow .25s ease;
-
-    animation:
-        rise .9s ease forwards;
+    display:inline-block;
+    transform:translateX(-14px) translateY(6px) scale(.96);
+    filter:blur(16px);
+    animation:fogRise 1.8s cubic-bezier(.16,.8,.2,1) forwards;
 }
 
-@keyframes rise{
-
-    0%{
-        opacity:0;
-        filter:blur(10px);
-
-        text-shadow:
-            0 0 20px rgba(255,120,80,.75);
-    }
-
-    55%{
-        opacity:.82;
-        filter:blur(2px);
-    }
-
-    100%{
-        opacity:1;
-        filter:blur(0);
-
-        text-shadow:
-            0 0 6px rgba(255,255,255,.12),
-            0 0 18px rgba(150,0,0,.35);
-    }
+@keyframes fogRise{
+    0%{opacity:0; transform:translateX(-14px) translateY(10px) scale(.94); filter:blur(18px);}
+    35%{opacity:.28; transform:translateX(-8px) translateY(5px) scale(.97); filter:blur(10px);}
+    70%{opacity:.78; transform:translateX(-2px) translateY(1px) scale(1); filter:blur(3px);}
+    100%{opacity:1; transform:translateX(0) translateY(0) scale(1); filter:blur(0);}
 }
 
-/* 灯火 */
-
+/* 灯 */
 .char.lit{
-
-    color:
-        rgba(225,212,205,.78);
-
-    filter:
-        blur(.15px);
-
-    text-shadow:
-        0 0 6px rgba(120,20,20,.18),
-        0 0 18px rgba(90,0,0,.32);
+    color:rgba(230,218,210,.82);
+    text-shadow:0 0 6px rgba(120,20,20,.15),
+                0 0 18px rgba(80,0,0,.3);
 }
 
 /* 署名 */
-
 .signature{
     display:block;
     text-align:right;
     margin-top:60px;
-
-    color:
-        rgba(120,20,15,.65);
-
+    color:rgba(120,20,15,.65);
     opacity:0;
     transition:2s;
 }
 
-/* リンク */
-
-.post-list{
-    margin-top:60px;
-    padding-top:30px;
-    border-top:
-        1px solid rgba(139,0,0,.14);
-
-    list-style:none;
-    text-align:center;
-}
-
-.post-list a{
-
-    color:
-        rgba(139,0,0,.5);
-
-    text-decoration:none;
-    transition:.5s;
-}
-
-.post-list a:hover{
-
-    color:
-        rgba(255,255,255,.8);
-
-    text-shadow:
-        0 0 12px rgba(255,255,255,.35);
-}
-
-/* SP */
-
+/* レスポンシブ */
 @media(max-width:768px){
-
-    body{
-        padding:40px 16px;
-    }
-
-    .record{
-        font-size:15px;
-        line-height:2.4;
-    }
-
-    .cursor-soul{
-        width:240px;
-        height:240px;
-    }
+    body{padding:40px 16px;}
+    .record{font-size:15px; line-height:2.45;}
+    .cursor-soul{width:240px; height:240px;}
 }
-
-    @keyframes bloodPulse{
-
-    0%{
-        transform:
-            translate(-50%,-50%)
-            scale(.95);
-
-        opacity:.58;
-    }
-
-    45%{
-        opacity:.72;
-    }
-
-    55%{
-        transform:
-            translate(-50%,-50%)
-            scale(1.04);
-
-        opacity:.9;
-    }
-
-    100%{
-        transform:
-            translate(-50%,-50%)
-            scale(.96);
-
-        opacity:.62;
-    }
-}
-    
 </style>
 </head>
 
@@ -446,7 +213,6 @@ body::before{
 <div class="cursor-soul" id="soul"></div>
 
 <div class="glass-wrap">
-
 <div class="glass">
 
 <pre class="record memory" id="recordText">
@@ -714,255 +480,100 @@ GitHubの無料頁を借りて記す。
 
 — 佐伯 忠之 記
 
-    
-    
-<span class="signature" id="sig">— 佐伯 忠之 記</span>
 </pre>
 
+<span class="signature" id="sig">— 佐伯 忠之 記</span>
+
 </div>
-
-<ul class="post-list">
-<li>
-<a href="posts/first-post.md">
-</a>
-</li>
-</ul>
-
 </div>
 
 <script>
-
 /* 光追従 */
+const soul=document.getElementById("soul");
 
-const soul=
-document.getElementById("soul");
-
-let mx=
-window.innerWidth/2;
-
-let my=
-window.innerHeight/2;
-
+let mx=innerWidth/2;
+let my=innerHeight/2;
 let x=mx;
 let y=my;
 
-document.addEventListener(
-"mousemove",
-(e)=>{
-
-mx=e.clientX;
-my=e.clientY;
-
+addEventListener("mousemove",e=>{
+    mx=e.clientX;
+    my=e.clientY;
 });
 
-function soulLoop(){
+function loop(){
+    x+=(mx-x)*0.065;
+    y+=(my-y)*0.065;
 
-x+=(mx-x)*0.065;
-y+=(my-y)*0.065;
+    soul.style.transform=
+        `translate(${x}px,${y}px) translate(-50%,-50%)`;
 
-soul.style.transform=
-`translate(${x}px,${y}px)
- translate(-50%,-50%)`;
-
-requestAnimationFrame(
-soulLoop
-);
+    requestAnimationFrame(loop);
 }
+loop();
 
-soulLoop();
+/* 文字生成 */
+const record=document.getElementById("recordText");
+const sig=document.getElementById("sig");
 
-/* 記憶浮上 */
-
-const memories=
-document.querySelectorAll(
-".memory"
-);
-
-const observer=
-new IntersectionObserver(
-(entries)=>{
-
-entries.forEach(entry=>{
-
-if(
-entry.isIntersecting
-){
-entry.target.classList.add(
-"visible"
-);
-}
-
-});
-
-},
-{
-threshold:.12
-});
-
-memories.forEach(m=>{
-observer.observe(m);
-});
-
-/* 本文浮上 */
-
-const record=
-document.getElementById(
-"recordText"
-);
-
-const sig=
-document.getElementById(
-"sig"
-);
-
-const original=
-record.innerText
-.replace(
-"— 佐伯 忠之 記",
-""
-)
-.trim();
-
+const text=record.innerText.trim();
 record.innerHTML="";
 
 let i=0;
 
-function nextDelay(ch){
-
-if(
-ch==="。"
-|| ch==="、"
-)
-return 260+
-Math.random()*180;
-
-if(ch==="\n")
-return 80;
-
-return 35+
-Math.random()*70;
+function delay(ch){
+    if(ch==="。"||ch==="、") return 260+Math.random()*180;
+    if(ch==="\n") return 80;
+    return 55+Math.random()*110;
 }
 
-function riseText(){
+function type(){
+    if(i<text.length){
 
-if(
-i<original.length
-){
+        const ch=text[i];
 
-const ch=
-original[i];
+        if(ch==="\n"){
+            record.appendChild(document.createElement("br"));
+        }else{
+            const span=document.createElement("span");
+            span.className="char";
+            span.textContent=ch;
+            record.appendChild(span);
+        }
 
-if(
-ch==="\n"
-){
+        i++;
 
-record.appendChild(
-document.createElement(
-"br"
-)
-);
+        setTimeout(type,delay(ch));
 
-}else{
-
-const span=
-document.createElement(
-"span"
-);
-
-span.className=
-"char";
-
-span.textContent=
-ch;
-
-record.appendChild(
-span
-);
+    }else{
+        sig.style.opacity=1;
+    }
 }
 
-i++;
+setTimeout(type,1200);
 
-let delay=
-nextDelay(ch);
+/* 灯 */
+function light(){
+    const chars=document.querySelectorAll(".char");
 
-if(
-original.substring(
-i-3,
-i
-)==="---"
-){
-delay=1400;
+    chars.forEach(ch=>{
+        const r=ch.getBoundingClientRect();
+        const cx=r.left+r.width/2;
+        const cy=r.top+r.height/2;
+
+        const dx=cx-x;
+        const dy=cy-y;
+
+        const dist=Math.sqrt(dx*dx+dy*dy);
+
+        if(dist<180) ch.classList.add("lit");
+        else ch.classList.remove("lit");
+    });
+
+    requestAnimationFrame(light);
 }
-
-setTimeout(
-riseText,
-delay
-);
-
-}else{
-
-sig.style.opacity=1;
-}
-}
-
-setTimeout(
-riseText,
-1200
-);
-
-/* 灯火 */
-
-function lightLoop(){
-
-const chars=
-document.querySelectorAll(
-".char"
-);
-
-chars.forEach(ch=>{
-
-const r=
-ch.getBoundingClientRect();
-
-const cx=
-r.left+r.width/2;
-
-const cy=
-r.top+r.height/2;
-
-const dx=
-cx-x;
-
-const dy=
-cy-y;
-
-const dist=
-Math.sqrt(
-dx*dx+
-dy*dy
-);
-
-if(
-dist<180
-){
-ch.classList.add(
-"lit"
-);
-}else{
-ch.classList.remove(
-"lit"
-);
-}
-
-});
-
-requestAnimationFrame(
-lightLoop
-);
-}
-
-lightLoop();
-
+light();
 </script>
+
 </body>
 </html>
