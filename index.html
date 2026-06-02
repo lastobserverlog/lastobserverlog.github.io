@@ -172,6 +172,14 @@ body::before{
         opacity: .5;
     }
 }
+
+    .char{
+    transition: transform 0.12s ease, color 0.3s ease;
+}
+
+.char.lit{
+    transform: translateY(-1px) scale(1.02);
+}
 /* レイアウト */
 .glass-wrap{
     width:min(760px,92vw);
