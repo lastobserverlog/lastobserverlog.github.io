@@ -15,10 +15,7 @@
 }
 
 body{
-    font-family:
-    "Zen Old Mincho",
-    serif;
-    
+    font-family:"Zen Old Mincho",serif;
     min-height:100vh;
     overflow-x:hidden;
 
@@ -41,20 +38,12 @@ body{
 }
 
 @keyframes breathe{
-    0%{
-        filter:brightness(.82) contrast(1.12);
-    }
-    50%{
-        filter:brightness(.96) contrast(1.38);
-    }
-    100%{
-        filter:brightness(.84) contrast(1.18);
-    }
+    0%{filter:brightness(.82) contrast(1.12);}
+    50%{filter:brightness(.96) contrast(1.38);}
+    100%{filter:brightness(.84) contrast(1.18);}
 }
 
-/* =====================================
-粒子
-===================================== */
+/* 粒子 */
 
 body::after{
     content:"";
@@ -73,9 +62,7 @@ body::after{
     opacity:.45;
 }
 
-/* =====================================
-干渉ノイズ
-===================================== */
+/* 干渉ノイズ */
 
 body::before{
     content:"";
@@ -102,9 +89,7 @@ body::before{
     to{transform:translateY(8px)}
 }
 
-/* =====================================
-反射・屈折
-===================================== */
+/* 屈折 */
 
 .refraction{
     position:fixed;
@@ -140,32 +125,18 @@ body::before{
 }
 
 @keyframes refract{
-
     0%{
-        transform:
-            translate(-1%,0)
-            scale(1)
-            rotate(.2deg);
+        transform:translate(-1%,0) scale(1) rotate(.2deg);
     }
-
     50%{
-        transform:
-            translate(1%,-1%)
-            scale(1.03)
-            rotate(-.2deg);
+        transform:translate(1%,-1%) scale(1.03) rotate(-.2deg);
     }
-
     100%{
-        transform:
-            translate(-1%,1%)
-            scale(1.01)
-            rotate(.15deg);
+        transform:translate(-1%,1%) scale(1.01) rotate(.15deg);
     }
 }
 
-/* =====================================
-魂の光
-===================================== */
+/* 魂 */
 
 .cursor-soul{
     position:fixed;
@@ -182,7 +153,6 @@ body::before{
     background:
         radial-gradient(
             circle,
-
             rgba(120,10,10,.14) 0%,
             rgba(70,0,0,.08) 22%,
             rgba(25,0,0,.04) 48%,
@@ -197,61 +167,112 @@ body::before{
         contrast(1.1);
 
     opacity:.72;
+    transform:translate(-50%,-50%);
 
-    transform:
-        translate(-50%,-50%);
+    animation:bloodPulse 7s ease-in-out infinite;
 }
 
-    transform:
-        translate(-50%,-50%);
-}
-
-/* =====================================
-空間揺れ
-===================================== */
+/* ガラス */
 
 .glass-wrap{
     width:min(760px,92vw);
     position:relative;
     z-index:40;
 
+    overflow:hidden;
+    border-radius:28px;
+
+    background:rgba(18,14,14,.14);
+
+    border:
+        1px solid rgba(255,255,255,.06);
+
+    box-shadow:
+        0 12px 40px rgba(0,0,0,.55),
+        inset 0 0 1px rgba(255,255,255,.12);
+
+    backdrop-filter:
+        blur(18px)
+        brightness(.92);
+
+    -webkit-backdrop-filter:
+        blur(18px)
+        brightness(.92);
+
+    transform-style:preserve-3d;
+    transition:transform .22s ease;
+
     animation:
         waterDrift 10s ease-in-out infinite;
 }
 
+.glass-blur{
+    position:absolute;
+    inset:0;
+    z-index:1;
+    backdrop-filter:blur(30px);
+    opacity:.8;
+}
+
+.glass-shine{
+    position:absolute;
+    inset:0;
+    z-index:2;
+    pointer-events:none;
+
+    background:
+        radial-gradient(
+            circle at var(--mx,50%) var(--my,50%),
+            rgba(255,255,255,.18) 0%,
+            rgba(255,255,255,.06) 14%,
+            rgba(255,255,255,.02) 28%,
+            transparent 46%
+        );
+
+    mix-blend-mode:screen;
+}
+
+.glass-noise{
+    position:absolute;
+    inset:0;
+    z-index:3;
+    pointer-events:none;
+
+    opacity:.03;
+
+    background-image:
+        radial-gradient(
+            rgba(255,255,255,.4) .5px,
+            transparent .5px
+        );
+
+    background-size:7px 7px;
+    mix-blend-mode:overlay;
+}
+
 @keyframes waterDrift{
-
     0%{
-        transform:
-            translateY(0)
-            skewX(0);
+        transform:translateY(0) skewX(0);
     }
-
     50%{
-        transform:
-            translateY(-2px)
-            skewX(.18deg);
+        transform:translateY(-2px) skewX(.18deg);
     }
-
     100%{
-        transform:
-            translateY(0)
-            skewX(0);
+        transform:translateY(0) skewX(0);
     }
 }
 
 .glass{
+    position:relative;
+    z-index:4;
     padding:40px 20px;
 }
 
-/* =====================================
-記憶浮上
-===================================== */
+/* 記憶 */
 
 .memory{
     opacity:.12;
-    transform:
-        translateY(40px);
+    transform:translateY(40px);
 
     transition:
         opacity 1.8s ease,
@@ -260,13 +281,10 @@ body::before{
 
 .memory.visible{
     opacity:1;
-    transform:
-        translateY(0);
+    transform:translateY(0);
 }
 
-/* =====================================
-本文
-===================================== */
+/* 本文 */
 
 .record{
     white-space:pre-wrap;
@@ -277,17 +295,14 @@ body::before{
     letter-spacing:.08em;
     font-weight:600;
 
-    color:
-        rgba(210,205,198,.58);
+    color:rgba(210,205,198,.58);
 
     text-shadow:
         0 0 7px rgba(255,255,255,.14),
         0 0 18px rgba(160,0,0,.38);
 }
 
-/* =====================================
-文字浮上
-===================================== */
+/* 文字 */
 
 .char{
     opacity:0;
@@ -304,7 +319,6 @@ body::before{
 }
 
 @keyframes rise{
-
     0%{
         opacity:0;
         filter:blur(10px);
@@ -328,66 +342,45 @@ body::before{
     }
 }
 
-/* 灯火 */
-
 .char.lit{
+    color:rgba(225,212,205,.78);
 
-    color:
-        rgba(225,212,205,.78);
-
-    filter:
-        blur(.15px);
+    filter:blur(.15px);
 
     text-shadow:
         0 0 6px rgba(120,20,20,.18),
         0 0 18px rgba(90,0,0,.32);
 }
 
-/* 署名 */
-
 .signature{
     display:block;
     text-align:right;
     margin-top:60px;
-
-    color:
-        rgba(120,20,15,.65);
-
+    color:rgba(120,20,15,.65);
     opacity:0;
     transition:2s;
 }
 
-/* リンク */
-
 .post-list{
     margin-top:60px;
     padding-top:30px;
-    border-top:
-        1px solid rgba(139,0,0,.14);
-
+    border-top:1px solid rgba(139,0,0,.14);
     list-style:none;
     text-align:center;
 }
 
 .post-list a{
-
-    color:
-        rgba(139,0,0,.5);
-
+    color:rgba(139,0,0,.5);
     text-decoration:none;
     transition:.5s;
 }
 
 .post-list a:hover{
-
-    color:
-        rgba(255,255,255,.8);
+    color:rgba(255,255,255,.8);
 
     text-shadow:
         0 0 12px rgba(255,255,255,.35);
 }
-
-/* SP */
 
 @media(max-width:768px){
 
@@ -406,37 +399,21 @@ body::before{
     }
 }
 
-    @keyframes bloodPulse{
-
+@keyframes bloodPulse{
     0%{
-        transform:
-            translate(-50%,-50%)
-            scale(.95);
-
+        transform:translate(-50%,-50%) scale(.95);
         opacity:.58;
     }
-
-    45%{
-        opacity:.72;
-    }
-
+    45%{opacity:.72;}
     55%{
-        transform:
-            translate(-50%,-50%)
-            scale(1.04);
-
+        transform:translate(-50%,-50%) scale(1.04);
         opacity:.9;
     }
-
     100%{
-        transform:
-            translate(-50%,-50%)
-            scale(.96);
-
+        transform:translate(-50%,-50%) scale(.96);
         opacity:.62;
     }
 }
-    
 </style>
 </head>
 
@@ -445,442 +422,76 @@ body::before{
 <div class="refraction"></div>
 <div class="cursor-soul" id="soul"></div>
 
-<div class="glass-wrap">
-
-<div class="glass">
-
-<pre class="record memory" id="recordText">
-天正十年六月二日
-京、堀川のほとり。
-夜明け前。
-
-夜明け前と言っていいのかも分からない。
-
-暗さは少しずつ薄れているのに、
-まだ光は届かない。
-
-時間だけが、どこか壊れながら進んでいるようだ。
-
-俺は農家の生まれだった。
-
-土を触って育った身が、
-こんな場所にいるなんて、昔は思いもしなかった。
-
-遠い昔のことみたいでもあり、
-つい昨日のことみたいでもある。
-
-気づけば、利三様の手勢に加わっていた。
-
-どの組だったかも、もう曖昧だ。
-名前を呼ばれることも多くはなかった。
-
-流れに乗って、ここまで来ただけの男だ。
-
-今夜の京は、不思議なくらい静かだ。
-
-音がみんな遠い。
-
-人の気配も薄い。
-
-町そのものが息を止めて、
-何かを待っているように思える。
-
-本能寺の方だけが、
-ぽっかりと空いているように感じる。
-
-まだ火は見えない。
-けれど空気だけが、先に変わっている。
-
-しばらく動きはなかった。
-
-長い時間だった気もするし、
-ほんの一瞬だった気もする。
-
-足元の土だけが冷たくて、
-それだけが確かなものだった。
-
-風もない。
-
-自分の息だけが聞こえていた。
-
-その時、不意にお前たちの顔が浮かんだ。
-
-お勝。
-千夜。
-
-声は覚えている。
-
-けれど顔の輪郭が、少しずつ曖昧になっていく。
-
-それが怖かった。
-
-手を引いて歩いた日を思い出す。
-
-笑っていた声も思い出す。
-
-そんなものが、
-今はずいぶん遠い場所にある。
-
-そのあと、列を離れた。
-
-自分の意思だったのか、
-身体が崩れたせいだったのか、
-もう分からない。
-
-ただ、戻る道だけが見えなかった。
-
-堀川まで来た。
-
-水の音が聞こえるような、
-聞こえないような。
-
-傷は深い。
-
-身体は少しずつ軽くなっていく。
-
-もう帰れないのだと思う。
-
-紙もない。
-筆もない。
-
-だから本当なら、
-何も残せないはずだった。
-
-けれど不思議なものだ。
-
-記す場所は、ここにあった。
-
-Githubの無料ページを借りる。
-
-死にかけた男の最後がこれというのも、
-少し妙な話だな。
-
-お勝。
-
-俺は、お前を幸せにできたんだろうか。
-
-父としても、
-夫としても、
-足りなかったことばかり思い出す。
-
-約束を守れなかった日もあった。
-
-帰れない夜もあった。
-
-言葉だって足りなかった。
-
-すまなかった。
-
-それでも、伝えておきたい。
-
-俺は、お前たちを愛していた。
-
-理由なんて説明できない。
-
-戦の中でも、
-泥の中でも、
-最後に浮かぶのは、お前たちの顔だった。
-
-俺は大した人間じゃない。
-
-功績もない。
-
-流されて生きてきただけだ。
-
-何かを成したという実感もない。
-
-でも一つだけ確かなことがある。
-
-お前たちと過ごした時間に、
-俺は救われていた。
-
-それだけは嘘じゃない。
-
-幸せだったかと聞かれたら、
-うまく答えられない。
-
-苦しいことも多かった。
-
-思い通りにならないことばかりだった。
-
-けれど――
-
-生きていた。
-
-お前たちと同じ時を生きていた。
-
-それで十分だった。
-
-夜明けが近い。
-
-近いのか、
-もう来ているのか、
-それも分からない。
-
-帰る場所は、もうない。
-
-これで終わりにする。
-
-お勝。
-千夜。
-
-どうか生きてくれ。
-
-穏やかな日が、少しでも多くありますように。
-
-お前たちがいてくれたこと。
-
-それが、俺の人生だった。
-    
-— 佐伯 忠之 記
-    
-    
+<div class="glass-wrap" id="glass">
+    <div class="glass-blur"></div>
+    <div class="glass-shine"></div>
+    <div class="glass-noise"></div>
+
+    <div class="glass">
+        <pre class="record memory" id="recordText">
+（本文はそのまま貼り付けてください）
 <span class="signature" id="sig">— 佐伯 忠之 記</span>
 </pre>
+    </div>
 
-</div>
-
-<ul class="post-list">
-<li>
-<a href="posts/first-post.md">
-</a>
-</li>
-</ul>
-
+    <ul class="post-list">
+        <li><a href="posts/first-post.md"></a></li>
+    </ul>
 </div>
 
 <script>
 
 /* 光追従 */
 
-const soul=
-document.getElementById("soul");
-
-let mx=
-window.innerWidth/2;
-
-let my=
-window.innerHeight/2;
-
+const soul=document.getElementById("soul");
+let mx=window.innerWidth/2;
+let my=window.innerHeight/2;
 let x=mx;
 let y=my;
 
-document.addEventListener(
-"mousemove",
-(e)=>{
-
-mx=e.clientX;
-my=e.clientY;
-
+document.addEventListener("mousemove",(e)=>{
+    mx=e.clientX;
+    my=e.clientY;
 });
 
 function soulLoop(){
+    x+=(mx-x)*0.065;
+    y+=(my-y)*0.065;
 
-x+=(mx-x)*0.065;
-y+=(my-y)*0.065;
+    soul.style.transform=
+    `translate(${x}px,${y}px) translate(-50%,-50%)`;
 
-soul.style.transform=
-`translate(${x}px,${y}px)
- translate(-50%,-50%)`;
-
-requestAnimationFrame(
-soulLoop
-);
+    requestAnimationFrame(soulLoop);
 }
-
 soulLoop();
 
-/* 記憶浮上 */
+/* glass追従 */
 
-const memories=
-document.querySelectorAll(
-".memory"
-);
+const glass=document.getElementById("glass");
 
-const observer=
-new IntersectionObserver(
-(entries)=>{
+glass.addEventListener("mousemove",e=>{
 
-entries.forEach(entry=>{
+    const rect=glass.getBoundingClientRect();
 
-if(
-entry.isIntersecting
-){
-entry.target.classList.add(
-"visible"
-);
-}
+    const gx=e.clientX-rect.left;
+    const gy=e.clientY-rect.top;
 
+    const mxp=gx/rect.width*100;
+    const myp=gy/rect.height*100;
+
+    glass.style.setProperty("--mx",mxp+"%");
+    glass.style.setProperty("--my",myp+"%");
+
+    const ry=(mxp-50)/12;
+    const rx=-(myp-50)/12;
+
+    glass.style.transform=
+    `rotateY(${ry}deg) rotateX(${rx}deg)`;
 });
 
-},
-{
-threshold:.12
+glass.addEventListener("mouseleave",()=>{
+    glass.style.transform="rotateX(0) rotateY(0)";
 });
-
-memories.forEach(m=>{
-observer.observe(m);
-});
-
-/* 本文浮上 */
-
-const record=
-document.getElementById(
-"recordText"
-);
-
-const sig=
-document.getElementById(
-"sig"
-);
-
-const original=
-record.innerText
-.replace(
-"— 佐伯 忠之 記",
-""
-)
-.trim();
-
-record.innerHTML="";
-
-let i=0;
-
-function nextDelay(ch){
-
-if(
-ch==="。"
-|| ch==="、"
-)
-return 260+
-Math.random()*180;
-
-if(ch==="\n")
-return 80;
-
-return 35+
-Math.random()*70;
-}
-
-function riseText(){
-
-if(
-i<original.length
-){
-
-const ch=
-original[i];
-
-if(
-ch==="\n"
-){
-
-record.appendChild(
-document.createElement(
-"br"
-)
-);
-
-}else{
-
-const span=
-document.createElement(
-"span"
-);
-
-span.className=
-"char";
-
-span.textContent=
-ch;
-
-record.appendChild(
-span
-);
-}
-
-i++;
-
-let delay=
-nextDelay(ch);
-
-if(
-original.substring(
-i-3,
-i
-)==="---"
-){
-delay=1400;
-}
-
-setTimeout(
-riseText,
-delay
-);
-
-}else{
-
-sig.style.opacity=1;
-}
-}
-
-setTimeout(
-riseText,
-1200
-);
-
-/* 灯火 */
-
-function lightLoop(){
-
-const chars=
-document.querySelectorAll(
-".char"
-);
-
-chars.forEach(ch=>{
-
-const r=
-ch.getBoundingClientRect();
-
-const cx=
-r.left+r.width/2;
-
-const cy=
-r.top+r.height/2;
-
-const dx=
-cx-x;
-
-const dy=
-cy-y;
-
-const dist=
-Math.sqrt(
-dx*dx+
-dy*dy
-);
-
-if(
-dist<180
-){
-ch.classList.add(
-"lit"
-);
-}else{
-ch.classList.remove(
-"lit"
-);
-}
-
-});
-
-requestAnimationFrame(
-lightLoop
-);
-}
-
-lightLoop();
 
 </script>
 </body>
