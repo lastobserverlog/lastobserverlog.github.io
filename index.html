@@ -101,40 +101,6 @@ body::before{
 }
 
 /* 魂の光 */
-.cursor-soul{
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    pointer-events: none;
-
-    transform: translate(-50%, -50%) scale(1);
-
-    /* ここが核心：視線反転 */
-    mix-blend-mode: difference;
-
-    /* “生っぽさ” */
-    background: radial-gradient(circle,
-        rgba(255,255,255,.10) 0%,
-        rgba(255,255,255,.04) 22%,
-        rgba(120,0,0,.05) 45%,
-        transparent 70%
-    );
-
-    filter: blur(42px) contrast(1.25) brightness(0.9);
-
-    opacity: .75;
-
-    z-index: 30;
-
-    /* 呼吸の受け皿（JSでscaleだけ触る想定） */
-    will-change: transform, opacity;
-
-    /* ゆっくり“場に馴染む” */
-    transition: filter .3s ease;
-}
 
 /* 外側の“視線のズレ層” */
 .cursor-soul::after{
