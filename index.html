@@ -14,26 +14,22 @@
     box-sizing:border-box;
 }
 
-body{
-    font-family:"Zen Old Mincho", serif;
+/* --- 修正箇所: body --- */
+body {
+    font-family: "Zen Old Mincho", serif;
+    min-height: 100vh;
+    /* スクロールバーによるズレ防止 */
+    overflow-x: hidden;
+    background: radial-gradient(circle at center, rgba(18,14,14,.78) 0%, #000 84%);
+    background-color: #040303;
 
-    min-height:100vh;
-    overflow-x:hidden;
-
-    background:
-        radial-gradient(circle at center,
-        rgba(18,14,14,.78) 0%,
-        #000 84%);
-
-    background-color:#040303;
-
-    display:flex;
-    justify-content:center;
-    align-items:flex-start;
-
-    padding:80px 24px;
-
-    animation:breathe 12s ease-in-out infinite;
+    /* 変更: 中央寄せをより確実に */
+    display: flex;
+    justify-content: center; 
+    align-items: center;      /* スマホでも縦中央に寄せる */
+    padding: 60px 20px;       /* 左右を少しタイトに */
+    box-sizing: border-box;   /* これが重要 */
+    animation: breathe 12s ease-in-out infinite;
 }
 
 @keyframes breathe{
@@ -103,24 +99,14 @@ body::before{
 /* 魂の光 */
 
 /* 外側の“視線のズレ層” */
-.cursor-soul::after{
-    content:"";
-    position:absolute;
-    inset:-40%;
-    border-radius:50%;
-
-    background: radial-gradient(circle,
-        rgba(255,255,255,.04),
-        rgba(80,0,0,.03),
-        transparent 75%
-    );
-
-    filter: blur(28px);
-
-    opacity: .6;
-    mix-blend-mode: difference;
-
-    animation: ghostBreath 6.5s ease-in-out infinite;
+.cursor-soul {
+    position: fixed;          /* absoluteからfixedに変更 */
+    top: 0;
+    left: 0;
+    width: 300px;
+    height: 300px;
+    pointer-events: none;
+    z-index: 10;
 }
 
 /* 呼吸の“残響” */
@@ -147,11 +133,14 @@ body::before{
     transform: translateY(-1px) scale(1.02);
 }
 /* レイアウト */
-.glass-wrap{
-    width:min(760px,92vw);
-    position:relative;
-    z-index:40;
-    animation:waterDrift 10s ease-in-out infinite;
+/* --- 修正箇所: glass-wrap --- */
+.glass-wrap {
+    width: 100%;              /* 幅は親要素に追従 */
+    max-width: 760px;         /* 最大幅だけ指定 */
+    margin: 0 auto;           /* 念のための水平中央寄せ */
+    position: relative;
+    z-index: 40;
+    animation: waterDrift 10s ease-in-out infinite;
 }
 
 @keyframes waterDrift{
