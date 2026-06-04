@@ -623,13 +623,26 @@ setTimeout(() => {
 }, 1200);
 
 
-// ★イライラ演出：スクロールすると文字が「1文字だけ」進む
-// ただし、直前に文字が出てから「最低50ms」経っていないと受け付けない（連打無効化）
+// ★イライラ演出：スクロールすると最大10文字まで一気に進む
+// ただし、10文字進むか、テキストが途切れた時点で0.05秒（50ms）のロックがかかる
+let scrollBuffer = 0; // 進んだ文字数をカウントする用
+
 window.addEventListener("scroll", () => {
     const now = Date.now();
-    if (now - lastTypeTime > 50) { 
+    
+    // クールダウン中（50ms以内）なら、スクロールされても完全に無視
+    if (now - lastTypeTime <= 50) {
+        return;
+    }
+
+    // クールダウンが明けたら、1回のスクロール判定で最大10文字まで一気に出す
+    let charsSpawned = 0;
+    while (charsSpawned < 10) {
         if (spawnChar()) {
-            lastTypeTime = now;
+            charsSpawned++;
+            lastTypeTime = now; // タイムスタンプを更新してロックの起点にする
+        } else {
+            break; // テキストが最後までいったら抜ける
         }
     }
 });
