@@ -14,42 +14,32 @@
     box-sizing:border-box;
 }
 
-/* --- 修正箇所: body --- */
+/* --- 統合・クリーンアップした body --- */
 body {
-    /* 漆黒の中に、ドス黒い赤（血の気配）と冷たい青緑（水辺の気配）を混ぜる */
+    font-family: "Zen Old Mincho", serif;
+    min-height: 100vh;
+    overflow-x: hidden; /* スクロールバーによるズレ防止 */
+    
+    /* 漆黒の中に、ドス黒い赤（血の気配）と冷たい青緑（水辺の気配）を混ぜた新しいグラデーション */
     background: radial-gradient(circle at 50% 40%, rgba(20, 10, 10, 0.9) 0%, #020204 85%);
     background-color: #020204;
+
+    /* レイアウト：中央寄せ */
+    display: flex;
+    justify-content: center; 
+    align-items: center;      /* スマホでも縦中央に寄せる */
+    padding: 60px 20px;       
     
-    /* 呼吸のスピードを少し遅く、不規則に（今にも止まりそうな呼吸） */
+    /* 今にも止まりそうな呼吸（16秒周期） */
     animation: breathe 16s ease-in-out infinite;
 }
 
+/* 止まりそうな呼吸のアニメーション */
 @keyframes breathe {
     0%   { filter: brightness(0.7) contrast(1.1); }
     45%  { filter: brightness(0.9) contrast(1.25); } /* ふっと意識がはっきりする */
     50%  { filter: brightness(0.6) contrast(1.0); }  /* 急に暗くなる */
     100% { filter: brightness(0.7) contrast(1.1); }
-
-    font-family: "Zen Old Mincho", serif;
-    min-height: 100vh;
-    /* スクロールバーによるズレ防止 */
-    overflow-x: hidden;
-    background: radial-gradient(circle at center, rgba(18,14,14,.78) 0%, #000 84%);
-    background-color: #040303;
-
-    /* 変更: 中央寄せをより確実に */
-    display: flex;
-    justify-content: center; 
-    align-items: center;      /* スマホでも縦中央に寄せる */
-    padding: 60px 20px;       /* 左右を少しタイトに */
-    box-sizing: border-box;   /* これが重要 */
-    animation: breathe 12s ease-in-out infinite;
-}
-
-@keyframes breathe{
-    0%{filter:brightness(.82) contrast(1.1);}
-    50%{filter:brightness(.95) contrast(1.32);}
-    100%{filter:brightness(.84) contrast(1.14);}
 }
 
 /* 粒子 */
@@ -111,10 +101,8 @@ body::before{
 }
 
 /* 魂の光 */
-
-/* 外側の“視線のズレ層” */
 .cursor-soul {
-    position: fixed;          /* absoluteからfixedに変更 */
+    position: fixed;          
     top: 0;
     left: 0;
     width: 300px;
@@ -123,35 +111,11 @@ body::before{
     z-index: 10;
 }
 
-/* 呼吸の“残響” */
-@keyframes ghostBreath{
-    0%{
-        transform: scale(0.96);
-        opacity: .45;
-    }
-    50%{
-        transform: scale(1.08);
-        opacity: .75;
-    }
-    100%{
-        transform: scale(0.98);
-        opacity: .5;
-    }
-}
-
-    .char{
-    transition: transform 0.12s ease, color 0.3s ease;
-}
-
-.char.lit{
-    transform: translateY(-1px) scale(1.02);
-}
 /* レイアウト */
-/* --- 修正箇所: glass-wrap --- */
 .glass-wrap {
-    width: 100%;              /* 幅は親要素に追従 */
-    max-width: 760px;         /* 最大幅だけ指定 */
-    margin: 0 auto;           /* 念のための水平中央寄せ */
+    width: 100%;              
+    max-width: 760px;         
+    margin: 0 auto;           
     position: relative;
     z-index: 40;
     animation: waterDrift 10s ease-in-out infinite;
@@ -167,29 +131,36 @@ body::before{
     padding:40px 20px;
 }
 
-/* 本文表示 */
-/* 本文全体を、下に行くほど「未練の赤」が混ざるようにグラデーション（背景ではなく文字色に適用） */
+/* 本文表示：グラデーションとテキストシャドウの共存調整 */
 .record {
+    white-space:pre-wrap;
+    word-break:break-word;
+
+    font-size:18px;
+    line-height:2.7;
+    letter-spacing:.08em;
+    font-weight:600;
+
+    /* 下に進むほど「未練の赤」が混ざるグラデーション */
     background: linear-gradient(
         to bottom,
-        rgba(212, 206, 198, 0.6) 0%,
-        rgba(212, 206, 198, 0.6) 70%,
-        rgba(180, 40, 40, 0.8) 100%
+        rgba(212, 206, 198, 0.56) 0%,
+        rgba(212, 206, 198, 0.56) 75%,
+        rgba(180, 30, 30, 0.85) 100%
     );
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     
-    /* ※ text-shadowがあると background-clip が効かない場合があるため、
-       シャドウ側を少し赤っぽく調整して滲ませるのがおすすめ */
-    text-shadow: 0 0 12px rgba(120, 0, 0, 0.25);
+    /* 文字自体のシャドウ（背後ににじむ血のイメージ） */
+    filter: drop-shadow(0 0 8px rgba(120, 0, 0, 0.35));
 }
-/* 霧文字 */
+
+/* 霧文字：デジタルバグ風の出現エフェクト */
 .char{
     opacity:0;
     display:inline-block;
-    transform:translateX(-14px) translateY(6px) scale(.96);
-    filter:blur(16px);
-    animation:fogRise 1.8s cubic-bezier(.16,.8,.2,1) forwards;
+    transition: transform 0.12s ease, color 0.3s ease;
+    animation: fogRise 1.8s cubic-bezier(.16,.8,.2,1) forwards;
 }
 
 @keyframes fogRise {
@@ -210,11 +181,11 @@ body::before{
     }
 }
 
-/* 灯 */
+/* 灯：マウスや指が近づいたときの変化 */
 .char.lit{
-    color:rgba(230,218,210,.82);
-    text-shadow:0 0 6px rgba(120,20,20,.15),
-                0 0 18px rgba(80,0,0,.3);
+    /* 文字色のグラデーションを一時的に上書きして白く光らせる */
+    -webkit-text-fill-color: rgba(240, 230, 220, 0.95);
+    filter: drop-shadow(0 0 6px rgba(180, 30, 30, 0.5));
 }
 
 /* 署名 */
