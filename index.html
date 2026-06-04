@@ -177,11 +177,22 @@ body::before{
     animation:fogRise 1.8s cubic-bezier(.16,.8,.2,1) forwards;
 }
 
-@keyframes fogRise{
-    0%{opacity:0; transform:translateX(-14px) translateY(10px) scale(.94); filter:blur(18px);}
-    35%{opacity:.28; transform:translateX(-8px) translateY(5px) scale(.97); filter:blur(10px);}
-    70%{opacity:.78; transform:translateX(-2px) translateY(1px) scale(1); filter:blur(3px);}
-    100%{opacity:1; transform:translateX(0) translateY(0) scale(1); filter:blur(0);}
+@keyframes fogRise {
+    0% {
+        opacity: 0;
+        transform: scaleX(2) scaleY(0.5) translateX(-20px);
+        filter: blur(12px) brightness(2); /* 記憶のフラッシュバックのような眩しさ */
+    }
+    50% {
+        opacity: 0.5;
+        transform: scaleX(0.8) scaleY(1.2) translateX(5px);
+        filter: blur(4px);
+    }
+    100% {
+        opacity: 1;
+        transform: scaleX(1) scaleY(1) translateX(0);
+        filter: blur(0);
+    }
 }
 
 /* 灯 */
