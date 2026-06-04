@@ -16,6 +16,20 @@
 
 /* --- 修正箇所: body --- */
 body {
+    /* 漆黒の中に、ドス黒い赤（血の気配）と冷たい青緑（水辺の気配）を混ぜる */
+    background: radial-gradient(circle at 50% 40%, rgba(20, 10, 10, 0.9) 0%, #020204 85%);
+    background-color: #020204;
+    
+    /* 呼吸のスピードを少し遅く、不規則に（今にも止まりそうな呼吸） */
+    animation: breathe 16s ease-in-out infinite;
+}
+
+@keyframes breathe {
+    0%   { filter: brightness(0.7) contrast(1.1); }
+    45%  { filter: brightness(0.9) contrast(1.25); } /* ふっと意識がはっきりする */
+    50%  { filter: brightness(0.6) contrast(1.0); }  /* 急に暗くなる */
+    100% { filter: brightness(0.7) contrast(1.1); }
+
     font-family: "Zen Old Mincho", serif;
     min-height: 100vh;
     /* スクロールバーによるズレ防止 */
