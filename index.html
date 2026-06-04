@@ -154,20 +154,21 @@ body::before{
 }
 
 /* 本文表示 */
-.record{
-    white-space:pre-wrap;
-    word-break:break-word;
-
-    font-size:18px;
-    line-height:2.7;
-    letter-spacing:.08em;
-    font-weight:600;
-
-    color:rgba(212,206,198,.56);
-    text-shadow:0 0 8px rgba(255,255,255,.12),
-                0 0 18px rgba(120,0,0,.32);
+/* 本文全体を、下に行くほど「未練の赤」が混ざるようにグラデーション（背景ではなく文字色に適用） */
+.record {
+    background: linear-gradient(
+        to bottom,
+        rgba(212, 206, 198, 0.6) 0%,
+        rgba(212, 206, 198, 0.6) 70%,
+        rgba(180, 40, 40, 0.8) 100%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    
+    /* ※ text-shadowがあると background-clip が効かない場合があるため、
+       シャドウ側を少し赤っぽく調整して滲ませるのがおすすめ */
+    text-shadow: 0 0 12px rgba(120, 0, 0, 0.25);
 }
-
 /* 霧文字 */
 .char{
     opacity:0;
