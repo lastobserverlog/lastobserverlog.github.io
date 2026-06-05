@@ -131,7 +131,7 @@ body::before{
     padding:40px 20px;
 }
 
-/* 本文表示：グラデーションとテキストシャドウの共存調整 */
+/* 本文表示：初期状態のテキスト設定（グラデーションを廃止し、通常表示へ） */
 .record {
     white-space:pre-wrap;
     word-break:break-word;
@@ -140,26 +140,14 @@ body::before{
     line-height:2.7;
     letter-spacing:.08em;
     font-weight:600;
-
-    /* 下に進むほど「未練の赤」が混ざるグラデーション */
-    background: linear-gradient(
-        to bottom,
-        rgba(212, 206, 198, 0.56) 0%,
-        rgba(212, 206, 198, 0.56) 75%,
-        rgba(180, 30, 30, 0.85) 100%
-    );
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    
-    /* 文字自体のシャドウ（背後ににじむ血のイメージ） */
-    filter: drop-shadow(0 0 8px rgba(120, 0, 0, 0.35));
 }
 
-/* 霧文字：デジタルバグ風の出現エフェクト */
+/* 霧文字：#A87C00で普通に出現するよう修正 */
 .char{
     opacity:0;
     display:inline-block;
-    transition: transform 0.12s ease, color 0.3s ease;
+    color: #A87C00; /* 通常時の指定色 */
+    transition: transform 0.12s ease, color 0.3s ease, filter 0.3s ease;
     animation: fogRise 1.8s cubic-bezier(.16,.8,.2,1) forwards;
 }
 
@@ -181,11 +169,10 @@ body::before{
     }
 }
 
-/* 灯：マウスや指が近づいたときの変化 */
+/* マウスや指が近づいたとき：赤黒く変化し、じわっと血のように滲む */
 .char.lit{
-    /* 文字色のグラデーションを一時的に上書きして白く光らせる */
-    -webkit-text-fill-color: rgba(240, 230, 220, 0.95);
-    filter: drop-shadow(0 0 6px rgba(180, 30, 30, 0.5));
+    color: #4a0404; /* ドス黒い赤 */
+    filter: drop-shadow(0 0 6px rgba(139, 0, 0, 0.8));
 }
 
 /* 署名 */
@@ -320,7 +307,7 @@ body::before{
 
 声も覚えている。
 
-けれど顔の輪郭が、
+けれど顔の輪狂が、
 少し曖昧になっていた。
 
 それが怖かった。
@@ -620,10 +607,7 @@ setTimeout(() => {
 }, 1200);
 
 
-// ★イライラ演出：スクロールすると最大10文字まで一気に進む
-// ただし、10文字進むか、テキストが途切れた時点で0.05秒（50ms）のロックがかかる
-let scrollBuffer = 0; // 進んだ文字数をカウントする用
-
+// スクロールすると最大10文字まで一気に進む
 window.addEventListener("scroll", () => {
     const now = Date.now();
     
@@ -646,7 +630,7 @@ window.addEventListener("scroll", () => {
 /* --- 修正ここまで --- */
 
 
-/* 灯 */
+/* 灯：変化の仕方を調整 */
 function light(){
     const chars=document.querySelectorAll(".char");
 
@@ -659,17 +643,18 @@ function light(){
         const dy=cy-y;
         const dist=Math.sqrt(dx*dx+dy*dy);
 
+        // 影響範囲の設定
         const force = Math.max(0, 1 - dist/220);
-        const jitter = Math.sin((Date.now()/120) + index) * 0.6;
 
         if(force > 0.35){
             ch.classList.add("lit");
-            ch.style.transform = `translateY(${-force*3}px) scale(${1 + force*0.05})`;
-            ch.style.opacity = 0.6 + force * 0.4;
+            // 光が重なった時、不透明度は1に近くし、少し浮き上がるようなブレを出す
+            ch.style.transform = `translateY(${-force*3}px) scale(${1 + force*0.03})`;
+            ch.style.opacity = 1;
         }else{
             ch.classList.remove("lit");
             ch.style.transform = "";
-            ch.style.opacity = "";
+            ch.style.opacity = 1; // マウスが離れてもテキストは100%見える状態を維持
         }
     });
 
