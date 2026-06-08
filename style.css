@@ -210,19 +210,34 @@ body::before{
     font-family:
         "KurenaiMichi",
         "Noto Serif JP",
-        serif;
+        "serif";
 
     white-space:pre-wrap;
-    word-break:break-word;
+    word-break:break-all; /* 前のやつ。お好みで */
 
     color:#a87c00;
 
     font-size:18px;
-    line-height:2.8;
+    
+    /* 改行時の行間を少し詰める（2.8 は広すぎたから 1.8 くらいに） */
+    line-height:1.8; 
+    
     letter-spacing:.12em;
     font-weight:normal;
 }
 
+/* ↓ここを追加：<p> タグ自体の上下の余白をコントロールする */
+.record p {
+    margin: 0 0 1.2em 0; /* 段落の「下」だけに少し隙間をあける（1.2emはお好みで調整して） */
+    padding: 0;
+}
+
+/* ↓ここを追加：<hr />（区切り線）の上下の余白もついでに調整 */
+.record hr {
+    border: none;
+    border-bottom: 1px dashed rgba(168, 124, 0, 0.3); /* 雰囲気に合わせて薄い破線に */
+    margin: 2em 0;
+}
 /* =========================
    タイピング文字
 ========================= */
@@ -339,6 +354,6 @@ body::before{
 
     .record{
         font-size:15px;
-        line-height:2.45;
+        line-height:1.6; /* スマホの行間も 2.45 から 1.6 くらいに詰める */
     }
 }
