@@ -34,7 +34,12 @@ body{
             rgba(20,10,10,.9) 0%,
             #020204 85%
         );
-
+body{
+    font-family:
+        "KurenaiMichi",
+        "Noto Serif JP",
+        serif;
+    
     background-color:#020204;
 
     display:flex;
