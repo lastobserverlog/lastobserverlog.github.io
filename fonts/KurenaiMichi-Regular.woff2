@@ -1,0 +1,10 @@
+@font-face {
+    font-family: "KurenaiMichi";
+    src: url("/assets/fonts/KurenaiMichi-Regular.woff2")
+         format("woff2");
+    font-display: swap;
+}
+
+body{
+    font-family:"KurenaiMichi", serif;
+}
