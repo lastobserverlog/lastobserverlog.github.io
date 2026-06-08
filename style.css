@@ -314,10 +314,21 @@ body::before{
 }
 
 .record {
-    white-space: pre-wrap;       
-    word-break: break-all;       
+    /* ...他の設定はそのまま... */
+
+    font-size: 18px;
+    
+    /* 文字の高さ＝行間（1文字分）にするために 1.0 〜 1.2 に設定 */
+    line-height: 1.2; 
+    
+    letter-spacing: .12em;
 }
 
+/* pタグ同士の隙間を完全にゼロにする */
+.record p {
+    margin: 0;
+    padding: 0;
+}
 /* ↓これを追加して、1文字ずつのブロック要素に「端にきたら折れろ」と強制する */
 .record .char {
     display: inline; /* もしアニメーションがバグるなら inline-block のまま下記を足す */
