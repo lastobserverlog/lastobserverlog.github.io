@@ -1,1 +1,310 @@
+@import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700&display=swap');
 
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    font-family:"Shippori Mincho",serif;
+
+    min-height:100vh;
+    overflow-x:hidden;
+
+    background:
+        radial-gradient(
+            circle at 50% 40%,
+            rgba(20,10,10,.9) 0%,
+            #020204 85%
+        );
+
+    background-color:#020204;
+
+    display:flex;
+    justify-content:center;
+
+    padding:60px 20px;
+
+    animation:breathe 16s ease-in-out infinite;
+}
+
+/* =========================
+   呼吸
+========================= */
+
+@keyframes breathe{
+
+    0%{
+        filter:brightness(.7) contrast(1.1);
+    }
+
+    45%{
+        filter:brightness(.9) contrast(1.25);
+    }
+
+    50%{
+        filter:brightness(.6) contrast(1);
+    }
+
+    100%{
+        filter:brightness(.7) contrast(1.1);
+    }
+}
+
+/* =========================
+   粒子
+========================= */
+
+body::after{
+    content:"";
+    position:fixed;
+    inset:0;
+
+    pointer-events:none;
+    z-index:70;
+
+    background-image:
+        radial-gradient(
+            rgba(255,255,255,.012) 1px,
+            transparent 1px
+        );
+
+    background-size:15px 15px;
+
+    opacity:.42;
+}
+
+/* =========================
+   ノイズ
+========================= */
+
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+
+    pointer-events:none;
+    z-index:60;
+
+    background:
+        repeating-linear-gradient(
+            0deg,
+            rgba(255,255,255,.015),
+            rgba(255,255,255,.015) 1px,
+            transparent 3px,
+            transparent 5px
+        );
+
+    mix-blend-mode:overlay;
+
+    animation:scan .08s linear infinite;
+}
+
+@keyframes scan{
+
+    from{
+        transform:translateY(0);
+    }
+
+    to{
+        transform:translateY(8px);
+    }
+}
+
+/* =========================
+   屈折
+========================= */
+
+.refraction{
+    position:fixed;
+    inset:-20%;
+
+    pointer-events:none;
+    z-index:20;
+
+    background:
+        radial-gradient(
+            ellipse at 20% 30%,
+            rgba(255,255,255,.02),
+            transparent 40%
+        ),
+        radial-gradient(
+            ellipse at 72% 58%,
+            rgba(110,0,0,.05),
+            transparent 48%
+        ),
+        radial-gradient(
+            ellipse at 50% 82%,
+            rgba(255,255,255,.014),
+            transparent 36%
+        );
+
+    mix-blend-mode:screen;
+
+    filter:blur(42px) contrast(1.18);
+
+    animation:refract 18s ease-in-out infinite alternate;
+}
+
+@keyframes refract{
+
+    0%{
+        transform:
+            translate(-1%,0)
+            scale(1)
+            rotate(.2deg);
+    }
+
+    50%{
+        transform:
+            translate(1%,-1%)
+            scale(1.03)
+            rotate(-.2deg);
+    }
+
+    100%{
+        transform:
+            translate(-1%,1%)
+            scale(1.01)
+            rotate(.15deg);
+    }
+}
+
+/* =========================
+   本文
+========================= */
+
+.glass-wrap{
+    width:100%;
+    max-width:760px;
+
+    position:relative;
+    z-index:40;
+}
+
+.record{
+    white-space:pre-wrap;
+    word-break:break-word;
+
+    color:#a87c00;
+
+    font-size:18px;
+    line-height:2.8;
+    letter-spacing:.12em;
+    font-weight:500;
+}
+
+/* =========================
+   タイピング文字
+========================= */
+
+.char{
+    opacity:0;
+
+    display:inline-block;
+
+    color:#a87c00;
+
+    transition:
+        transform .12s ease,
+        color .3s ease,
+        filter .3s ease;
+
+    animation:
+        fogRise 1.8s cubic-bezier(.16,.8,.2,1)
+        forwards;
+}
+
+@keyframes fogRise{
+
+    0%{
+        opacity:0;
+
+        transform:
+            scaleX(2)
+            scaleY(.5)
+            translateX(-20px);
+
+        filter:
+            blur(12px)
+            brightness(2);
+    }
+
+    50%{
+        opacity:.5;
+
+        transform:
+            scaleX(.8)
+            scaleY(1.2)
+            translateX(5px);
+
+        filter:blur(4px);
+    }
+
+    100%{
+        opacity:1;
+
+        transform:none;
+
+        filter:none;
+    }
+}
+
+/* =========================
+   人魂が照らした文字
+========================= */
+
+.char.lit{
+
+    color:#e4d5a0;
+
+    filter:
+        drop-shadow(
+            0 0 4px
+            rgba(220,255,240,.8)
+        )
+        drop-shadow(
+            0 0 12px
+            rgba(180,255,220,.5)
+        );
+}
+
+/* =========================
+   署名
+========================= */
+
+.signature{
+
+    display:block;
+
+    text-align:right;
+
+    margin-top:60px;
+
+    color:rgba(150,180,160,.55);
+
+    opacity:0;
+
+    transition:2s;
+}
+
+/* =========================
+   スマホ
+========================= */
+
+@media(max-width:768px){
+
+    body{
+        padding:40px 16px;
+    }
+
+    .record{
+        font-size:15px;
+        line-height:2.45;
+    }
+}
