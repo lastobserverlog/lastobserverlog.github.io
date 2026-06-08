@@ -299,10 +299,15 @@ body::before{
 }
 
 .record {
-    white-space: pre-wrap;       /* これが本命。改行を維持しつつ自動折り返しする */
-    word-break: break-all;       /* 必要に応じて。長い英数字とかがあっても強制的に折る */
+    white-space: pre-wrap;       
+    word-break: break-all;       
 }
 
+/* ↓これを追加して、1文字ずつのブロック要素に「端にきたら折れろ」と強制する */
+.record .char {
+    display: inline; /* もしアニメーションがバグるなら inline-block のまま下記を足す */
+    white-space: normal; 
+}
 /* =========================
    署名
 ========================= */
