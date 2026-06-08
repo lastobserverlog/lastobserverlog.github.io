@@ -10,7 +10,7 @@
 }
 
 /* ==========================================
-   リセット
+   リセット & スクロールバグ対策
 ========================================== */
 * {
     margin: 0;
@@ -20,11 +20,14 @@
 
 html {
     scroll-behavior: smooth;
+    /* 画面外にはみ出た屈折エフェクトなどの残像をここで完全にカット */
+    height: 100%;
+    overflow-x: hidden;
 }
 
 body {
-    /* 100vhを完全に廃止。コンテンツの純粋な高さだけにする */
-    height: auto; 
+    /* コンテンツの純粋な高さに合わせ、無駄な余白を作らない */
+    min-height: 100%; 
     
     font-family: "KurenaiMichi", "Noto Serif JP", serif;
     overflow-x: hidden;
@@ -39,7 +42,7 @@ body {
     display: flex;
     justify-content: center;
     
-    /* 上下の余白（下側のスクロール止まり位置をここで担保） */
+    /* 上下の余白（手記の終わりの止まり位置をここで担保） */
     padding: 60px 20px; 
 
     animation: breathe 16s ease-in-out infinite;
@@ -89,7 +92,7 @@ body::before {
 }
 
 /* =========================
-   屈折
+   屈折（背景エフェクト）
 ========================= */
 .refraction {
     position: fixed;
@@ -119,7 +122,7 @@ body::before {
     max-width: 760px;
     position: relative;
     z-index: 40;
-    /* アニメーションのハミ出しによる無限スクロールバグをここで完全に密閉する */
+    /* 1文字ずつのアニメーションによる無限スクロールバグをここで密閉 */
     overflow: hidden; 
 }
 
@@ -129,12 +132,12 @@ body::before {
     word-break: break-all;
     color: #a87c00;
     font-size: 18px;
-    line-height: 1.2; /* 1文字分の詰まった行間 */
+    line-height: 1.2; /* 1文字分の詰まった行間を実現 */
     letter-spacing: .12em;
     font-weight: normal;
 }
 
-/* pタグ同士、hrの余白調整 */
+/* pタグ同士、hrの余白調整（無駄な隙間を徹底排除） */
 .record p {
     margin: 0;
     padding: 0;
@@ -157,7 +160,7 @@ body::before {
     animation: fogRise 1.8s cubic-bezier(.16,.8,.2,1) forwards;
 }
 
-/* 親要素の折り返し設定を1文字ずつに強制継承 */
+/* 親要素の自動折り返し設定を1文字ずつの要素に強制継承 */
 .record .char {
     display: inline;
     white-space: normal;
@@ -187,6 +190,13 @@ body::before {
     filter: 
         drop-shadow(0 0 4px rgba(220,255,240,.8))
         drop-shadow(0 0 12px rgba(180,255,220,.5));
+}
+
+/* =========================
+   人魂本体のスクロール判定バグ対策
+========================= */
+#soul {
+    pointer-events: none;
 }
 
 /* =========================
