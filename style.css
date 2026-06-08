@@ -20,17 +20,19 @@
 
 html {
     scroll-behavior: smooth;
-    /* 画面外にはみ出た屈折エフェクトなどの残像をここで完全にカット */
-    height: 100%;
-    overflow-x: hidden;
+    /* 高さの基準は作るが、バーの二重表示を防ぐために overflow はデフォルトに任せる */
+    height: 100%; 
 }
 
 body {
-    /* コンテンツの純粋な高さに合わせ、無駄な余白を作らない */
+    /* 最低でも画面いっぱいの高さを持たせつつ、コンテンツが増えたら自動で伸びるようにする */
     min-height: 100%; 
     
     font-family: "KurenaiMichi", "Noto Serif JP", serif;
+    
+    /* ★ここが重要：横スクロールは消しつつ、縦スクロールバーが2本出るのを防ぐ */
     overflow-x: hidden;
+    overflow-y: visible; 
 
     background: radial-gradient(
         circle at 50% 40%,
@@ -42,12 +44,11 @@ body {
     display: flex;
     justify-content: center;
     
-    /* 上下の余白（手記の終わりの止まり位置をここで担保） */
+    /* 上下の余白（手記の終わりの止まり位置） */
     padding: 60px 20px; 
 
     animation: breathe 16s ease-in-out infinite;
 }
-
 /* =========================
    呼吸・粒子・ノイズ
 ========================= */
