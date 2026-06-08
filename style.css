@@ -1,13 +1,9 @@
 /* ==========================================
    紅道フォント
 ========================================== */
-
 @font-face {
     font-family: "KurenaiMichi";
-
-    src:
-        url("./fonts/KurenaiMichi-Regular.woff2") format("woff2");
-
+    src: url("./fonts/KurenaiMichi-Regular.woff2") format("woff2");
     font-weight: normal;
     font-style: normal;
     font-display: swap;
@@ -16,360 +12,204 @@
 /* ==========================================
    リセット
 ========================================== */
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-html{
-    scroll-behavior:smooth;
+html {
+    scroll-behavior: smooth;
 }
 
-body{
-   height: auto;
-    font-family:
-        "KurenaiMichi",
-        "Noto Serif JP",
-        serif;
-    overflow-x:hidden;
+body {
+    /* 100vhを完全に廃止。コンテンツの純粋な高さだけにする */
+    height: auto; 
+    
+    font-family: "KurenaiMichi", "Noto Serif JP", serif;
+    overflow-x: hidden;
 
-    background:
-        radial-gradient(
-            circle at 50% 40%,
-            rgba(20,10,10,.9) 0%,
-            #020204 85%
-        );
-.glass-wrap {
-    width: 100%;
-    max-width: 760px;
-    position: relative;
-    z-index: 40;
+    background: radial-gradient(
+        circle at 50% 40%,
+        rgba(20,10,10,.9) 0%,
+        #020204 85%
+    );
+    background-color: #020204;
 
-    /* これを追加：はみ出たアニメーションの残像や計算バグをここで完全に断ち切る */
-    overflow: hidden; 
-}
-    background-color:#020204;
+    display: flex;
+    justify-content: center;
+    
+    /* 上下の余白（下側のスクロール止まり位置をここで担保） */
+    padding: 60px 20px; 
 
-    display:flex;
-    justify-content:center;
-
-    animation:breathe 16s ease-in-out infinite;
-}
-/* =========================
-   呼吸
-========================= */
-
-@keyframes breathe{
-
-    0%{
-        filter:brightness(.7) contrast(1.1);
-    }
-
-    45%{
-        filter:brightness(.9) contrast(1.25);
-    }
-
-    50%{
-        filter:brightness(.6) contrast(1);
-    }
-
-    100%{
-        filter:brightness(.7) contrast(1.1);
-    }
+    animation: breathe 16s ease-in-out infinite;
 }
 
 /* =========================
-   粒子
+   呼吸・粒子・ノイズ
 ========================= */
-
-body::after{
-    content:"";
-    position:fixed;
-    inset:0;
-
-    pointer-events:none;
-    z-index:70;
-
-    background-image:
-        radial-gradient(
-            rgba(255,255,255,.012) 1px,
-            transparent 1px
-        );
-
-    background-size:15px 15px;
-
-    opacity:.42;
+@keyframes breathe {
+    0%   { filter: brightness(.7) contrast(1.1); }
+    45%  { filter: brightness(.9) contrast(1.25); }
+    50%  { filter: brightness(.6) contrast(1); }
+    100% { filter: brightness(.7) contrast(1.1); }
 }
 
-/* =========================
-   ノイズ
-========================= */
-
-body::before{
-    content:"";
-    position:fixed;
-    inset:0;
-
-    pointer-events:none;
-    z-index:60;
-
-    background:
-        repeating-linear-gradient(
-            0deg,
-            rgba(255,255,255,.015),
-            rgba(255,255,255,.015) 1px,
-            transparent 3px,
-            transparent 5px
-        );
-
-    mix-blend-mode:overlay;
-
-    animation:scan .08s linear infinite;
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 70;
+    background-image: radial-gradient(rgba(255,255,255,.012) 1px, transparent 1px);
+    background-size: 15px 15px;
+    opacity: .42;
 }
 
-@keyframes scan{
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 60;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(255,255,255,.015),
+        rgba(255,255,255,.015) 1px,
+        transparent 3px,
+        transparent 5px
+    );
+    mix-blend-mode: overlay;
+    animation: scan .08s linear infinite;
+}
 
-    from{
-        transform:translateY(0);
-    }
-
-    to{
-        transform:translateY(8px);
-    }
+@keyframes scan {
+    from { transform: translateY(0); }
+    to   { transform: translateY(8px); }
 }
 
 /* =========================
    屈折
 ========================= */
-
-.refraction{
-    position:fixed;
-    inset:-20%;
-
-    pointer-events:none;
-    z-index:20;
-
-    background:
-        radial-gradient(
-            ellipse at 20% 30%,
-            rgba(255,255,255,.02),
-            transparent 40%
-        ),
-        radial-gradient(
-            ellipse at 72% 58%,
-            rgba(110,0,0,.05),
-            transparent 48%
-        ),
-        radial-gradient(
-            ellipse at 50% 82%,
-            rgba(255,255,255,.014),
-            transparent 36%
-        );
-
-    mix-blend-mode:screen;
-
-    filter:blur(42px) contrast(1.18);
-
-    animation:refract 18s ease-in-out infinite alternate;
+.refraction {
+    position: fixed;
+    inset: -20%;
+    pointer-events: none;
+    z-index: 20;
+    background: 
+        radial-gradient(ellipse at 20% 30%, rgba(255,255,255,.02), transparent 40%),
+        radial-gradient(ellipse at 72% 58%, rgba(110,0,0,.05), transparent 48%),
+        radial-gradient(ellipse at 50% 82%, rgba(255,255,255,.014), transparent 36%);
+    mix-blend-mode: screen;
+    filter: blur(42px) contrast(1.18);
+    animation: refract 18s ease-in-out infinite alternate;
 }
 
-@keyframes refract{
-
-    0%{
-        transform:
-            translate(-1%,0)
-            scale(1)
-            rotate(.2deg);
-    }
-
-    50%{
-        transform:
-            translate(1%,-1%)
-            scale(1.03)
-            rotate(-.2deg);
-    }
-
-    100%{
-        transform:
-            translate(-1%,1%)
-            scale(1.01)
-            rotate(.15deg);
-    }
+@keyframes refract {
+    0%   { transform: translate(-1%,0) scale(1) rotate(.2deg); }
+    50%  { transform: translate(1%,-1%) scale(1.03) rotate(-.2deg); }
+    100% { transform: translate(-1%,1%) scale(1.01) rotate(.15deg); }
 }
 
 /* =========================
-   本文
+   本文（レイアウトとテキスト）
 ========================= */
-
-.glass-wrap{
-    width:100%;
-    max-width:760px;
-
-    position:relative;
-    z-index:40;
-}
-
-.record{
-    font-family:
-        "KurenaiMichi",
-        "Noto Serif JP",
-        "serif";
-
-    white-space:pre-wrap;
-    word-break:break-all; /* 前のやつ。お好みで */
-
-    color:#a87c00;
-
-    font-size:18px;
-    
-    /* 改行時の行間を少し詰める（2.8 は広すぎたから 1.8 くらいに） */
-    line-height:1.8; 
-    
-    letter-spacing:.12em;
-    font-weight:normal;
-}
-
-/* ↓ここを追加：<p> タグ自体の上下の余白をコントロールする */
-.record p {
-    margin: 0 0 1.2em 0; /* 段落の「下」だけに少し隙間をあける（1.2emはお好みで調整して） */
-    padding: 0;
-}
-
-/* ↓ここを追加：<hr />（区切り線）の上下の余白もついでに調整 */
-.record hr {
-    border: none;
-    border-bottom: 1px dashed rgba(168, 124, 0, 0.3); /* 雰囲気に合わせて薄い破線に */
-    margin: 2em 0;
-}
-/* =========================
-   タイピング文字
-========================= */
-
-.char{
-    opacity:0;
-
-    display:inline-block;
-
-    color:#a87c00;
-
-    transition:
-        transform .12s ease,
-        color .3s ease,
-        filter .3s ease;
-
-    animation:
-        fogRise 1.8s cubic-bezier(.16,.8,.2,1)
-        forwards;
-}
-
-@keyframes fogRise{
-
-    0%{
-        opacity:0;
-
-        transform:
-            scaleX(2)
-            scaleY(.5)
-            translateX(-20px);
-
-        filter:
-            blur(12px)
-            brightness(2);
-    }
-
-    50%{
-        opacity:.5;
-
-        transform:
-            scaleX(.8)
-            scaleY(1.2)
-            translateX(5px);
-
-        filter:blur(4px);
-    }
-
-    100%{
-        opacity:1;
-
-        transform:none;
-
-        filter:none;
-    }
-}
-
-/* =========================
-   人魂が照らした文字
-========================= */
-
-.char.lit{
-
-    color:#e4d5a0;
-
-    filter:
-        drop-shadow(
-            0 0 4px
-            rgba(220,255,240,.8)
-        )
-        drop-shadow(
-            0 0 12px
-            rgba(180,255,220,.5)
-        );
+.glass-wrap {
+    width: 100%;
+    max-width: 760px;
+    position: relative;
+    z-index: 40;
+    /* アニメーションのハミ出しによる無限スクロールバグをここで完全に密閉する */
+    overflow: hidden; 
 }
 
 .record {
-    /* ...他の設定はそのまま... */
-
+    font-family: "KurenaiMichi", "Noto Serif JP", serif;
+    white-space: pre-wrap;
+    word-break: break-all;
+    color: #a87c00;
     font-size: 18px;
-    
-    /* 文字の高さ＝行間（1文字分）にするために 1.0 〜 1.2 に設定 */
-    line-height: 1.2; 
-    
+    line-height: 1.2; /* 1文字分の詰まった行間 */
     letter-spacing: .12em;
+    font-weight: normal;
 }
 
-/* pタグ同士の隙間を完全にゼロにする */
+/* pタグ同士、hrの余白調整 */
 .record p {
     margin: 0;
     padding: 0;
 }
-/* ↓これを追加して、1文字ずつのブロック要素に「端にきたら折れろ」と強制する */
-.record .char {
-    display: inline; /* もしアニメーションがバグるなら inline-block のまま下記を足す */
-    white-space: normal; 
+
+.record hr {
+    border: none;
+    border-bottom: 1px dashed rgba(168, 124, 0, 0.3);
+    margin: 2em 0;
 }
+
+/* =========================
+   タイピング文字（アニメーション）
+========================= */
+.char {
+    opacity: 0;
+    display: inline-block;
+    color: #a87c00;
+    transition: transform .12s ease, color .3s ease, filter .3s ease;
+    animation: fogRise 1.8s cubic-bezier(.16,.8,.2,1) forwards;
+}
+
+/* 親要素の折り返し設定を1文字ずつに強制継承 */
+.record .char {
+    display: inline;
+    white-space: normal;
+}
+
+@keyframes fogRise {
+    0% {
+        opacity: 0;
+        transform: scaleX(2) scaleY(.5) translateX(-20px);
+        filter: blur(12px) brightness(2);
+    }
+    50% {
+        opacity: .5;
+        transform: scaleX(.8) scaleY(1.2) translateX(5px);
+        filter: blur(4px);
+    }
+    100% {
+        opacity: 1;
+        transform: none;
+        filter: none;
+    }
+}
+
+/* 人魂が照らした文字 */
+.char.lit {
+    color: #e4d5a0;
+    filter: 
+        drop-shadow(0 0 4px rgba(220,255,240,.8))
+        drop-shadow(0 0 12px rgba(180,255,220,.5));
+}
+
 /* =========================
    署名
 ========================= */
-
-.signature{
-
-    display:block;
-
-    text-align:right;
-
-    margin-top:60px;
-
-    color:rgba(150,180,160,.55);
-
-    opacity:0;
-
-    transition:2s;
+.signature {
+    display: block;
+    text-align: right;
+    margin-top: 60px;
+    color: rgba(150,180,160,.55);
+    opacity: 0;
+    transition: 2s;
 }
 
 /* =========================
-   スマホ
+   レスポンシブ（スマホ）
 ========================= */
-
-@media(max-width:768px){
-
-    body{
-        padding:40px 16px;
+@media(max-width:768px) {
+    body {
+        padding: 40px 16px;
     }
-
-    .record{
-        font-size:15px;
-        line-height:1.6; /* スマホの行間も 2.45 から 1.6 くらいに詰める */
+    .record {
+        font-size: 15px;
+        line-height: 1.2;
     }
 }
