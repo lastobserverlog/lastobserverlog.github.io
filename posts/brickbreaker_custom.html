@@ -1,247 +1,1030 @@
-/* ==========================================================================
-   1. カスタムカーソル
-   ========================================================================== */
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>結月硝子 — glass fragment breaker</title>
+<link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+<meta name="apple-mobile-web-app-title" content="結月硝子" />
+<link rel="manifest" href="/site.webmanifest" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { 
+  width:100%; height:100%; 
+  background:#0a0f12; /* 本家サイトの深い夜の闇 */
+  overflow:hidden; 
+  font-family:'Klee One', 'Share Tech Mono', 'Courier New', monospace;
+}
+body.custom-cursor-active,
+body.custom-cursor-active * { cursor: none !important; }
+body.hide-cursor { cursor: none; }
+
 #cursor-dot {
   pointer-events: none;
   position: fixed;
   z-index: 200;
   width: 20px;
   height: 24px;
-  filter: 
-    drop-shadow(0 0 3px rgba(0,255,65,0.95))
-    drop-shadow(0 0 8px rgba(0,255,65,0.45));
-  /* JSでPC環境だと確認できるまで、デフォルトは非表示 */
+  filter:
+    drop-shadow(0 0 4px rgba(255,255,255,0.6))
+    drop-shadow(0 0 8px rgba(255,255,255,0.2));
   display: none;
 }
-
-/* ==========================================================================
-   2. 画面全体のレイアウト・外枠
-   ========================================================================== */
-#wrap {
-  position: relative;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  background: #000d00;
-  height: 100vh; /* 画面いっぱいに広げるためのベースを確保 */
-}
-
+#wrap { position:fixed; inset:0; display:flex; flex-direction:column; background:#0a0f12; }
 #topbar {
-  height: 24px;
-  flex-shrink: 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 16px;
-  border-bottom: 1px solid rgba(0,255,0,0.2);
-  font-size: 11px;
-  color: rgba(0,255,0,0.53);
-  letter-spacing: 2px;
+  height:32px; flex-shrink:0; display:flex; justify-content:space-between; align-items:center;
+  padding:0 20px; border-bottom:1px solid rgba(255, 255, 255, 0.05);
+  font-size:11px; color:rgba(255, 255, 255, 0.4); letter-spacing:2px;
 }
-
 #homeBtn {
-  color: rgba(0,255,0,0.53);
-  text-decoration: none;
-  letter-spacing: 2px;
-  font-size: 11px;
+  color:rgba(255, 255, 255, 0.5); text-decoration:none; letter-spacing:2px; font-size:12px;
   transition: color 0.15s;
+  font-weight: 600;
 }
-/* ホバー時にピカッと明るくなる演出を修正 */
-#homeBtn:hover {
-  color: #00ff00;
-}
-
-#botbar {
-  height: 22px;
-  flex-shrink: 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 20px;
-  border-top: 1px solid rgba(0,255,0,0.2);
-  font-size: 11px;
-  color: rgba(0,255,0,0.73);
-  letter-spacing: 2px;
-}
-
-/* ==========================================================================
-   3. メインコンテンツ（ゲーム画面 ＆ スコアエリア）
-   ========================================================================== */
+#homeBtn:hover { color:#ffffff; }
 #canvasWrap {
-  flex: 1;
-  overflow: hidden;
-  display: flex;
-  flex-direction: row; /* 基本は横並び */
-  align-items: center;
-  justify-content: center;
-  background: repeating-linear-gradient(
-    45deg,
-    #000d00,
-    #000d00 6px,
-    #001800 6px,
-    #001800 12px
-  );
-  border-top: 1px solid rgba(0,255,0,0.13);
-  border-bottom: 1px solid rgba(0,255,0,0.13);
+  flex:1; overflow:hidden;
+  display:flex; flex-direction:row; align-items:center; justify-content:center;
+  /* 喧しいストライプを廃止、静かなグラデーションへ */
+  background: radial-gradient(circle at 50% 50%, #12181d 0%, #0a0f12 100%);
+  border-top: 1px solid rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
 }
-
-#gameArea {
-  position: relative;
-  flex-shrink: 0;
-  outline: 1px solid rgba(0,255,0,0.26);
-  box-shadow: 
-    0 0 0 1px #001800, 
-    0 0 24px 2px rgba(0,255,0,0.09), 
-    inset 0 0 24px 2px rgba(0,255,0,0.03);
-}
-
-canvas {
-  display: block;
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-/* ==========================================================================
-   4. スコアボード（JavaScriptで lb-left / lb-top が切り替わる）
-   ========================================================================== */
 #leaderboard {
-  flex-shrink: 0;
-  display: flex;
-  flex-direction: column;
-  padding: 16px 12px;
+  flex-shrink:0;
+  display:flex; flex-direction:column;
+  padding:20px 16px;
 }
-
-/* 左側固定モード（PCなどの横長画面用） */
 #leaderboard.lb-left {
-  width: 160px;
-  align-self: stretch;
-  border-right: 1px solid rgba(0,255,0,0.13);
+  width:160px;
+  align-self:stretch;
+  border-right:1px solid rgba(255, 255, 255, 0.05);
+  border-bottom:none;
 }
-
-/* 上部配置モード（スマホなどの縦長画面用） */
 #leaderboard.lb-top {
-  width: 100%;
-  flex-direction: row;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px 24px;
-  padding: 8px 20px;
-  border-bottom: 1px solid rgba(0,255,0,0.13);
+  width:100%;
+  flex-direction:row;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:8px 24px;
+  padding:12px 20px;
+  border-bottom:1px solid rgba(255, 255, 255, 0.05);
+  border-right:none;
+  align-self:auto;
 }
 #leaderboard.lb-top h3 {
-  margin-bottom: 0;
-  border-bottom: none;
-  padding-bottom: 0;
-  white-space: nowrap;
+  margin-bottom:0; border-bottom:none; padding-bottom:0; white-space:nowrap;
 }
-#leaderboard.lb-top ol {
-  display: flex;
-  flex-direction: row;
-  gap: 16px;
-}
-#leaderboard.lb-top ol li {
-  border-bottom: none;
-  padding: 0;
-}
-#leaderboard.lb-top .lb-empty {
-  margin-top: 0;
-  line-height: 1.5;
-}
-
-/* スコアボード内のパーツ */
+#leaderboard.lb-top ol { display:flex; flex-direction:row; gap:16px; }
+#leaderboard.lb-top ol li { border-bottom:none; padding:0; }
+#leaderboard.lb-top .lb-empty { margin-top:0; line-height:1.5; }
 #leaderboard h3 {
-  font-size: 10px;
-  letter-spacing: 3px;
-  color: rgba(0,255,0,0.33);
-  text-transform: uppercase;
-  margin-bottom: 10px;
-  border-bottom: 1px solid rgba(0,255,0,0.13);
-  padding-bottom: 6px;
+  font-size:11px; letter-spacing:3px; color:rgba(255, 255, 255, 0.3);
+  text-transform:uppercase; margin-bottom:12px;
+  border-bottom:1px solid rgba(255, 255, 255, 0.05); padding-bottom:6px;
 }
-#leaderboard ol {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
+#leaderboard ol { list-style:none; padding:0; margin:0; }
 #leaderboard ol li {
-  display: flex;
-  justify-content: space-between;
-  padding: 4px 0;
-  border-bottom: 1px solid rgba(0,255,0,0.06);
-  font-size: 10px;
-  color: rgba(0,255,0,0.33);
-  letter-spacing: 1px;
+  display:flex; justify-content:space-between;
+  padding:6px 0; border-bottom:1px solid rgba(255, 255, 255, 0.03);
+  font-size:11px; color:rgba(255, 255, 255, 0.4); letter-spacing:1px;
+  font-family: 'Share Tech Mono', monospace;
 }
-
 .lb-empty {
-  color: rgba(0,255,0,0.2);
-  font-size: 10px;
-  letter-spacing: 2px;
-  margin-top: 8px;
-  line-height: 2;
+  color:rgba(255, 255, 255, 0.2); font-size:11px; letter-spacing:2px;
+  margin-top:8px; line-height:2;
 }
+#gameArea {
+  position:relative;
+  flex-shrink:0;
+  outline: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 32px rgba(0, 0, 0, 0.5), inset 0 0 16px rgba(255, 255, 255, 0.01);
+}
+#ideoLink {
+  margin-top:16px; padding:12px 36px;
+  border:1px solid rgba(255, 255, 255, 0.2); color:rgba(255, 255, 255, 0.8);
+  background:transparent; font-family:'Klee One', sans-serif;
+  font-size:13px; letter-spacing:4px; cursor:pointer;
+  text-decoration:none;
+  transition: all 0.2s;
+}
+#ideoLink:hover { background:rgba(255, 255, 255, 0.05); border-color:rgba(255, 255, 255, 0.6); color:#fff; }
 
-/* ==========================================================================
-   5. 特殊効果・UI（ブラウン管の線、オーバーレイ、ボタン）
-   ========================================================================== */
+#botbar {
+  height:28px; flex-shrink:0; display:flex; justify-content:space-between; align-items:center;
+  padding:0 24px; border-top:1px solid rgba(255, 255, 255, 0.05);
+  font-size:11px; color:rgba(255, 255, 255, 0.4); letter-spacing:2px;
+}
+#botbar span { display: flex; align-items: center; gap: 6px; }
+#botbar b { font-family: 'Share Tech Mono', monospace; color: rgba(255, 255, 255, 0.8); font-weight: normal; }
+
+canvas { display:block; position:absolute; top:0; left:0; }
+
+/* スキャンラインを極薄のブラー感に変更、チラつきを抑える */
 #scanlines {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 5;
-  background: linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.18) 3px, rgba(0,0,0,0.18) 4px);
-  background-size: 100% 4px;
+  position:absolute; inset:0; pointer-events:none; z-index:5;
+  background:repeating-linear-gradient(0deg,transparent,transparent 4px,rgba(255,255,255,0.015) 4px,rgba(255,255,255,0.015) 5px);
 }
 
+/* 本家サイトに合わせた透明感のあるすりガラス（Glassmorphism） */
 #overlay, #pauseOverlay {
-  position: absolute;
-  inset: 0;
-  z-index: 20;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0,8,0,0.92);
+  position:absolute; inset:0; z-index:20;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  background:rgba(10, 15, 18, 0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
-#pauseOverlay {
-  z-index: 21;
+#pauseOverlay { z-index:21; display:none; }
+#pauseOverlay .glitch { font-size:clamp(18px,4vw,36px); }
+
+.pause-btn {
+  margin-top:12px; padding:12px 36px;
+  border:1px solid rgba(255, 255, 255, 0.2); color:rgba(255, 255, 255, 0.8);
+  background:transparent; font-family:'Klee One', sans-serif;
+  font-size:13px; letter-spacing:4px; cursor:pointer;
+  text-decoration:none; display:block; text-align:center;
+  transition: all 0.2s;
 }
+.pause-btn:hover { background:rgba(255, 255, 255, 0.05); border-color:rgba(255, 255, 255, 0.6); color:#fff; }
 
 .glitch {
-  font-family: 'Share Tech Mono', 'Courier New', monospace;
-  font-size: 48px;
-  color: #00ff00;
-  letter-spacing: 10px;
-  text-transform: uppercase;
-  text-shadow: 0 0 8px rgba(0,255,0,0.6);
-  margin-bottom: 10px;
+  font-family:'Klee One', sans-serif;
+  font-weight: 600;
+  font-size:clamp(20px,4vw,40px); color:#ffffff;
+  letter-spacing:8px; text-transform:uppercase;
+  text-shadow:0 0 12px rgba(255,255,255,0.3); margin-bottom:14px;
+}
+.tagline { font-size:12px; color:rgba(255, 255, 255, 0.4); letter-spacing:4px; margin:4px 0; }
+.hint { font-size:11px; color:rgba(255, 255, 255, 0.3); letter-spacing:2px; margin:3px 0; }
+
+#startBtn {
+  margin-top:32px; padding:12px 40px;
+  border:1px solid rgba(255, 255, 255, 0.2); color:#ffffff;
+  background:transparent; font-family:'Klee One', sans-serif;
+  font-size:13px; letter-spacing:4px; cursor:pointer;
+  transition: all 0.2s;
+}
+#startBtn:hover { background:rgba(255, 255, 255, 0.05); border-color:rgba(255, 255, 255, 0.6); }
+</style>
+</head>
+<body>
+<div id="cursor-dot">
+  <svg width="20" height="24" viewBox="0 0 20 24" fill="none" xmlns="https://www.w3.org/2000/svg">
+    <path d="M2 2 L2 20 L6.5 15.5 L10.5 22 L13 21 L9 14.5 L16 14.5 Z"
+          fill="#ffffff" stroke="#0a0f12" stroke-width="1.5" stroke-linejoin="round"/>
+  </svg>
+</div>
+<div id="wrap">
+  <div id="topbar">
+    <a id="homeBtn" href="https://yuduki-glass.com/">⌂ 結月硝子</a>
+    <span>SIGNAL / ARCHIVE / CHANNEL</span>
+    <span id="clock" style="font-family: 'Share Tech Mono', monospace;">00:00:00</span>
+  </div>
+  <div id="canvasWrap">
+    <div id="leaderboard">
+      <h3>▸ RECORD</h3>
+      <ol id="lbList"></ol>
+      <p class="lb-empty" id="lbEmpty">— NO SCORES —<br>OBSERVE TO RANK</p>
+    </div>
+    <div id="gameArea">
+      <canvas id="c"></canvas>
+      <div id="scanlines"></div>
+      <div id="overlay">
+        <div class="glitch">結月硝子</div>
+        <p class="tagline">glass fragment breaker</p>
+        <p class="hint" style="margin-top:20px;">MOVE / TOUCH TO CONTROL PADDLE</p>
+        <p class="hint">CLICK TO LAUNCH BALL</p>
+        <button id="startBtn">[ OBSERVE ]</button>
+        <a id="ideoLink" href="https://yuduki-glass.com/" style="display:none">結月硝子</a>
+      </div>
+      <div id="pauseOverlay">
+        <div class="glitch">SILENCE</div>
+        <p class="tagline" style="margin-bottom:20px;">— GAME PAUSED —</p>
+        <button id="resumeBtn" class="pause-btn">[ RESUME ]</button>
+        <a href="https://yuduki-glass.com/" class="pause-btn" style="margin-top:8px;">結月硝子</a>
+      </div>
+    </div>
+  </div>
+  <div id="botbar">
+    <span>CONTOUR: <b id="sv">000000</b></span>
+    <span>PHASE: <b id="lv">01</b></span>
+    <span>FRAGMENTS: <b id="lf">3</b></span>
+    <span>LIMIT: <b id="hv">000000</b></span>
+  </div>
+</div>
+
+<script>
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const canvasWrap = document.getElementById('canvasWrap');
+const gameArea = document.getElementById('gameArea');
+const leaderboard = document.getElementById('leaderboard');
+const overlay = document.getElementById('overlay');
+const startBtn = document.getElementById('startBtn');
+
+const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+const cursorDot = document.getElementById('cursor-dot');
+function showDot(show) {
+  if (!isMobile && show) {
+    cursorDot.style.display = 'block';
+    document.body.classList.add('custom-cursor-active');
+  } else {
+    cursorDot.style.display = 'none';
+    document.body.classList.remove('custom-cursor-active');
+  }
 }
 
-.tagline { font-size: 12px; color: rgba(0,255,0,0.4); letter-spacing: 5px; margin: 4px 0; }
-.hint { font-size: 11px; color: rgba(0,255,0,0.33); letter-spacing: 3px; margin: 3px 0; }
+showDot(true);
 
-/* ボタン共通のホバー演出（じわっと光る変化） */
-#startBtn, #ideoLink, .pause-btn {
-  margin-top: 28px;
-  padding: 13px 40px;
-  border: 1px solid rgba(0,255,0,0.33);
-  color: #00ff00;
-  background: transparent;
-  font-family: 'Share Tech Mono', 'Courier New', monospace;
-  font-size: 13px;
-  letter-spacing: 5px;
-  cursor: pointer;
-  text-decoration: none;
-  text-transform: uppercase;
-  transition: background 0.15s, border-color 0.15s;
+window.addEventListener('mousemove', (e) => {
+  if (cursorDot.style.display === 'block') {
+    cursorDot.style.left = e.clientX + 'px';
+    cursorDot.style.top = e.clientY + 'px';
+  }
+});
+
+let CW, CH; 
+let isPortrait = false;
+
+function resize() {
+  const availW = canvasWrap.clientWidth;
+  const availH = canvasWrap.clientHeight;
+  const LB_SIDE = 160; 
+  const LB_TOP  = 48;  
+
+  if (availW >= availH) {
+    isPortrait = false;
+    canvasWrap.style.flexDirection = 'row';
+    leaderboard.classList.remove('lb-top');
+    leaderboard.classList.add('lb-left');
+    if (leaderboard.nextSibling !== gameArea) {
+      canvasWrap.insertBefore(leaderboard, gameArea);
+    }
+    const size = Math.min(availW - LB_SIDE, availH);
+    CW = size; CH = size;
+    gameArea.style.width   = size + 'px';
+    gameArea.style.height = size + 'px';
+    canvas.width   = size;
+    canvas.height = size;
+  } else {
+    isPortrait = true;
+    canvasWrap.style.flexDirection = 'column';
+    leaderboard.classList.remove('lb-left');
+    leaderboard.classList.add('lb-top');
+    if (leaderboard.nextSibling !== gameArea) {
+      canvasWrap.insertBefore(leaderboard, gameArea);
+    }
+    const lbH = leaderboard.offsetHeight || LB_TOP;
+    const size = Math.min(availW, availH - lbH);
+    CW = size; CH = size;
+    gameArea.style.width   = size + 'px';
+    gameArea.style.height = size + 'px';
+    canvas.width   = size;
+    canvas.height = size;
+  }
 }
-#ideoLink, .pause-btn {
-  margin-top: 12px;
-  display: inline-block;
-  text-align: center;
+resize();
+window.addEventListener('resize', () => { resize(); if (started) resetPositions(); });
+
+const PADDLE_H = 12;
+const BALL_R   = 6;
+const COLS     = 12;
+const ROWS     = 6;
+
+function paddleY()     { return CH - 40; }
+function brickStartY() { return Math.round(CH * 0.14); }
+function brickH()      { return 15; }
+function brickGapY()   { return 4; }
+function brickGapX()   { return 4; }
+function brickW()      { 
+  const baseW = isPortrait ? CW : (CW - 160);
+  return Math.floor((baseW - (COLS - 1) * brickGapX()) / COLS); 
 }
-#startBtn:hover, #ideoLink:hover, .pause-btn:hover {
-  background: rgba(0,255,0,0.08);
-  border-color: #00ff00;
+function brickStartX() { return Math.round((CW - (COLS * brickW() + (COLS-1) * brickGapX())) / 2); }
+
+let gameState = 'idle';
+let score = 0, hi = 0, lives = 3, level = 1;
+let userEscaped = false;       
+let exitedIntentionally = false; 
+let paused = false;
+let paddleX = CW / 2, mouseX = CW / 2; 
+let balls = [];
+let bricks = [];
+let started = false;
+
+let lastTouchX = 0;
+
+// ── Powerups (本家サイトに合わせた淡い光のシグナル) ──
+let drops = [];
+const PU_MULTIBALL  = 'multiball';
+const PU_WIDEBALL   = 'wideball';
+const PU_DROP_CHANCE = 0.18;
+
+const PADDLE_W_BASE = 90;
+const PADDLE_W_WIDE = 160;
+let paddleWCurrent = PADDLE_W_BASE;  
+let paddleWTarget  = PADDLE_W_BASE;
+let wideballTimer  = 0;              
+
+function activateWideball() {
+  paddleWTarget = PADDLE_W_WIDE;
+  wideballTimer = performance.now() + WIDEBALL_DURATION;
+  const colors = ['#fda4af','#f43f5e','#ffe4e6']; // 体温を感じる薄紅の火花
+  for (let i = 0; i < 24; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const speed = 2 + Math.random() * 4;
+    particles.push({
+      type: 'spark', x: paddleX, y: paddleY(),
+      vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed - 1,
+      life: 1, decay: 0.022 + Math.random() * 0.02,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      size: 2 + Math.random() * 2.5
+    });
+  }
 }
+
+const WIDEBALL_DURATION = 7000; 
+function updateWideballPowerup() {
+  if (wideballTimer > 0 && performance.now() >= wideballTimer) {
+    wideballTimer = 0;
+    paddleWTarget = PADDLE_W_BASE;
+  }
+  const diff = paddleWTarget - paddleWCurrent;
+  if (Math.abs(diff) > 0.1) {
+    paddleWCurrent += diff * 0.1; 
+  } else {
+    paddleWCurrent = paddleWTarget;
+  }
+}
+
+function spawnDrop(bx, by, bw, bh, type) {
+  drops.push({
+    type,
+    x: bx + bw / 2,
+    y: by + bh / 2,
+    vy: 2.2,
+    w: 36, h: 18,
+    pulse: 0
+  });
+}
+
+function drawMultiballIcon(cx, cy, size) {
+  const r = size * 0.22;
+  const offsets = [[-size*0.28, size*0.1],[size*0.28, size*0.1],[0, -size*0.28]];
+  ctx.fillStyle = '#93c5fd'; // 光の反射を模したアイスブルー
+  ctx.shadowBlur = 6; ctx.shadowColor = '#93c5fd';
+  for (const [ox, oy] of offsets) {
+    ctx.beginPath();
+    ctx.arc(cx + ox, cy + oy, r, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.shadowBlur = 0;
+}
+
+function drawWidePaddleIcon(cx, cy, size) {
+  const hw = size * 0.45, hh = size * 0.14;
+  ctx.fillStyle = '#fda4af'; // 温かみのある薄紅
+  ctx.shadowBlur = 6; ctx.shadowColor = '#fda4af';
+  ctx.fillRect(cx - hw, cy - hh, hw * 2, hh * 2);
+  ctx.beginPath(); ctx.arc(cx - hw, cy, hh, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(cx + hw, cy, hh, 0, Math.PI * 2); ctx.fill();
+  ctx.shadowBlur = 0;
+}
+
+function updateDrops() {
+  const py = paddleY();
+  const pw = paddleWCurrent;
+  drops.forEach(d => {
+    d.y += d.vy;
+    d.pulse += 0.12;
+    if (d.y + d.h / 2 >= py && d.y - d.h / 2 <= py + PADDLE_H &&
+        d.x >= paddleX - pw / 2 - d.w / 2 && d.x <= paddleX + pw / 2 + d.w / 2) {
+      d.caught = true;
+      if (d.type === PU_MULTIBALL) { activateMultiball(); sfxPowerup(); }
+      else if (d.type === PU_WIDEBALL) { activateWideball(); sfxPowerup(); }
+    }
+  });
+  drops = drops.filter(d => !d.caught && d.y < CH + 40);
+}
+
+function activateMultiball() {
+  const current = [...balls];
+  for (const source of current) {
+    const spd = Math.hypot(source.vx, source.vy);
+    const base = Math.atan2(source.vy, source.vx);
+    const angles = [-0.4, 0.4];
+    for (const da of angles) {
+      balls.push({
+        x: source.x, y: source.y,
+        vx: Math.cos(base + da) * spd,
+        vy: Math.sin(base + da) * spd,
+        isExtra: true
+      });
+    }
+  }
+  const colors = ['#93c5fd','#60a5fa','#e0f2fe'];
+  for (let i = 0; i < 20; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const speed = 2 + Math.random() * 4;
+    particles.push({
+      type: 'spark', x: paddleX, y: paddleY(),
+      vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed - 1,
+      life: 1, decay: 0.025 + Math.random() * 0.02,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      size: 2 + Math.random() * 2
+    });
+  }
+}
+
+function drawDrops() {
+  drops.forEach(d => {
+    const glow = 0.6 + 0.4 * Math.sin(d.pulse);
+    const isWide = d.type === PU_WIDEBALL;
+    const capColor = isWide ? `rgba(253,164,175,${glow})` : `rgba(147,197,253,${glow})`;
+    const glowColor = isWide ? '#fda4af' : '#93c5fd';
+    ctx.globalAlpha = 0.85 + 0.15 * Math.sin(d.pulse);
+    ctx.fillStyle = isWide ? '#1c1214' : '#12171c';
+    ctx.strokeStyle = capColor;
+    ctx.lineWidth = 1.5;
+    ctx.shadowBlur = 8 * glow; ctx.shadowColor = glowColor;
+    roundRect(ctx, d.x - d.w/2, d.y - d.h/2, d.w, d.h, 4);
+    ctx.fill(); ctx.stroke();
+    ctx.shadowBlur = 0;
+    if (isWide) drawWidePaddleIcon(d.x, d.y, d.h);
+    else drawMultiballIcon(d.x, d.y, d.h);
+    ctx.globalAlpha = 1;
+  });
+}
+
+function roundRect(c, x, y, w, h, r) {
+  c.beginPath();
+  c.moveTo(x + r, y);
+  c.lineTo(x + w - r, y);
+  c.arcTo(x + w, y, x + w, y + r, r);
+  c.lineTo(x + w, y + h - r);
+  c.arcTo(x + w, y + h, x + w - r, y + h, r);
+  c.lineTo(x + r, y + h);
+  c.arcTo(x, y + h, x, y + h - r, r);
+  c.lineTo(x, y + r);
+  c.arcTo(x, y, x + r, y, r);
+  c.closePath();
+}
+
+// ── Particles (無機質な白と透明、硝子の破片) ──
+let particles = [];
+
+function spawnBrickParticles(bx, by, bw, bh) {
+  const cx = bx + bw / 2, cy = by + bh / 2;
+  const colors = ['#ffffff', 'rgba(241,245,249,0.8)', 'rgba(203,213,225,0.6)', '#93c5fd'];
+  for (let i = 0; i < 18; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const speed = 1.5 + Math.random() * 4;
+    particles.push({
+      type: 'spark', x: cx, y: cy,
+      vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed,
+      life: 1, decay: 0.025 + Math.random() * 0.03,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      size: 1.5 + Math.random() * 2
+    });
+  }
+  for (let i = 0; i < 6; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const speed = 0.8 + Math.random() * 2.5;
+    particles.push({
+      type: 'shard',
+      x: bx + Math.random() * bw, y: by + Math.random() * bh,
+      vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed - 1,
+      life: 1, decay: 0.018 + Math.random() * 0.02,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      w: 3 + Math.random() * 6, h: 2 + Math.random() * 4,
+      rot: Math.random() * Math.PI * 2, rotV: (Math.random() - 0.5) * 0.3
+    });
+  }
+  particles.push({ type: 'ring', x: cx, y: cy, r: 4, life: 1, decay: 0.06, color: 'rgba(255,255,255,0.4)' });
+}
+
+function spawnDeathParticles(x, y) {
+  const colors = ['#f43f5e','#fda4af','#e2e8f0','#475569'];
+  for (let i = 0; i < 40; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const speed = 1 + Math.random() * 6;
+    particles.push({
+      type: 'spark', x, y,
+      vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed - 2,
+      life: 1, decay: 0.015 + Math.random() * 0.025,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      size: 2 + Math.random() * 3
+    });
+  }
+  for (let i = 0; i < 10; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const speed = 0.5 + Math.random() * 3;
+    particles.push({
+      type: 'shard', x, y,
+      vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed - 1.5,
+      life: 1, decay: 0.012 + Math.random() * 0.018,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      w: 4 + Math.random() * 8, h: 3 + Math.random() * 5,
+      rot: Math.random() * Math.PI * 2, rotV: (Math.random() - 0.5) * 0.4
+    });
+  }
+  for (let i = 0; i < 3; i++) {
+    particles.push({ type: 'ring', x, y, r: 4 + i * 6, life: 1, decay: 0.04 + i * 0.01, color: colors[i] });
+  }
+}
+
+function updateParticles() {
+  for (const p of particles) {
+    p.life -= p.decay;
+    if (p.type === 'spark') { p.x += p.vx; p.y += p.vy; p.vy += 0.12; }
+    else if (p.type === 'shard') { p.x += p.vx; p.y += p.vy; p.vy += 0.1; p.rot += p.rotV; }
+    else if (p.type === 'ring') { p.r += 3.5; }
+  }
+  particles = particles.filter(p => p.life > 0);
+}
+
+function drawParticles() {
+  for (const p of particles) {
+    const alpha = Math.max(0, p.life);
+    ctx.globalAlpha = alpha;
+    if (p.type === 'spark') {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
+      ctx.fillStyle = p.color;
+      ctx.shadowBlur = 6; ctx.shadowColor = p.color;
+      ctx.fill(); ctx.shadowBlur = 0;
+    } else if (p.type === 'shard') {
+      ctx.save();
+      ctx.translate(p.x, p.y); ctx.rotate(p.rot);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.w/2, -p.h/2, p.w * p.life, p.h * p.life);
+      ctx.restore();
+    } else if (p.type === 'ring') {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.strokeStyle = p.color;
+      ctx.lineWidth = 1.5 * p.life;
+      ctx.shadowBlur = 8; ctx.shadowColor = p.color;
+      ctx.stroke(); ctx.shadowBlur = 0;
+    }
+  }
+  ctx.globalAlpha = 1;
+}
+
+function resetPositions() {
+  paddleX = CW / 2;
+  mouseX  = CW / 2;
+  if (balls.length) { balls[0].x = paddleX; balls[0].y = paddleY() - BALL_R - 2; }
+}
+
+function makeBall() {
+  return { x: paddleX, y: paddleY() - BALL_R - 2, vx: 3.75, vy: -6.25 };
+}
+
+function buildBricks() {
+  bricks = [];
+  const bx = brickStartX(), by = brickStartY();
+  const bw = brickW(), bh = brickH(), gx = brickGapX(), gy = brickGapY();
+  const rows = Math.min(ROWS + level - 1, 10);
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < COLS; c++) {
+      const roll = Math.random();
+      let dropType = null;
+      if (roll < PU_DROP_CHANCE) {
+        dropType = Math.random() < 0.5 ? PU_MULTIBALL : PU_WIDEBALL;
+      }
+      bricks.push({
+        x: bx + c * (bw + gx), y: by + r * (bh + gy),
+        w: bw, h: bh, alive: true, row: r,
+        dropType
+      });
+    }
+  }
+}
+
+function initGame() {
+  resize(); 
+  score = 0; lives = 3; level = 1;
+  paddleX = CW / 2; mouseX = CW / 2;
+  particles = []; drops = [];
+  paddleWCurrent = PADDLE_W_BASE; paddleWTarget = PADDLE_W_BASE; wideballTimer = 0;
+  userEscaped = false;
+  exitedIntentionally = false;
+  paused = false;
+  pauseOverlay.style.display = 'none';
+  document.getElementById('ideoLink').style.display = 'none';
+  overlay.querySelector('.glitch').textContent = '結月硝子';
+  overlay.querySelectorAll('.tagline')[0].textContent = 'glass fragment breaker';
+  buildBricks();
+  balls = [makeBall()];
+  started = true;
+  updHUD();
+  
+  setTimeout(() => {
+    overlay.style.display = 'none';
+    gameState = 'waiting';
+    showDot(false);
+
+    if (!isMobile) {
+      requestPointerLock();
+    }
+  }, 80);
+} 
+  
+function launch() {
+  if (gameState !== 'waiting') return;
+  balls[0].vx = 3.75 * (Math.random() > 0.5 ? 1 : -1);
+  balls[0].vy = -6.25;
+  gameState = 'playing';
+  if (!isMobile && document.pointerLockElement !== gameArea) {
+    requestPointerLock();
+  }
+}
+  
+function updHUD() {
+  document.getElementById('sv').textContent = String(score).padStart(6,'0');
+  document.getElementById('lv').textContent = String(level).padStart(2,'0');
+  document.getElementById('lf').textContent = lives;
+  document.getElementById('hv').textContent = String(hi).padStart(6,'0');
+}
+
+// すりガラスの透明層を表現する、透明度の異なる白のグラデーション
+const ROW_BG = [
+  'rgba(255,255,255,0.12)', 'rgba(255,255,255,0.10)', 'rgba(255,255,255,0.08)',
+  'rgba(255,255,255,0.06)', 'rgba(255,255,255,0.04)', 'rgba(255,255,255,0.02)'
+];
+const ROW_BD = [
+  'rgba(255,255,255,0.30)', 'rgba(255,255,255,0.25)', 'rgba(255,255,255,0.20)',
+  'rgba(255,255,255,0.15)', 'rgba(255,255,255,0.10)', 'rgba(255,255,255,0.08)'
+];
+
+function update() {
+  updateParticles();
+  updateDrops();
+  updateWideballPowerup();
+  if (!started || gameState === 'idle' || gameState === 'over' || paused) return;
+
+  const PW = paddleWCurrent; 
+  paddleX += (mouseX - paddleX) * 0.25;
+  paddleX = Math.max(PW / 2, Math.min(CW - PW / 2, paddleX));
+
+  if (gameState === 'waiting') {
+    balls[0].x = paddleX;
+    balls[0].y = paddleY() - BALL_R - 2;
+    return;
+  }
+
+  const py = paddleY();
+
+  for (const ball of balls) {
+    if (ball.lost) continue;
+    ball.x += ball.vx;
+    ball.y += ball.vy;
+
+    if (ball.x - BALL_R < 0)  { ball.x = BALL_R;       ball.vx =  Math.abs(ball.vx); }
+    if (ball.x + BALL_R > CW) { ball.x = CW - BALL_R;  ball.vx = -Math.abs(ball.vx); }
+    if (ball.y - BALL_R < 0)  { ball.y = BALL_R;        ball.vy =  Math.abs(ball.vy); }
+
+    if (ball.vy > 0 &&
+        ball.y + BALL_R >= py &&
+        ball.y + BALL_R <= py + PADDLE_H + 8 &&
+        ball.x >= paddleX - PW / 2 &&
+        ball.x <= paddleX + PW / 2) {
+      const hit = (ball.x - paddleX) / (PW / 2);
+      const speed = Math.hypot(ball.vx, ball.vy);
+      ball.vx = hit * speed * 0.9;
+      ball.vy = -Math.sqrt(Math.max(speed * speed - ball.vx * ball.vx, 1));
+      sfxPaddle();
+    }
+
+    for (const b of bricks) {
+      if (!b.alive) continue;
+      if (ball.x + BALL_R > b.x && ball.x - BALL_R < b.x + b.w &&
+          ball.y + BALL_R > b.y && ball.y - BALL_R < b.y + b.h) {
+        b.alive = false;
+        score += 10 * level;
+        hi = Math.max(hi, score);
+        updHUD();
+        spawnBrickParticles(b.x, b.y, b.w, b.h);
+        sfxBrick();
+        if (b.dropType) spawnDrop(b.x, b.y, b.w, b.h, b.dropType);
+        const prevY = ball.y - ball.vy;
+        if (prevY + BALL_R <= b.y || prevY - BALL_R >= b.y + b.h) ball.vy *= -1;
+        else ball.vx *= -1;
+        break;
+      }
+    }
+
+    if (ball.y - BALL_R > CH) {
+      ball.lost = true;
+      spawnDeathParticles(ball.x, CH - 10);
+      sfxDeath();
+    }
+  }
+
+  balls = balls.filter(b => !b.lost);
+
+  if (balls.length === 0) {
+    lives--;
+    drops = [];
+    paddleWTarget = PADDLE_W_BASE; wideballTimer = 0;
+    updHUD();
+    if (lives <= 0) {
+      gameState = 'over';
+      showDot(true);
+      setTimeout(() => {
+        overlay.style.display = 'flex'; 
+        overlay.querySelector('.glitch').textContent = '破片の漂流';
+        overlay.querySelectorAll('.tagline')[0].textContent = 'CONTOUR: ' + String(score).padStart(6,'0');
+        startBtn.textContent = '[ RETRY ]';
+        startBtn.onclick = null; 
+        document.getElementById('ideoLink').style.display = 'block';
+      }, 0);
+    } else {
+      balls = [makeBall()];
+      gameState = 'waiting';
+    }
+  }
+
+  if (bricks.every(b => !b.alive)) {
+    level++;
+    drops = [];
+    buildBricks();
+    balls = [makeBall()];
+    gameState = 'waiting';
+    updHUD();
+  }
+}
+
+function draw() {
+  ctx.clearRect(0, 0, CW, CH);
+  ctx.fillStyle = '#0a0f12';
+  ctx.fillRect(0, 0, CW, CH);
+
+  // グリッド線も細く静かな白へ
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.02)';
+  ctx.lineWidth = 0.5;
+  for (let x = 0; x < CW; x += 40) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,CH); ctx.stroke(); }
+  for (let y = 0; y < CH; y += 40) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(CW,y); ctx.stroke(); }
+
+  bricks.forEach(b => {
+    if (!b.alive) return;
+    const ri = Math.min(b.row, ROW_BG.length - 1);
+    ctx.fillStyle = ROW_BG[ri];
+    ctx.fillRect(b.x, b.y, b.w, b.h);
+    ctx.strokeStyle = ROW_BD[ri];
+    ctx.lineWidth = 1;
+    ctx.strokeRect(b.x + 0.5, b.y + 0.5, b.w - 1, b.h - 1);
+  });
+
+  drawParticles();
+  drawDrops();
+
+  if (!started) return;
+
+  const py = paddleY();
+  const PW = paddleWCurrent;
+  const px = paddleX - PW / 2;
+  const wideActive = wideballTimer > 0 || paddleWCurrent > PADDLE_W_BASE + 1;
+  
+  // パドルの配色定義（金属的な白、あるいは熱をもった薄紅）
+  const paddleStroke = wideActive ? '#fda4af' : 'rgba(255,255,255,0.5)';
+  const paddleShadow = wideActive ? '#fda4af' : '#ffffff';
+  const paddleFill   = wideActive ? 'rgba(253,164,175,0.08)' : 'rgba(255,255,255,0.04)';
+  const paddleSheen  = wideActive ? 'rgba(253,164,175,0.2)' : 'rgba(255,255,255,0.15)';
+  
+  ctx.fillStyle = paddleFill;
+  ctx.fillRect(px, py, PW, PADDLE_H);
+  ctx.strokeStyle = paddleStroke;
+  ctx.lineWidth = 1.5;
+  ctx.shadowBlur = wideActive ? 12 : 6; ctx.shadowColor = paddleShadow;
+  ctx.strokeRect(px + 0.5, py + 0.5, PW - 1, PADDLE_H - 1);
+  ctx.shadowBlur = 0;
+  ctx.fillStyle = paddleSheen;
+  ctx.fillRect(px + 2, py + 1.5, PW - 4, 3);
+
+  if (gameState !== 'over') {
+    balls.forEach(ball => {
+      ctx.beginPath();
+      ctx.arc(ball.x, ball.y, BALL_R, 0, Math.PI * 2);
+      ctx.fillStyle = ball.isExtra ? '#93c5fd' : '#ffffff';
+      ctx.shadowBlur = 8;
+      ctx.shadowColor = ball.isExtra ? '#93c5fd' : '#ffffff';
+      ctx.fill();
+      ctx.shadowBlur = 0;
+    });
+  }
+}
+
+// ── Audio (メモリ解放処理含む) ──
+let audioCtx = null;
+
+function getAudioCtx() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return audioCtx;
+}
+
+function playTone(freq, type, duration, gainVal, fadeOut = true) {
+  try {
+    const ctx = getAudioCtx();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, ctx.currentTime);
+    gain.gain.setValueAtTime(gainVal, ctx.currentTime);
+    if (fadeOut) gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + duration);
+    
+    setTimeout(() => {
+      osc.disconnect();
+      gain.disconnect();
+    }, duration * 1000 + 50);
+  } catch(e) {}
+}
+
+function sfxPaddle() {
+  playTone(220, 'square', 0.08, 0.12);
+}
+
+let lastBrickSfx = 0;
+function sfxBrick() {
+  const now = performance.now();
+  if (now - lastBrickSfx < 40) return; 
+  lastBrickSfx = now;
+  try {
+    const ctx = getAudioCtx();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(440, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(220, ctx.currentTime + 0.04);
+    gain.gain.setValueAtTime(0.08, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.06);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.07);
+
+    setTimeout(() => {
+      osc.disconnect();
+      gain.disconnect();
+    }, 120);
+  } catch(e) {}
+}
+
+function sfxPowerup() {
+  const notes = [330, 440, 550, 660];
+  notes.forEach((f, i) => {
+    setTimeout(() => playTone(f, 'square', 0.1, 0.06), i * 40);
+  });
+}
+
+function sfxDeath() {
+  try {
+    const ctx = getAudioCtx();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(180, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(40, ctx.currentTime + 0.4);
+    gain.gain.setValueAtTime(0.15, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.4);
+
+    setTimeout(() => {
+      osc.disconnect();
+      gain.disconnect();
+    }, 450);
+  } catch(e) {}
+}
+
+// ── Pause ────────────────────────────────────────────────────────────────────
+const pauseOverlay = document.getElementById('pauseOverlay');
+const resumeBtn    = document.getElementById('resumeBtn');
+
+function pauseGame() {
+  if (paused || (gameState !== 'playing' && gameState !== 'waiting')) return;
+  paused = true;
+  pauseOverlay.style.display = 'flex';
+  showDot(true);
+}
+
+function resumeGame() {
+  if (!paused) return;
+  paused = false;
+  pauseOverlay.style.display = 'none';
+  showDot(false);
+  userEscaped = false;
+  if (!isMobile) requestPointerLock();
+}
+
+resumeBtn.addEventListener('touchstart', (e) => {
+  e.stopPropagation(); e.preventDefault(); resumeGame();
+}, { passive:false });
+resumeBtn.addEventListener('click', (e) => {
+  e.stopPropagation(); resumeGame();
+});
+
+document.addEventListener('pointerlockchange', () => {
+  if (!isMobile && document.pointerLockElement !== gameArea && !exitedIntentionally) {
+    userEscaped = true;
+    pauseGame();
+  }
+});
+
+// ── Pointer Lock ─────────────────────────────────────────────────────────────
+function requestPointerLock() {
+  if (isMobile) return; 
+  gameArea.requestPointerLock({ unadjustedMovement: true }).catch(() => {
+    gameArea.requestPointerLock();
+  });
+}
+
+gameArea.addEventListener('mousemove', e => {
+  if (!isMobile && document.pointerLockElement === gameArea) {
+    mouseX = Math.max(0, Math.min(CW, mouseX + e.movementX));
+  } else if (!isMobile) {
+    const r = gameArea.getBoundingClientRect();
+    mouseX = e.clientX - r.left;
+  }
+});
+
+// ── Touch Control (相対座標処理への適正化) ──
+gameArea.addEventListener('touchstart', e => {
+  if (overlay.style.display !== 'none' || gameState === 'idle' || gameState === 'over') return;
+  e.preventDefault();
+  
+  const touch = e.touches[0];
+  lastTouchX = touch.clientX;
+  
+  if (gameState === 'waiting') {
+    launch();
+  }
+}, { passive:false });
+
+gameArea.addEventListener('touchmove', e => {
+  e.preventDefault();
+  if (gameState !== 'playing' && gameState !== 'waiting') return;
+  
+  const touch = e.touches[0];
+  const deltaX = touch.clientX - lastTouchX;
+  lastTouchX = touch.clientX;
+  
+  mouseX = Math.max(0, Math.min(CW, mouseX + deltaX * 1.2));
+}, { passive:false });
+
+if (!isMobile) {
+  gameArea.addEventListener('click', () => {
+    if (gameState === 'playing' || gameState === 'waiting') {
+      if (document.pointerLockElement !== gameArea && !userEscaped) {
+        exitedIntentionally = false;
+        paused = false;
+        pauseOverlay.style.display = 'none';
+        requestPointerLock();
+        showDot(false);
+      }
+      if (gameState === 'waiting') {
+        launch();
+      }
+    }
+  });
+}
+
+function handleStartAction(e) {
+  e.stopPropagation();
+  e.preventDefault();
+  initGame();
+}
+startBtn.addEventListener('touchstart', handleStartAction, { passive:false });
+startBtn.addEventListener('click', handleStartAction);
+
+function updateClock() {
+  const now = new Date();
+  document.getElementById('clock').textContent = now.toTimeString().split(' ')[0];
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+function loop() {
+  update();
+  draw();
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
