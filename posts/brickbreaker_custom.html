@@ -18,7 +18,7 @@
 * { margin:0; padding:0; box-sizing:border-box; }
 html, body { 
   width:100%; height:100%; 
-  background:#090b0d; /* ほんの少しだけ青みを帯びた深い夜の影 */
+  background:#060b14; /* 深宇宙の奥深くを思わせる濃紺 */
   overflow:hidden; 
   font-family:'Klee One', 'Share Tech Mono', 'Courier New', monospace;
 }
@@ -32,27 +32,27 @@ body.hide-cursor { cursor: none; }
   z-index: 200;
   width: 20px;
   height: 24px;
-  filter: drop-shadow(0 0 4px rgba(255,255,255,0.3));
+  filter: drop-shadow(0 0 6px rgba(56,189,248,0.5));
   display: none;
 }
-#wrap { position:fixed; inset:0; display:flex; flex-direction:column; background:#090b0d; }
+#wrap { position:fixed; inset:0; display:flex; flex-direction:column; background:#060b14; }
 #topbar {
   height:32px; flex-shrink:0; display:flex; justify-content:space-between; align-items:center;
-  padding:0 20px; border-bottom:1px solid rgba(255, 255, 255, 0.03);
-  font-size:11px; color:#2f353b; letter-spacing:3px;
+  padding:0 20px; border-bottom:1px solid rgba(56, 189, 248, 0.08);
+  font-size:11px; color:#384f6b; letter-spacing:3px; /* ネビュラブルー */
 }
 #homeBtn {
-  color:rgba(255, 255, 255, 0.4); text-decoration:none; letter-spacing:2px; font-size:12px;
-  transition: color 0.15s;
+  color:rgba(56, 189, 248, 0.5); text-decoration:none; letter-spacing:2px; font-size:12px;
+  transition: color 0.15s, text-shadow 0.15s;
   font-weight: 600;
 }
-#homeBtn:hover { color:#ffffff; }
+#homeBtn:hover { color:#7dd3fc; text-shadow: 0 0 8px rgba(56,189,248,0.6); }
 #canvasWrap {
   flex:1; overflow:hidden;
   display:flex; flex-direction:row; align-items:center; justify-content:center;
-  background: #090b0d;
-  border-top: 1px solid rgba(255, 255, 255, 0.02);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+  background: #060b14;
+  border-top: 1px solid rgba(56, 189, 248, 0.03);
+  border-bottom: 1px solid rgba(56, 189, 248, 0.03);
 }
 #leaderboard {
   flex-shrink:0;
@@ -62,7 +62,7 @@ body.hide-cursor { cursor: none; }
 #leaderboard.lb-left {
   width:160px;
   align-self:stretch;
-  border-right:1px solid rgba(255, 255, 255, 0.03);
+  border-right:1px solid rgba(56, 189, 248, 0.06);
   border-bottom:none;
 }
 #leaderboard.lb-top {
@@ -72,7 +72,7 @@ body.hide-cursor { cursor: none; }
   flex-wrap:wrap;
   gap:8px 24px;
   padding:12px 20px;
-  border-bottom:1px solid rgba(255, 255, 255, 0.03);
+  border-bottom:1px solid rgba(56, 189, 248, 0.06);
   border-right:none;
   align-self:auto;
 }
@@ -83,104 +83,106 @@ body.hide-cursor { cursor: none; }
 #leaderboard.lb-top ol li { border-bottom:none; padding:0; }
 #leaderboard.lb-top .lb-empty { margin-top:0; line-height:1.5; }
 #leaderboard h3 {
-  font-size:11px; letter-spacing:4px; color:#2f353b;
+  font-size:11px; letter-spacing:4px; color:#384f6b;
   text-transform:uppercase; margin-bottom:12px;
-  border-bottom:1px solid rgba(255, 255, 255, 0.03); padding-bottom:6px;
+  border-bottom:1px solid rgba(56, 189, 248, 0.06); padding-bottom:6px;
 }
 #leaderboard ol { list-style:none; padding:0; margin:0; }
 #leaderboard ol li {
   display:flex; justify-content:space-between;
-  padding:6px 0; border-bottom:1px solid rgba(255, 255, 255, 0.02);
-  font-size:11px; color:rgba(255, 255, 255, 0.3); letter-spacing:2px;
+  padding:6px 0; border-bottom:1px solid rgba(56, 189, 248, 0.03);
+  font-size:11px; color:rgba(56, 189, 248, 0.4); letter-spacing:2px;
   font-family: 'Share Tech Mono', monospace;
 }
 .lb-empty {
-  color:#2f353b; font-size:11px; letter-spacing:3px;
+  color:#384f6b; font-size:11px; letter-spacing:3px;
   margin-top:8px; line-height:2;
 }
 #gameArea {
   position:relative;
   flex-shrink:0;
-  outline: 1px solid rgba(255, 255, 255, 0.04);
+  outline: 1px solid rgba(56, 189, 248, 0.08);
 }
 #ideoLink {
   margin-top:16px; padding:12px 36px;
-  border:1px solid rgba(255, 255, 255, 0.12); color:rgba(255, 255, 255, 0.5);
+  border:1px solid rgba(56, 189, 248, 0.2); color:rgba(125, 211, 252, 0.7);
   background:transparent; font-family:'Klee One', sans-serif;
   font-size:13px; letter-spacing:4px; cursor:pointer;
   text-decoration:none;
   transition: all 0.2s;
 }
-#ideoLink:hover { background:rgba(255, 255, 255, 0.02); border-color:rgba(255, 255, 255, 0.3); color:#fff; }
+#ideoLink:hover { background:rgba(56, 189, 248, 0.05); border-color:rgba(56, 189, 248, 0.5); color:#fff; }
 
 #botbar {
   height:28px; flex-shrink:0; display:flex; justify-content:space-between; align-items:center;
-  padding:0 24px; border-top:1px solid rgba(255, 255, 255, 0.03);
-  font-size:11px; color:#2f353b; letter-spacing:3px;
+  padding:0 24px; border-top:1px solid rgba(56, 189, 248, 0.08);
+  font-size:11px; color:#384f6b; letter-spacing:3px;
 }
 #botbar span { display: flex; align-items: center; gap: 6px; }
-#botbar b { font-family: 'Share Tech Mono', monospace; color: rgba(255, 255, 255, 0.5); font-weight: normal; }
+#botbar b { font-family: 'Share Tech Mono', monospace; color: #7dd3fc; font-weight: normal; text-shadow: 0 0 4px rgba(56,189,248,0.3); }
 
 canvas { display:block; position:absolute; top:0; left:0; }
 
-/* 環境エフェクト：雨の日の朝のような薄い空気の膜 */
+/* 環境エフェクト：星雲の塵が漂うような薄い膜 */
 #scanlines {
   position:absolute; inset:0; pointer-events:none; z-index:5;
-  background:repeating-linear-gradient(0deg,transparent,transparent 4px,rgba(255,255,255,0.01) 4px,rgba(255,255,255,0.01) 5px);
+  background:repeating-linear-gradient(0deg,transparent,transparent 4px,rgba(56,189,248,0.015) 4px,rgba(56,189,248,0.015) 5px);
 }
 
 #overlay, #pauseOverlay {
   position:absolute; inset:0; z-index:20;
   display:flex; flex-direction:column; align-items:center; justify-content:center;
-  background:rgba(9, 11, 13, 0.85);
+  background:rgba(6, 11, 20, 0.85);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
 }
 #pauseOverlay { z-index:21; display:none; }
-#pauseOverlay .glitch { font-size:clamp(18px,4vw,36px); }
+#pauseOverlay .glitch { font-size:clamp(18px,4vw,36px); color:#7dd3fc; text-shadow: 0 0 10px rgba(56,189,248,0.5); }
 
 .pause-btn {
   margin-top:12px; padding:12px 36px;
-  border:1px solid rgba(255, 255, 255, 0.12); color:rgba(255, 255, 255, 0.5);
+  border:1px solid rgba(56, 189, 248, 0.2); color:rgba(125, 211, 252, 0.7);
   background:transparent; font-family:'Klee One', sans-serif;
   font-size:13px; letter-spacing:4px; cursor:pointer;
   text-decoration:none; display:block; text-align:center;
   transition: all 0.2s;
 }
-.pause-btn:hover { background:rgba(255, 255, 255, 0.02); border-color:rgba(255, 255, 255, 0.3); color:#fff; }
+.pause-btn:hover { background:rgba(56, 189, 248, 0.05); border-color:rgba(56, 189, 248, 0.5); color:#fff; }
 
 .glitch {
   font-family:'Klee One', sans-serif;
   font-weight: 400;
-  font-size:clamp(20px,4vw,36px); color:#ffffff;
+  font-size:clamp(20px,4vw,36px); color:#bae6fd;
   letter-spacing:10px; text-transform:uppercase;
-  opacity: 0.85; margin-bottom:14px;
+  opacity: 0.9; margin-bottom:14px;
+  text-shadow: 0 0 12px rgba(56,189,248,0.4);
 }
-.tagline { font-size:11px; color:rgba(255, 255, 255, 0.3); letter-spacing:4px; margin:4px 0; }
-.hint { font-size:11px; color:#2f353b; letter-spacing:2px; margin:3px 0; }
+.tagline { font-size:11px; color:rgba(56, 189, 248, 0.5); letter-spacing:4px; margin:4px 0; }
+.hint { font-size:11px; color:#384f6b; letter-spacing:2px; margin:3px 0; }
 
 #startBtn {
   margin-top:32px; padding:12px 40px;
-  border:1px solid rgba(255, 255, 255, 0.12); color:rgba(255, 255, 255, 0.7);
+  border:1px solid rgba(56, 189, 248, 0.25); color:#7dd3fc;
   background:transparent; font-family:'Klee One', sans-serif;
   font-size:13px; letter-spacing:4px; cursor:pointer;
   transition: all 0.2s;
+  text-shadow: 0 0 4px rgba(56,189,248,0.3);
 }
-#startBtn:hover { background:rgba(255, 255, 255, 0.02); border-color:rgba(255, 255, 255, 0.3); color:#fff; }
+#startBtn:hover { background:rgba(56, 189, 248, 0.05); border-color:rgba(56, 189, 248, 0.6); color:#fff; box-shadow: 0 0 10px rgba(56,189,248,0.2); }
 </style>
 </head>
 <body>
 <div id="cursor-dot">
   <svg width="20" height="24" viewBox="0 0 20 24" fill="none" xmlns="https://www.w3.org/2000/svg">
     <path d="M2 2 L2 20 L6.5 15.5 L10.5 22 L13 21 L9 14.5 L16 14.5 Z"
-          fill="rgba(255,255,255,0.7)" stroke="#090b0d" stroke-width="1.5" stroke-linejoin="round"/>
+          fill="rgba(125,211,252,0.8)" stroke="#060b14" stroke-width="1.5" stroke-linejoin="round"/>
   </svg>
 </div>
 <div id="wrap">
   <div id="topbar">
     <a id="homeBtn" href="https://yuduki-glass.com/">⌂ 結月硝子</a>
     <span>S I G N A L  /  A R C H I V E  /  C H A N N E L</span>
-    <span id="clock" style="font-family: 'Share Tech Mono', monospace; color: rgba(255,255,255,0.25);">00:00:00</span>
+    <span id="clock" style="font-family: 'Share Tech Mono', monospace; color: rgba(56,189,248,0.4);">00:00:00</span>
   </div>
   <div id="canvasWrap">
     <div id="leaderboard">
@@ -249,7 +251,6 @@ window.addEventListener('mousemove', (e) => {
 let CW, CH; 
 let isPortrait = false;
 
-// 衝突時の微かな震え用の変数
 let shakeTime = 0;
 function triggerShake(duration) {
   shakeTime = duration;
@@ -323,7 +324,7 @@ let started = false;
 
 let lastTouchX = 0;
 
-// ── Powerups (不完全な美しさを秘めた識別子) ──
+// ── Powerups (きらめく星々のような識別子) ──
 let drops = [];
 const PU_MULTIBALL  = 'multiball';
 const PU_WIDEBALL   = 'wideball';
@@ -338,17 +339,17 @@ let wideballTimer  = 0;
 function activateWideball() {
   paddleWTarget = PADDLE_W_WIDE;
   wideballTimer = performance.now() + WIDEBALL_DURATION;
-  // ほどける粒子（微かなアイスブルー）
-  const colors = ['rgba(224,242,254,0.3)', 'rgba(255,255,255,0.15)'];
+  // きらめく水色と紫の粒子
+  const colors = ['rgba(56,189,248,0.5)', 'rgba(192,132,252,0.4)'];
   for (let i = 0; i < 20; i++) {
     const angle = Math.random() * Math.PI * 2;
-    const speed = 1 + Math.random() * 2.5;
+    const speed = 1.5 + Math.random() * 3.5;
     particles.push({
       type: 'spark', x: paddleX, y: paddleY(),
       vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed - 0.5,
-      life: 1, decay: 0.025,
+      life: 1, decay: 0.03,
       color: colors[Math.floor(Math.random() * colors.length)],
-      size: 1.5 + Math.random() * 1.5
+      size: 1.5 + Math.random() * 2
     });
   }
 }
@@ -381,7 +382,7 @@ function spawnDrop(bx, by, bw, bh, type) {
 function drawMultiballIcon(cx, cy, size) {
   const r = size * 0.18;
   const offsets = [[-size*0.23, size*0.08],[size*0.23, size*0.08],[0, -size*0.23]];
-  ctx.fillStyle = 'rgba(224,242,254,0.5)'; // ほんのりアイスブルー
+  ctx.fillStyle = '#38bdf8'; // きらめくアクア
   for (const [ox, oy] of offsets) {
     ctx.beginPath();
     ctx.arc(cx + ox, cy + oy, r, 0, Math.PI * 2);
@@ -391,7 +392,7 @@ function drawMultiballIcon(cx, cy, size) {
 
 function drawWidePaddleIcon(cx, cy, size) {
   const hw = size * 0.38, hh = size * 0.1;
-  ctx.fillStyle = 'rgba(255,228,230,0.5)'; // ほん subterranean な薄紅
+  ctx.fillStyle = '#c084fc'; // コズミックパープル
   ctx.fillRect(cx - hw, cy - hh, hw * 2, hh * 2);
 }
 
@@ -400,7 +401,7 @@ function updateDrops() {
   const pw = paddleWCurrent;
   drops.forEach(d => {
     d.y += d.vy;
-    d.pulse += 0.08;
+    d.pulse += 0.12;
     if (d.y + d.h / 2 >= py && d.y - d.h / 2 <= py + PADDLE_H &&
         d.x >= paddleX - pw / 2 - d.w / 2 && d.x <= paddleX + pw / 2 + d.w / 2) {
       d.caught = true;
@@ -427,10 +428,10 @@ function activateMultiball() {
       });
     }
   }
-  const colors = ['rgba(224,242,254,0.3)', 'rgba(255,255,255,0.15)'];
+  const colors = ['rgba(56,189,248,0.5)', 'rgba(192,132,252,0.4)'];
   for (let i = 0; i < 15; i++) {
     const angle = Math.random() * Math.PI * 2;
-    const speed = 1 + Math.random() * 2.5;
+    const speed = 1.5 + Math.random() * 3.5;
     particles.push({
       type: 'spark', x: paddleX, y: paddleY(),
       vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed - 0.5,
@@ -443,12 +444,15 @@ function activateMultiball() {
 
 function drawDrops() {
   drops.forEach(d => {
-    const alpha = 0.15 + 0.08 * Math.sin(d.pulse);
-    ctx.fillStyle = '#090b0d';
-    ctx.strokeStyle = `rgba(255, 255, 255, ${alpha + 0.15})`;
+    const alpha = 0.2 + 0.1 * Math.sin(d.pulse);
+    ctx.fillStyle = '#060b14';
+    ctx.strokeStyle = `rgba(56, 189, 248, ${alpha + 0.3})`;
     ctx.lineWidth = 1;
+    ctx.shadowBlur = 4;
+    ctx.shadowColor = '#38bdf8';
     roundRect(ctx, d.x - d.w/2, d.y - d.h/2, d.w, d.h, 2);
     ctx.fill(); ctx.stroke();
+    ctx.shadowBlur = 0;
     if (d.type === PU_WIDEBALL) drawWidePaddleIcon(d.x, d.y, d.h);
     else drawMultiballIcon(d.x, d.y, d.h);
   });
@@ -468,53 +472,53 @@ function roundRect(c, x, y, w, h, r) {
   c.closePath();
 }
 
-// ── Particles (不完全な美しさ：いびつな破片が混じってゆっくり漂う) ──
+// ── Particles (キラキラした宇宙：星屑のように激しく弾け飛ぶ破片) ──
 let particles = [];
 
 function spawnBrickParticles(bx, by, bw, bh) {
   const cx = bx + bw / 2, cy = by + bh / 2;
-  // ガラスの不純物やプリズムの光を模したアイスブルーと薄紅、白のグラデーション
-  const colors = ['rgba(224,242,254,0.4)', 'rgba(255,228,230,0.3)', 'rgba(255,255,255,0.15)'];
+  // 宇宙ガラスの彩り（アクアブルー、コズミックパープル、純白の星屑）
+  const colors = ['rgba(56,189,248,0.7)', 'rgba(192,132,252,0.6)', 'rgba(255,255,255,0.8)'];
   
-  // 霧のように漂う小さな粒
-  for (let i = 0; i < 14; i++) {
+  // 星のきらめき粒子（少し速度を上げ、華やかに散らす）
+  for (let i = 0; i < 18; i++) {
     const angle = Math.random() * Math.PI * 2;
-    const speed = 0.4 + Math.random() * 1.2;
+    const speed = 0.8 + Math.random() * 2.5;
     particles.push({
       type: 'spark', x: cx, y: cy,
-      vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed * 0.4, 
-      life: 1, decay: 0.010 + Math.random() * 0.008, 
+      vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed * 0.7, 
+      life: 1, decay: 0.015 + Math.random() * 0.015, 
       color: colors[Math.floor(Math.random() * colors.length)],
-      size: 1 + Math.random() * 1.8
+      size: 1 + Math.random() * 2.2
     });
   }
-  // 不完全さを際立たせる、いびつに割れたガラスの薄い破片（多めに混ぜる）
-  for (let i = 0; i < 7; i++) {
+  // 飛び散るガラスの結晶（きらめく水色と紫のブレンド）
+  for (let i = 0; i < 8; i++) {
     const angle = Math.random() * Math.PI * 2;
-    const speed = 0.2 + Math.random() * 0.8;
+    const speed = 0.4 + Math.random() * 1.5;
     particles.push({
       type: 'shard',
       x: bx + Math.random() * bw, y: by + Math.random() * bh,
       vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed,
-      life: 1, decay: 0.008 + Math.random() * 0.008,
-      color: Math.random() > 0.4 ? 'rgba(224,242,254,0.2)' : 'rgba(255,228,230,0.15)',
+      life: 1, decay: 0.012 + Math.random() * 0.012,
+      color: Math.random() > 0.5 ? 'rgba(125,211,252,0.4)' : 'rgba(216,180,254,0.35)',
       w: 2 + Math.random() * 5, h: 2 + Math.random() * 4,
-      rot: Math.random() * Math.PI * 2, rotV: (Math.random() - 0.5) * 0.08
+      rot: Math.random() * Math.PI * 2, rotV: (Math.random() - 0.5) * 0.15
     });
   }
 }
 
 function spawnDeathParticles(x, y) {
-  const colors = ['rgba(255,228,230,0.3)', 'rgba(224,242,254,0.2)', 'rgba(255,255,255,0.05)'];
+  const colors = ['rgba(192,132,252,0.5)', 'rgba(56,189,248,0.4)', 'rgba(255,255,255,0.2)'];
   for (let i = 0; i < 25; i++) {
     const angle = Math.random() * Math.PI * 2;
-    const speed = 0.6 + Math.random() * 2.5;
+    const speed = 1.0 + Math.random() * 3.5;
     particles.push({
       type: 'spark', x, y,
       vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed - 0.3,
-      life: 1, decay: 0.012 + Math.random() * 0.012,
+      life: 1, decay: 0.015 + Math.random() * 0.015,
       color: colors[Math.floor(Math.random() * colors.length)],
-      size: 1.5 + Math.random() * 2
+      size: 1.5 + Math.random() * 2.5
     });
   }
 }
@@ -524,7 +528,7 @@ function updateParticles() {
     p.life -= p.decay;
     if (p.type === 'spark') { 
       p.x += p.vx; p.y += p.vy; 
-      p.vy += 0.015; 
+      p.vy += 0.01; 
     } else if (p.type === 'shard') { 
       p.x += p.vx; p.y += p.vy; 
       p.rot += p.rotV; 
@@ -541,7 +545,13 @@ function drawParticles() {
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
       ctx.fillStyle = p.color;
+      // 星のまたたき風の微弱なグロー
+      if (Math.random() > 0.5) {
+        ctx.shadowBlur = 4;
+        ctx.shadowColor = p.color;
+      }
       ctx.fill();
+      ctx.shadowBlur = 0;
     } else if (p.type === 'shard') {
       ctx.save();
       ctx.translate(p.x, p.y); ctx.rotate(p.rot);
@@ -630,14 +640,14 @@ function updHUD() {
   document.getElementById('hv').textContent = String(hi).padStart(6,'0');
 }
 
-// きれいなガラス。でも厚みや不純物で歪む不完全な透明（アイスブルーと薄紅の透過グラデーション）
+// 宇宙ガラスのパレット（アクアブルーとコズミックパープルの煌めく透過グラデーション層）
 const ROW_BG = [
-  'rgba(224,242,254,0.24)', 'rgba(255,228,230,0.20)', 'rgba(255,255,255,0.18)',
-  'rgba(224,242,254,0.14)', 'rgba(255,228,230,0.12)', 'rgba(255,255,255,0.08)'
+  'rgba(56,189,248,0.35)', 'rgba(192,132,252,0.30)', 'rgba(125,211,252,0.25)',
+  'rgba(216,180,254,0.20)', 'rgba(56,189,248,0.15)', 'rgba(192,132,252,0.10)'
 ];
 const ROW_BD = [
-  'rgba(224,242,254,0.22)', 'rgba(255,228,230,0.18)', 'rgba(255,255,255,0.14)',
-  'rgba(224,242,254,0.10)', 'rgba(255,228,230,0.08)', 'rgba(255,255,255,0.04)'
+  'rgba(56,189,248,0.40)', 'rgba(192,132,252,0.35)', 'rgba(125,211,252,0.30)',
+  'rgba(216,180,254,0.25)', 'rgba(56,189,248,0.20)', 'rgba(192,132,252,0.15)'
 ];
 
 function update() {
@@ -663,9 +673,9 @@ function update() {
   for (const ball of balls) {
     if (ball.lost) continue;
     
-    // 淡いアイスブルーが滲む、短い残像
+    // 彗星の軌跡（鮮やかな水色が滲む、美しい宇宙線の残像）
     ball.history.push({ x: ball.x, y: ball.y });
-    if (ball.history.length > 4) ball.history.shift();
+    if (ball.history.length > 6) ball.history.shift();
 
     ball.x += ball.vx;
     ball.y += ball.vy;
@@ -766,10 +776,11 @@ function draw() {
   }
 
   ctx.clearRect(0, 0, CW, CH);
-  ctx.fillStyle = '#090b0d';
+  ctx.fillStyle = '#060b14';
   ctx.fillRect(0, 0, CW, CH);
 
-  ctx.strokeStyle = 'rgba(255, 255, 255, 0.012)';
+  // 星雲のグリッド線（極薄の宇宙水色）
+  ctx.strokeStyle = 'rgba(56, 189, 248, 0.025)';
   ctx.lineWidth = 0.5;
   for (let x = 0; x < CW; x += 40) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,CH); ctx.stroke(); }
   for (let y = 0; y < CH; y += 40) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(CW,y); ctx.stroke(); }
@@ -793,32 +804,32 @@ function draw() {
   const PW = paddleWCurrent;
   const px = paddleX - PW / 2;
   
-  // パドル: ガラスの不完全な存在感（透過白＋細い枠線）
-  ctx.fillStyle = 'rgba(255, 255, 255, 0.16)';
+  // パドル: 流星を受け止めるすりガラス（水色を帯びた透過層＋枠線）
+  ctx.fillStyle = 'rgba(56, 189, 248, 0.15)';
   ctx.fillRect(px, py, PW, PADDLE_H);
-  ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
+  ctx.strokeStyle = 'rgba(125, 211, 252, 0.45)';
   ctx.lineWidth = 1;
   ctx.strokeRect(px + 0.5, py + 0.5, PW - 1, PADDLE_H - 1);
 
   if (gameState !== 'over') {
     balls.forEach(ball => {
-      // 記憶の痕跡（ごく短い時間だけ滲むアイスブルーの跡）
+      // 彗星の軌跡（透き通ったアクアブルーの美しい残像）
       if (ball.history) {
         ball.history.forEach((pos, idx) => {
-          const trailAlpha = (idx + 1) / ball.history.length * 0.12;
+          const trailAlpha = (idx + 1) / ball.history.length * 0.25;
           ctx.beginPath();
-          ctx.arc(pos.x, pos.y, BALL_R, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(147, 197, 253, ${trailAlpha})`; // アイスブルーの残像
+          ctx.arc(pos.x, pos.y, BALL_R * 0.9, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(56, 189, 248, ${trailAlpha})`; 
           ctx.fill();
         });
       }
 
-      // 観測点（はっきりと発光する白）
+      // 観測点（強烈にきらめく一番星の白＋水色の後光）
       ctx.beginPath();
       ctx.arc(ball.x, ball.y, BALL_R, 0, Math.PI * 2);
       ctx.fillStyle = '#ffffff';
-      ctx.shadowBlur = 12;
-      ctx.shadowColor = '#ffffff';
+      ctx.shadowBlur = 14;
+      ctx.shadowColor = '#38bdf8'; // 水色の美しいグロー効果
       ctx.fill();
       ctx.shadowBlur = 0;
     });
