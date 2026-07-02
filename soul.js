@@ -58,47 +58,57 @@ setTimeout(() => {
 let mouseX = window.innerWidth / 2;
 let mouseY = window.innerHeight / 2;
 
+// ページ全体の絶対座標としてのマウス位置（スクロール分を足す）
+let pageMouseX = mouseX;
+let pageMouseY = mouseY;
+
 let soulX = mouseX;
 let soulY = mouseY;
 
 document.addEventListener("mousemove", e => {
     mouseX = e.clientX;
     mouseY = e.clientY;
+    // マウスが動いた時点での、ページ全体に対する座標を計算
+    pageMouseX = mouseX + window.scrollX;
+    pageMouseY = mouseY + window.scrollY;
 });
 
 // 文字の座標を事前にキャッシュする配列
 let cachedCharPositions = [];
 
-// 画面のリサイズやスクロール時に文字の位置を再計算する関数
 function cachePositions() {
     cachedCharPositions = chars.map(char => {
         const rect = char.getBoundingClientRect();
         return {
             element: char,
-            // 画面（ビューポート）に対する静的な中心座標を記録
-            cx: rect.left + rect.width / 2,
-            cy: rect.top + rect.height / 2
+            // 💡 画面（ビューポート）ではなく、ページ全体（ドキュメント）に対する絶対中心座標を記録！
+            cx: rect.left + rect.width / 2 + window.scrollX,
+            cy: rect.top + rect.height / 2 + window.scrollY
         };
     });
 }
 
-// 最初のタイピングアニメーションが終わる頃、または初期化時にキャッシュを作る
-// ※最初の段階で位置を取ると、アニメーション中のズレた位置を拾うため、少し遅らせるのがコツ
+// 💡 スクロールイベントでの cachePositions 連発は削除！リサイズ時だけで十分。
 setTimeout(cachePositions, 500);
-
-// ウィンドウのサイズが変わったら位置がズレるので再キャッシュ
 window.addEventListener("resize", cachePositions);
-window.addEventListener("scroll", cachePositions, { passive: true });
 
 
 function animateSoul() {
-    // 追従ロジック（0.18のままでOK、ねっとり感を出したければ0.08〜0.1あたりに落としてもいい）
-    soulX += (mouseX - soulX) * 0.18;
-    soulY += (mouseY - soulY) * 0.18;
+    // 💡 画面基準ではなく、ページ全体のターゲット（pageMouse）を追従する
+    // スクロールが止まっていても、スクロール中であっても、これで人魂の位置がページに固定される
+    const targetX = mouseX + window.scrollX;
+    const targetY = mouseY + window.scrollY;
 
-    // ★重要: left/top ではなく transform3d を使う。圧倒的に軽い。
-    // 人魂のサイズ（24px）の半分（12px）をここで引いて、中心がカーソルに合うようにする。
-    soul.style.transform = `translate3d(${soulX - 12}px, ${soulY - 12}px, 0)`;
+    soulX += (targetX - soulX) * 0.18;
+    soulY += (targetY - soulY) * 0.18;
+
+    // 💡 人魂自体が「position: fixed」なら画面基準に戻す必要があるし、
+    // 「position: absolute」ならそのまま soulX/Y を使える。
+    // ここでは、人魂が「position: fixed」として動いている前提で、画面に対する座標に変換して描画するね。
+    const renderX = soulX - window.scrollX;
+    const renderY = soulY - window.scrollY;
+
+    soul.style.transform = `translate3d(${renderX - 12}px, ${renderY - 12}px, 0)`;
 
     illuminateChars();
 
@@ -109,23 +119,20 @@ animateSoul();
 
 /* =========================
    文字照射（超軽量化版）
-========================= */
+======================== */
 function illuminateChars() {
-    // 毎回 getBoundingClientRect を呼ばず、キャッシュした配列を回す
     const len = cachedCharPositions.length;
     
-    // パフォーマンス最優先のため、通常のforEachより高速なforループを採用
+    // 💡 soulX, soulY がページ絶対座標になったので、同じく絶対座標の cx, cy とそのまま比較できる
     for (let i = 0; i < len; i++) {
         const charData = cachedCharPositions[i];
         
         const dx = charData.cx - soulX;
         const dy = charData.cy - soulY;
 
-        // 重い Math.sqrt（平方根）を排除
-        // 距離が80未満かどうかは、2乗同士の比較（dx*dx + dy*dy < 80*80）で判定できる
         const distanceSq = dx * dx + dy * dy;
 
-        if (distanceSq < 6400) { // 80 の 2乗 = 6400
+        if (distanceSq < 6400) { 
             charData.element.classList.add("lit");
         } else {
             charData.element.classList.remove("lit");
