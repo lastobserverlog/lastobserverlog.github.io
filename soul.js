@@ -65,48 +65,58 @@ document.addEventListener("mousemove", e => {
     mouseY = e.clientY;
 });
 
+// 💡 スクロールした瞬間に、ブラウザの描画を待たずに即座に人魂の位置をズラすための仕掛け
+let lastScrollY = window.scrollY;
+
+window.addEventListener("scroll", () => {
+    const currentScrollY = window.scrollY;
+    const diffY = currentScrollY - lastScrollY;
+    
+    // スクロールされた量だけ、人魂の「画面上の現在地」を即座に逆方向に相殺する
+    // これによって文字がスクロールで上に動いた瞬間、人魂も物理的に画面上で同時に動く
+    soulY -= diffY; 
+    
+    // transformを即座に更新して、描画遅延（置いていかれ現象）を強制的に潰す
+    soul.style.transform = `translate3d(${soulX - 12}px, ${soulY - 12}px, 0)`;
+    
+    lastScrollY = currentScrollY;
+    illuminateChars();
+}, { passive: true });
+
 // 文字の座標を事前にキャッシュする配列
 let cachedCharPositions = [];
 
 function cachePositions() {
-    // 💡 現在のスクロール量を取得しておく
     const currentX = window.scrollX;
     const currentY = window.scrollY;
 
     cachedCharPositions = chars.map(char => {
         const rect = char.getBoundingClientRect();
-        
-        // 💡 inline要素のバグ対策：widthやheightが0やイレギュラーな値になるのを防ぐ安全弁
         const w = rect.width || 18; 
         const h = rect.height || 21; 
 
         return {
             element: char,
-            // 💡 ビューポート基準の中心点
             cx: rect.left + w / 2,
             cy: rect.top + h / 2,
-            // 💡 この座標を「記録した瞬間」のスクロール位置をそれぞれに持たせる
             initialScrollX: currentX,
             initialScrollY: currentY
         };
     });
+    // スクロール基準点を最新の状態にリセット
+    lastScrollY = currentY;
 }
 
-// 💡 【重要】1.8秒のアニメーション＋全体のタイピングが終わる「完全静止状態」を待ってからキャッシュする。
-// 500msだと文字がまだ左側に激しくブレている最中なので、完全に演出が落ち着いた頃（2.5秒後〜全文字出現後）に取る。
 const cacheDelay = Math.max(2500, totalTime - 1000);
 setTimeout(cachePositions, cacheDelay);
-
-// 画面サイズ変更時はアニメーションが終わっているはずなので即座に再計算
 window.addEventListener("resize", cachePositions);
 
 
 function animateSoul() {
-    // 画面基準のマウス位置をねっとり追従
+    // 通常のマウス移動に対するねっとり追従（0.18）
     soulX += (mouseX - soulX) * 0.18;
     soulY += (mouseY - soulY) * 0.18;
 
-    // fixedなので、画面上の座標をそのまま叩き込む
     soul.style.transform = `translate3d(${soulX - 12}px, ${soulY - 12}px, 0)`;
 
     illuminateChars();
@@ -121,7 +131,7 @@ animateSoul();
 ========================= */
 function illuminateChars() {
     const len = cachedCharPositions.length;
-    if (len === 0) return; // キャッシュがまだ作られていない間はスキップ
+    if (len === 0) return; 
 
     const currentScrollX = window.scrollX;
     const currentScrollY = window.scrollY;
@@ -129,7 +139,6 @@ function illuminateChars() {
     for (let i = 0; i < len; i++) {
         const charData = cachedCharPositions[i];
         
-        // キャッシュ時からのスクロールの移動量を引き算して、現在の画面上の位置をリアルタイムに同期
         const scrollDiffX = currentScrollX - charData.initialScrollX;
         const scrollDiffY = currentScrollY - charData.initialScrollY;
         
