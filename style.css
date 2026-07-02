@@ -157,7 +157,10 @@ body::before {
     opacity: 0;
     display: inline-block;
     color: #a87c00;
-    transition: transform .12s ease, color .3s ease, filter .3s ease;
+    
+    /* 💡 transform の transition を削除！color と filter だけにする */
+    transition: color .3s ease, filter .3s ease; 
+    
     animation: fogRise 1.8s cubic-bezier(.16,.8,.2,1) forwards;
 }
 
