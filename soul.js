@@ -53,7 +53,7 @@ setTimeout(() => {
 
 
 /* =========================
-   人魂追従 & アニメーション
+   人魂追従 & アニメーション（超高精度スクロール同期版）
 ========================= */
 let mouseX = window.innerWidth / 2;
 let mouseY = window.innerHeight / 2;
@@ -65,21 +65,22 @@ document.addEventListener("mousemove", e => {
     mouseY = e.clientY;
 });
 
-// 💡 スクロールした瞬間に、ブラウザの描画を待たずに即座に人魂の位置をズラすための仕掛け
+// スクロール時の強制同期用変数
 let lastScrollY = window.scrollY;
 
 window.addEventListener("scroll", () => {
     const currentScrollY = window.scrollY;
     const diffY = currentScrollY - lastScrollY;
     
-    // スクロールされた量だけ、人魂の「画面上の現在地」を即座に逆方向に相殺する
-    // これによって文字がスクロールで上に動いた瞬間、人魂も物理的に画面上で同時に動く
+    // 💡 スクロールされた瞬間に人魂の内部座標をダイレクトに補正
     soulY -= diffY; 
     
-    // transformを即座に更新して、描画遅延（置いていかれ現象）を強制的に潰す
+    // ブラウザの描画遅延が起きる前に、1ミリの隙もなくtransformを強制書き換え
     soul.style.transform = `translate3d(${soulX - 12}px, ${soulY - 12}px, 0)`;
     
     lastScrollY = currentScrollY;
+    
+    // 💡 スクロール中もリアルタイムに文字の明滅判定を強制実行
     illuminateChars();
 }, { passive: true });
 
@@ -97,23 +98,24 @@ function cachePositions() {
 
         return {
             element: char,
-            cx: rect.left + w / 2,
-            cy: rect.top + h / 2,
-            initialScrollX: currentX,
-            initialScrollY: currentY
+            // 💡 スクロール差分をあらかじめ吸収した「ドキュメント絶対座標」をベースに持つ
+            cx: rect.left + w / 2 + currentX,
+            cy: rect.top + h / 2 + currentY
         };
     });
-    // スクロール基準点を最新の状態にリセット
-    lastScrollY = currentY;
 }
 
+// 💡 【ここを修正】文字が長いため、開いてすぐに1回キャッシュを作る（スクロール対策）
+// その後、アニメーション（fogRise）が完全に終わる頃にもう一度だけ正確な位置で上書きする
+setTimeout(cachePositions, 100); 
 const cacheDelay = Math.max(2500, totalTime - 1000);
 setTimeout(cachePositions, cacheDelay);
+
 window.addEventListener("resize", cachePositions);
 
 
 function animateSoul() {
-    // 通常のマウス移動に対するねっとり追従（0.18）
+    // 通常時のねっとり追従
     soulX += (mouseX - soulX) * 0.18;
     soulY += (mouseY - soulY) * 0.18;
 
@@ -127,7 +129,7 @@ animateSoul();
 
 
 /* =========================
-   文字照射（スクロール差分完全吸収版）
+   文字照射（絶対座標比較版・軽量）
 ========================= */
 function illuminateChars() {
     const len = cachedCharPositions.length;
@@ -136,17 +138,16 @@ function illuminateChars() {
     const currentScrollX = window.scrollX;
     const currentScrollY = window.scrollY;
     
+    // 💡 人魂の現在の「ドキュメント上の絶対座標」を算出
+    const absoluteSoulX = soulX + currentScrollX;
+    const absoluteSoulY = soulY + currentScrollY;
+    
     for (let i = 0; i < len; i++) {
         const charData = cachedCharPositions[i];
         
-        const scrollDiffX = currentScrollX - charData.initialScrollX;
-        const scrollDiffY = currentScrollY - charData.initialScrollY;
-        
-        const currentCharCx = charData.cx - scrollDiffX;
-        const currentCharCy = charData.cy - scrollDiffY;
-        
-        const dx = currentCharCx - soulX;
-        const dy = currentCharCy - soulY;
+        // 💡 絶対座標同士で比較するから、スクロールの計算ズレが構造的に発生しなくなる
+        const dx = charData.cx - absoluteSoulX;
+        const dy = charData.cy - absoluteSoulY;
 
         const distanceSq = dx * dx + dy * dy;
 
