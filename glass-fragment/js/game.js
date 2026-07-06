@@ -1,19 +1,20 @@
-const canvas = document.getElementById('c');
-const ctx = canvas.getContext('2d');
-const canvasWrap = document.getElementById('canvasWrap');
-const gameArea = document.getElementById('gameArea');
-const leaderboard = document.getElementById('leaderboard');
-const overlay = document.getElementById('overlay');
-const startBtn = document.getElementById('startBtn');
-const collectionBtn = document.getElementById("collectionBtn");
-const collectionView = document.getElementById("collectionView");
-const closeCollection = document.getElementById("closeCollection");
-const pauseOverlay = document.getElementById('pauseOverlay');
-const resumeBtn    = document.getElementById('resumeBtn');
-const resetDataBtn = document.getElementById('resetDataBtn');
+// ──【解決策A】重複エラーを回避する安全な宣言に差し替え ──
+if (typeof canvas === 'undefined') { var canvas = document.getElementById('c'); }
+if (typeof ctx === 'undefined') { var ctx = canvas ? canvas.getContext('2d') : null; }
+if (typeof canvasWrap === 'undefined') { var canvasWrap = document.getElementById('canvasWrap'); }
+if (typeof gameArea === 'undefined') { var gameArea = document.getElementById('gameArea'); }
+if (typeof leaderboard === 'undefined') { var leaderboard = document.getElementById('leaderboard'); }
+if (typeof overlay === 'undefined') { var overlay = document.getElementById('overlay'); }
+if (typeof startBtn === 'undefined') { var startBtn = document.getElementById('startBtn'); }
+if (typeof collectionBtn === 'undefined') { var collectionBtn = document.getElementById("collectionBtn"); }
+if (typeof collectionView === 'undefined') { var collectionView = document.getElementById("collectionView"); }
+if (typeof closeCollection === 'undefined') { var closeCollection = document.getElementById("closeCollection"); }
+if (typeof pauseOverlay === 'undefined') { var pauseOverlay = document.getElementById('pauseOverlay'); }
+if (typeof resumeBtn === 'undefined') { var resumeBtn = document.getElementById('resumeBtn'); }
+if (typeof resetDataBtn === 'undefined') { var resetDataBtn = document.getElementById('resetDataBtn'); }
 
+// ── ここから下は消さずにそのまま残す ──
 const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-
 const cursorDot = document.getElementById('cursor-dot');
 function showDot(show) {
   if (cursorDot) {
