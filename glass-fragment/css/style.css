@@ -1,0 +1,361 @@
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { 
+  width:100%; 
+  height:100%; 
+  background:#050A15;
+  overflow:hidden;
+  font-family:'Klee One', serif;
+}
+
+#clock,
+#botbar b,
+#leaderboard ol li {
+  font-family:'Share Tech Mono', monospace;
+  font-weight:400;
+}
+  
+body.custom-cursor-active,
+body.custom-cursor-active * { cursor: none !important; }
+body.hide-cursor { cursor: none; }
+
+#cursor-dot {
+  pointer-events: none;
+  position: fixed;
+  z-index: 200;
+  width: 20px;
+  height: 24px;
+  filter: drop-shadow(0 0 6px rgba(56,189,248,0.5));
+  display: none;
+}
+#wrap { position:fixed; inset:0; display:flex; flex-direction:column; background:#060b14; }
+#topbar {
+  height:32px; flex-shrink:0; display:flex; justify-content:space-between; align-items:center;
+  padding:0 20px; border-bottom:1px solid rgba(56, 189, 248, 0.08);
+  font-size:14px; color:#384f6b; letter-spacing:3px; /* ネビュラブルー */
+}
+#homeBtn {
+  color:rgba(56, 189, 248, 0.5); text-decoration:none; letter-spacing:2px; font-size:15px;
+  transition: color 0.15s, text-shadow 0.15s;
+  font-weight: 600;
+}
+#homeBtn:hover { color:#7dd3fc; text-shadow: 0 0 8px rgba(56,189,248,0.6); }
+#canvasWrap {
+  flex:1; overflow:hidden;
+  display:flex; flex-direction:row; align-items:center; justify-content:center;
+  background: #060b14;
+  border-top: 1px solid rgba(56, 189, 248, 0.03);
+  border-bottom: 1px solid rgba(56, 189, 248, 0.03);
+}
+#leaderboard {
+  flex-shrink:0;
+  display:flex; flex-direction:column;
+  padding:20px 16px;
+}
+#leaderboard.lb-left {
+  width:160px;
+  align-self:stretch;
+  border-right:1px solid rgba(56, 189, 248, 0.06);
+  border-bottom:none;
+}
+#leaderboard.lb-top {
+  width:100%;
+  flex-direction:row;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:8px 24px;
+  padding:12px 20px;
+  border-bottom:1px solid rgba(56, 189, 248, 0.06);
+  border-right:none;
+  align-self:auto;
+}
+#leaderboard.lb-top h3 {
+  margin-bottom:0; border-bottom:none; padding-bottom:0; white-space:nowrap;
+}
+#leaderboard.lb-top ol { display:flex; flex-direction:row; gap:16px; }
+#leaderboard.lb-top ol li { border-bottom:none; padding:0; }
+#leaderboard.lb-top .lb-empty { margin-top:0; line-height:1.5; }
+#leaderboard h3 {
+  font-size:14px; letter-spacing:4px; color:#384f6b;
+  text-transform:uppercase; margin-bottom:12px;
+  border-bottom:1px solid rgba(56, 189, 248, 0.06); padding-bottom:6px;
+}
+#leaderboard ol { list-style:none; padding:0; margin:0; }
+#leaderboard ol li {
+  display:flex; justify-content:space-between;
+  padding:6px 0; border-bottom:1px solid rgba(56, 189, 248, 0.03);
+  font-size:14px; color:rgba(56, 189, 248, 0.4); letter-spacing:2px;
+  font-family: 'Share Tech Mono', monospace;
+}
+.lb-empty {
+  color:#384f6b; font-size:14px; letter-spacing:3px;
+  margin-top:8px; line-height:2;
+}
+#gameArea {
+  position:relative;
+  flex-shrink:0;
+  outline: 1px solid rgba(56, 189, 248, 0.08);
+}
+#ideoLink {
+  margin-top:16px; padding:12px 36px;
+  border:1px solid rgba(56, 189, 248, 0.2); color:rgba(125, 211, 252, 0.7);
+  background:transparent; font-family:'Klee One', sans-serif;
+  font-size:13px; letter-spacing:4px; cursor:pointer;
+  text-decoration:none;
+  transition: all 0.2s;
+}
+#ideoLink:hover { background:rgba(56, 189, 248, 0.05); border-color:rgba(56, 189, 248, 0.5); color:#fff; }
+
+#botbar {
+  height:28px; flex-shrink:0; display:flex; justify-content:space-between; align-items:center;
+  padding:0 24px; border-top:1px solid rgba(56, 189, 248, 0.08);
+  font-size:14px; color:#384f6b; letter-spacing:3px;
+}
+#botbar span { display: flex; align-items: center; gap: 6px; }
+#botbar b { font-family: 'Share Tech Mono', monospace; color: #7dd3fc; font-weight: normal; text-shadow: 0 0 4px rgba(56,189,248,0.3); }
+
+canvas { display:block; position:absolute; top:0; left:0; }
+
+/* 環境エフェクト：星雲の塵が漂うような薄い膜 */
+#scanlines {
+  position:absolute; inset:0; pointer-events:none; z-index:5;
+  background:repeating-linear-gradient(0deg,transparent,transparent 4px,rgba(56,189,248,0.015) 4px,rgba(56,189,248,0.015) 5px);
+}
+
+#overlay, #pauseOverlay {
+  position:absolute; inset:0; z-index:20;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  background:rgba(6, 11, 20, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+#pauseOverlay { z-index:21; display:none; }
+#pauseOverlay .glitch { font-size:clamp(18px,4vw,36px); color:#7dd3fc; text-shadow: 0 0 10px rgba(56,189,248,0.5); }
+
+.pause-btn {
+  margin-top:12px; padding:12px 36px;
+  border:1px solid rgba(56, 189, 248, 0.2); color:rgba(125, 211, 252, 0.7);
+  background:transparent; font-family:'Klee One', sans-serif;
+  font-size:15px; letter-spacing:4px; cursor:pointer;
+  text-decoration:none; display:block; text-align:center;
+  transition: all 0.2s;
+}
+.pause-btn:hover { background:rgba(56, 189, 248, 0.05); border-color:rgba(56, 189, 248, 0.5); color:#fff; }
+
+.glitch {
+  font-family:'Klee One', sans-serif;
+  font-weight: 400;
+  font-size:clamp(20px,4vw,36px); color:#bae6fd;
+  letter-spacing:10px; text-transform:uppercase;
+  opacity: 0.9; margin-bottom:14px;
+  text-shadow: 0 0 12px rgba(56,189,248,0.4);
+}
+.tagline { font-size:14px; color:rgba(56, 189, 248, 0.5); letter-spacing:4px; margin:4px 0; }
+.hint { font-size:15px; color:#384f6b; letter-spacing:2px; margin:3px 0; }
+
+#startBtn,
+#collectionBtn,
+#closeCollection,
+#resetDataBtn {
+  margin-top:32px;
+  padding:12px 40px;
+  border:1px solid rgba(56,189,248,0.25);
+  color:#7dd3fc;
+  background:transparent;
+  font-family:'Klee One', sans-serif;
+  font-size:15px;
+  letter-spacing:4px;
+  cursor:pointer;
+  transition:all .2s;
+  text-shadow:0 0 4px rgba(56,189,248,.3);
+}
+
+#startBtn:hover,
+#collectionBtn:hover,
+#closeCollection:hover,
+#resetDataBtn:hover {
+  background:rgba(56,189,248,.05);
+  border-color:rgba(56,189,248,.6);
+  color:#fff;
+  box-shadow:0 0 10px rgba(56,189,248,.2);
+}
+
+/* ── 硝子片集（コレクション一覧）外枠 ── */
+#collectionView {
+  position: absolute;
+  inset: 0;
+  background: rgba(5, 10, 21, 0.96);
+  z-index: 20;
+  padding: 40px 20px;
+  
+  /* 競合防止のための確実なflex定義 */
+  display: none; 
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-start;
+}
+
+/* ── 【修正】10個対応レスポンシブ・グリッド ── */
+#collectionGrid {
+  display: grid !important;
+  /* 横幅に合わせて1列〜4列に自動で綺麗に流し込む */
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)) !important;
+  gap: 16px;
+  width: 100%;
+  max-width: 520px; /* PCでも広がりすぎず綺麗にまとまる幅 */
+  margin: 24px 0;
+  padding: 10px;
+  
+  /* 縦幅の潰れ防止とスクロールの担保 */
+  max-height: 65vh; 
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 各アイテムのカード枠 */
+#collectionGrid > div {
+  border: 1px solid rgba(125, 211, 252, 0.3) !important;
+  background: rgba(6, 11, 20, 0.6) !important;
+  padding: 16px 8px !important;
+  text-align: center;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  transition: border-color 0.15s, background-color 0.15s;
+}
+
+#collectionGrid > div[style*="pointer"] {
+  /* 解放済みアイテムのホバー感 */
+  border-color: rgba(56, 189, 248, 0.4) !important;
+}
+#collectionGrid > div[style*="pointer"]:hover {
+  background: rgba(56, 189, 248, 0.05) !important;
+  border-color: rgba(56, 189, 248, 0.8) !important;
+}
+
+#collectionGrid img {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  display: block;
+}
+
+/* コレクション内のテキスト調整 */
+#collectionGrid h3 {
+  color: #ffffff;
+  font-size: 12px;
+  letter-spacing: 1px;
+  margin-top: 10px;
+  text-shadow: 0 0 6px rgba(125, 211, 252, 0.3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+
+/* 未観測（？）の枠 */
+.unknown {
+  width: 56px;
+  height: 56px;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: rgba(56, 189, 248, 0.2) !important;
+  text-shadow: 0 0 8px rgba(56, 189, 248, 0.1);
+  background: rgba(56, 189, 248, 0.02);
+  border: 1px dashed rgba(56, 189, 248, 0.15);
+}
+
+/* ── 硝子片詳細ポップアップのスタイル ── */
+.popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 10, 21, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 30;
+}
+
+.popup-content {
+  background: rgba(6, 11, 20, 0.95);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.15);
+  padding: 30px 24px;
+  text-align: center;
+  max-width: 300px;
+  width: 88%;
+  border-radius: 4px;
+  box-sizing: border-box;
+  animation: popupFadeIn 0.2s ease-out;
+}
+
+@keyframes popupFadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+#popupImageWrap img {
+  width: 100px;
+  height: 100px;
+  filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.3));
+  object-fit: contain;
+}
+
+#popupName {
+  color: #ffffff;
+  font-size: 17px;
+  letter-spacing: 3px;
+  margin-top: 16px;
+  text-shadow: 0 0 8px rgba(125, 211, 252, 0.4);
+}
+
+#popupDesc {
+  color: #7dd3fc;
+  font-size: 13px;
+  letter-spacing: 1px;
+  margin-top: 10px;
+  line-height: 1.5;
+  text-shadow: 0 0 4px rgba(56, 189, 248, 0.3);
+}
+
+.popup-hint {
+  display: block;
+  color: #384f6b;
+  font-size: 11px;
+  letter-spacing: 2px;
+  margin-top: 24px;
+}
+
+/* ポップアップ内ステータス表 ── */
+.popup-stats {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px dashed rgba(56, 189, 248, 0.2);
+  display: flex;
+  justify-content: center;
+}
+
+.popup-stats table {
+  width: 100%;
+  font-size: 12px;
+  color: rgba(56, 189, 248, 0.8);
+  border-collapse: collapse;
+}
+
+.popup-stats td {
+  padding: 5px 0;
+  text-align: left;
+}
+
+.popup-stats td:last-child {
+  text-align: right;
+  color: #ffffff;
+  font-family: 'Share Tech Mono', monospace;
+  text-shadow: 0 0 4px rgba(56, 189, 248, 0.5);
+}
