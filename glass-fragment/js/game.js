@@ -51,7 +51,7 @@ function resize() {
   const LB_SIDE = 160; 
   const LB_TOP  = 48;  
 
-  if (availW >= availH) {
+if (availW >= availH) {
     isPortrait = false;
     canvasWrap.style.flexDirection = 'row';
     leaderboard.classList.remove('lb-top');
@@ -59,13 +59,18 @@ function resize() {
     if (leaderboard.nextSibling !== gameArea) {
       canvasWrap.insertBefore(leaderboard, gameArea);
     }
+    
+    // 横幅の限界（全体の幅 - サイドバーの160px）と、縦幅の限界、小さい方をゲームサイズにする
     const size = Math.min(availW - LB_SIDE, availH);
     CW = size; CH = size;
+    
     gameArea.style.width   = size + 'px';
     gameArea.style.height = size + 'px';
     canvas.width   = size;
     canvas.height = size;
-  } else {
+  }
+  
+    else {
     isPortrait = true;
     canvasWrap.style.flexDirection = 'column';
     leaderboard.classList.remove('lb-left');
@@ -95,9 +100,9 @@ function brickStartY() { return Math.round(CH * 0.14); }
 function brickH()      { return 4; }
 function brickGapY()   { return 2; }
 function brickGapX()   { return 2; }
-function brickW()      { 
-  const baseW = isPortrait ? CW : (CW - 160);
-  return Math.floor((baseW - (COLS - 1) * brickGapX()) / COLS); 
+function brickW() { 
+  // PCでもスマホでも、ゲーム画面の横幅（CW）をベースに等分割すればいいだけ
+  return Math.floor((CW - (COLS - 1) * brickGapX()) / COLS); 
 }
 function brickStartX() { return Math.round((CW - (COLS * brickW() + (COLS-1) * brickGapX())) / 2); }
 
