@@ -943,30 +943,14 @@ function updateClock() {
     clock.textContent = now.toTimeString().split(' ')[0];
   }
 }
-// ── 【追加】クリア画面やタイトルで「硝子片集」ボタンを押したときの挙動制御 ──
+setInterval(updateClock, 1000);
+updateClock();
+
+// ── 【一本化】コレクション画面を開く処理 ──
 if (collectionBtn) {
   const handleCollectionOpen = (e) => {
     e.stopPropagation();
-    // コレクションを開くときは、手前のゲームオーバー/クリア画面のモヤを一時的に隠す
-    if (overlay) {
-      overlay.style.display = 'none';
-    }
-    // ※ 実際の開く処理（collectionViewの表示など）は collection.js 側がやっている想定
-    if (collectionView) {
-      collectionView.style.display = 'flex'; // コレクション画面を確実に表示
-    }
-  };
-
-  collectionBtn.addEventListener('touchstart', handleCollectionOpen, { passive: false });
-  collectionBtn.addEventListener('click', handleCollectionOpen);
-}
-
-// ── 【追加】コレクション画面の「[ 戻る ]」ボタンを押したときの挙動制御 ──
-// ── 【追加】クリア画面やタイトルで「硝子片集」ボタンを押したときの挙動制御 ──
-// ※ 最上部で const 宣言されている collectionBtn をそのまま使うため、ここでは再宣言しない
-if (collectionBtn) {
-  const handleCollectionOpen = (e) => {
-    e.stopPropagation();
+    
     // コレクションを開くときは、手前のゲームオーバー/クリア画面のモヤを一時的に隠す
     if (overlay) {
       overlay.style.display = 'none';
@@ -974,26 +958,26 @@ if (collectionBtn) {
     if (collectionView) {
       collectionView.style.display = 'flex'; // コレクション画面を確実に表示
     }
-    // 【3/4の処理を統合】もしコレクション管理側の初期化が必要ならここで呼ぶ
+    
+    // 他のファイル（collection.jsなど）で定義されている初期化関数があれば安全に実行
     if (typeof loadCollection === "function") loadCollection();
     if (typeof updateTotalWeightDisplay === "function") updateTotalWeightDisplay();
     if (typeof openCollection === "function") openCollection();
   };
 
-  // 既存のリスナーと競合しないよう、一度古いイベントをクリアするか、
-  // あるいは game.js 側のこの記述だけに一本化する
-  collectionBtn.onclick = handleCollectionOpen; 
+  // 重複発火を防ぐため、古いイベントリスナーではなく property への代入に一本化
+  collectionBtn.onclick = handleCollectionOpen;
   collectionBtn.ontouchstart = (e) => { e.preventDefault(); handleCollectionOpen(e); };
 }
 
-// ── 【追加】コレクション画面の「[ 戻る ]」ボタンを押したときの挙動制御 ──
+// ── 【一本化】コレクション画面を閉じる（戻る）処理 ──
 if (closeCollection) {
   const handleCollectionClose = (e) => {
     e.stopPropagation();
     if (collectionView) {
       collectionView.style.display = "none";
     }
-    // もしゲームの状態が 'clear' か 'over' か 'idle' なら、モヤ画面を表示し直す
+    // もしゲームの状態が終了画面・クリア画面・タイトルなら、元のモヤ（overlay）を表示し直す
     if (gameState === 'clear' || gameState === 'over' || gameState === 'idle') {
       if (overlay) {
         overlay.style.display = 'flex';
@@ -1004,3 +988,13 @@ if (closeCollection) {
   closeCollection.onclick = handleCollectionClose;
   closeCollection.ontouchstart = (e) => { e.preventDefault(); handleCollectionClose(e); };
 }
+
+// ── ゲームループの開始 ──
+function loop() {
+  if (!paused) {
+    update();
+    draw();
+  }
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
