@@ -154,8 +154,14 @@ function openCollection(){
   document.getElementById("collectionView").style.display = "flex";
 }
 
+// ==========================================
+// ── 【修正版】競合を完全に回避する処理 ──
+// ==========================================
+
 // ポップアップの枠外（背景）を触ったら確実に閉じる処理
-const itemPopup = document.getElementById("itemPopup");
+if (typeof itemPopup === 'undefined') {
+  var itemPopup = document.getElementById("itemPopup");
+}
 if (itemPopup) {
   const closePopupAction = (e) => {
     if (e.target === itemPopup) {
@@ -169,7 +175,9 @@ if (itemPopup) {
 }
 
 // コレクション画面を開くボタン（PC・スマホ両対応）
-const collectionBtn = document.getElementById("collectionBtn");
+if (typeof collectionBtn === 'undefined') {
+  var collectionBtn = document.getElementById("collectionBtn");
+}
 if (collectionBtn) {
   const handleOpenCollection = (e) => {
     e.preventDefault();
@@ -183,7 +191,9 @@ if (collectionBtn) {
 }
 
 // コレクション画面の「戻る」ボタン
-const closeCollection = document.getElementById("closeCollection");
+if (typeof closeCollection === 'undefined') {
+  var closeCollection = document.getElementById("closeCollection");
+}
 if (closeCollection) {
   const handleCloseCollection = (e) => {
     e.preventDefault();
