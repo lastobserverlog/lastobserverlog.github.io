@@ -52,7 +52,7 @@ function resize() {
   const LB_SIDE = 160; 
   const LB_TOP  = 48;  
 
-if (availW >= availH) {
+  if (availW >= availH) {
     isPortrait = false;
     canvasWrap.style.flexDirection = 'row';
     leaderboard.classList.remove('lb-top');
@@ -71,7 +71,7 @@ if (availW >= availH) {
     canvas.height = size;
   }
   
-    else {
+  else {
     isPortrait = true;
     canvasWrap.style.flexDirection = 'column';
     leaderboard.classList.remove('lb-left');
@@ -92,7 +92,7 @@ resize();
 window.addEventListener('resize', () => { resize(); if (started) resetPositions(); });
 
 const PADDLE_H = 12;
-const BALL_R   = 5;
+const BALL_R = (window.innerWidth <= 1080) ? 2.5 : 5;
 const COLS = 32;
 const ROWS = 12;
 
@@ -628,29 +628,28 @@ function update() {
     return;
   }
 
-  if (bricks.length > 0 && bricks.every(b => !b.alive)) {
+if (bricks.length > 0 && bricks.every(b => !b.alive)) {
     if (gameState === 'clear') return;
     gameState = 'clear';
     
-    if (typeof addCollectionItem === "function") {
-      addCollectionItem(level);
-    }
-
+    // ── 【修正】オーバーレイ（モヤ）を先に表示する ──
     if (overlay) {
       overlay.style.display = 'flex';
       const glitch = overlay.querySelector('.glitch');
       if (glitch) glitch.textContent = '結晶共鳴';
-      
-      const taglines = overlay.querySelectorAll('.tagline');
+    }
+
+    // ── 【修正】コレクション側を呼び出し、ランダム選出＆テキスト書き換えを行わせる ──
+    if (typeof addCollectionItem === "function") {
+      addCollectionItem(level);
+    } else {
+      // フォールバック（関数がない場合）
+      const taglines = overlay ? overlay.querySelectorAll('.tagline') : [];
       if (taglines.length > 0) {
-        const item = (typeof collectionItems !== "undefined") ? collectionItems[level - 1] : null;
-        if (item) {
-          taglines[0].innerHTML = `LEVEL ${level} CLEAR!<br><span style="color: #38bdf8; font-size: 0.9em; margin-top: 10px; display: inline-block;">【${item.name}】を回収しました</span>`;
-        } else {
-          taglines[0].textContent = `LEVEL ${level} CLEAR! (Score: ${score})`;
-        }
+        taglines[0].textContent = `LEVEL ${level} CLEAR!`;
       }
     }
+
     if (startBtn) {
       startBtn.textContent = '[ 次の層へ ]';
     }
@@ -953,46 +952,98 @@ setInterval(updateClock, 1000);
 updateClock();
 
 // ── 【一本化】コレクション画面を開く処理 ──
+// ── 【修正版】コレクション画面を開く処理（開閉の行き来だけを担当） ──
+// ── 【完全クリーン版】コレクション画面を開く処理（game.js） ──
 if (collectionBtn) {
   const handleCollectionOpen = (e) => {
-    e.stopPropagation();
+    // 画面のバブリング停止（stopPropagation）は一切しない
     
     // コレクションを開くときは、手前のゲームオーバー/クリア画面のモヤを一時的に隠す
-    if (overlay) {
-      overlay.style.display = 'none';
-    }
-    if (collectionView) {
-      collectionView.style.display = 'flex'; // コレクション画面を確実に表示
-    }
+    if (overlay) overlay.style.display = 'none';
+    if (collectionView) collectionView.style.display = 'flex';
     
-    // 他のファイル（collection.jsなど）で定義されている初期化関数があれば安全に実行
+    // collection.js 側の画面描画関数を安全に呼び出す
     if (typeof loadCollection === "function") loadCollection();
     if (typeof updateTotalWeightDisplay === "function") updateTotalWeightDisplay();
-    if (typeof openCollection === "function") openCollection();
+    if (typeof openCollection === "function") openCollection(); 
   };
 
-  // 重複発火を防ぐため、古いイベントリスナーではなく property への代入に一本化
+  // collection.js 側の addEventListener を邪魔しないよう、onclick で綺麗に相乗りする
   collectionBtn.onclick = handleCollectionOpen;
-  collectionBtn.ontouchstart = (e) => { e.preventDefault(); handleCollectionOpen(e); };
 }
 
-// ── 【一本化】コレクション画面を閉じる（戻る）処理 ──
+// ── 【完全クリーン版】コレクション画面を閉じる処理（game.js） ──
 if (closeCollection) {
   const handleCollectionClose = (e) => {
-    e.stopPropagation();
-    if (collectionView) {
-      collectionView.style.display = "none";
+    // もしアイテムポップアップが開いているなら、ここでは大枠の閉じる処理はスルー
+    const itemPopup = document.getElementById("itemPopup");
+    if (itemPopup && itemPopup.style.display === "flex") {
+      return; 
     }
-    // もしゲームの状態が終了画面・クリア画面・タイトルなら、元のモヤ（overlay）を表示し直す
+    
+    // ポップアップが閉じていて、本当にコレクション画面自体を閉じるときだけ実行
+    if (collectionView) collectionView.style.display = "none";
+    
+    // ゲームの状態に応じて元のモヤ（overlay）を表示し直す
     if (gameState === 'clear' || gameState === 'over' || gameState === 'idle') {
-      if (overlay) {
-        overlay.style.display = 'flex';
-      }
+      if (overlay) overlay.style.display = 'flex';
     }
   };
 
   closeCollection.onclick = handleCollectionClose;
   closeCollection.ontouchstart = (e) => { e.preventDefault(); handleCollectionClose(e); };
+}
+
+// ── 【追記】記録初期化ボタンの処理 ──
+// ── 【修正版】記録初期化ボタンの処理 ──
+if (resetDataBtn) {
+  const handleResetData = (e) => {
+    e.stopPropagation();
+    if (e.type === 'touchstart') e.preventDefault();
+
+    if (confirm('今までの記録をすべて消去してもいい？')) {
+      
+      // ──【連動】コレクション側のメモリとストレージを完全に初期化 ──
+      if (typeof window.resetCollectionMemory === "function") {
+        window.resetCollectionMemory();
+      } else {
+        localStorage.removeItem('highScore'); 
+        localStorage.removeItem('glassCollection');
+        localStorage.removeItem('glassCollectionStats');
+      }
+
+      // 1. メモリ上のゲーム変数を初期化
+      score = 0;
+      hi = 0;
+      level = 1;
+      lives = 3;
+
+      // 2. 画面の表示（HUD）を初期化
+      updHUD();
+
+      // 3. タイトル画面やリセットが必要な表示の更新
+      const titleWeight = document.getElementById('titleTotalWeight');
+      if (titleWeight) titleWeight.textContent = '総重量: 0g';
+
+      const clearWeight = document.getElementById('clearTotalWeight');
+      if (clearWeight) clearWeight.textContent = '総重量: 0g';
+
+      // 4. コレクション画面の表示（DOM）をリフレッシュ
+      if (typeof loadCollection === "function") loadCollection();
+      if (typeof updateTotalWeightDisplay === "function") updateTotalWeightDisplay();
+
+      // 5. ゲームの状態を最初の状態に戻してレンダリング
+      gameState = 'idle';
+      buildBricks();
+      balls = [makeBall()];
+      draw();
+
+      alert('記録を初期化しました。');
+    }
+  };
+
+  resetDataBtn.onclick = handleResetData;
+  resetDataBtn.ontouchstart = handleResetData;
 }
 
 // ── ゲームループの開始 ──
@@ -1003,4 +1054,6 @@ function loop() {
   }
   requestAnimationFrame(loop);
 }
+
+// ループの初回起動
 requestAnimationFrame(loop);
