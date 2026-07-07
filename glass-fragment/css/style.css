@@ -322,6 +322,8 @@ canvas { display:block; position:absolute; top:0; left:0; width:100%; height:100
     justify-content: flex-start !important;
     background: rgba(5, 10, 21, 0.98) !important;
     z-index: 10 !important;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
   }
 
   #collectionGrid {
@@ -335,6 +337,8 @@ canvas { display:block; position:absolute; top:0; left:0; width:100%; height:100
     overflow-y: auto !important;
     overflow-x: hidden !important;
     -webkit-overflow-scrolling: touch !important;
+    height:100%;
+    overflow-y:auto;
   }
 
   #collectionGrid > div {
