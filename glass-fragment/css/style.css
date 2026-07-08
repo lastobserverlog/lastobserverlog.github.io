@@ -304,19 +304,23 @@ canvas { display:block; position:absolute; top:0; left:0; }
   }
 
   /* ── 硝子片集（コレクション画面）全体を画面いっぱいに広げる ── */
-  #collectionView {
+#collectionView {
     position: absolute;
-    inset: 0 !important; /* 画面内にぴったり合わせる */
-    padding: 10px 6px 6px 6px !important; /* 余白を最小限に */
-    display: none; /* JSでflexになる */
+    inset: 0 !important;
+    padding: 10px 6px 6px 6px !important;
+
+    display: none;
     flex-direction: column !important;
     justify-content: flex-start !important;
+
     background: rgba(5, 10, 21, 0.98) !important;
-    
-    /* 【修正】コレクション画面が閉じているとき、
-       後ろにあるオーバーレイを阻まないよう、z-indexを調整（gameデフォルト:20） */
-    z-index: 10 !important;
-  }
+
+    z-index: 30 !important;
+
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+}
 
   /* ！！！ここが本番：グリッド自体を縦に長く、スクロールさせる！！！ */
   #collectionGrid {
