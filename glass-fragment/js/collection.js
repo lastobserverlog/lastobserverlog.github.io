@@ -2,7 +2,6 @@
 // 硝子片収集管理（純和風・泥沼仕様・30個完全版・構造修復・完全同期版）
 // ===============================
 
-// 稀少度分類: 'C'=常融(並) / 'R'=希硝(稀) / 'L'=幻晶(極めて稀)
 const collectionItems = [
   { id: 1, name: "灰色の器", image: "assets/items/item001.svg", description: "静かに沈黙する欠片", weight: "38g", opacity: "14%", rarity: "C", weightValue: 100 },
   { id: 2, name: "青い残響", image: "assets/items/item002.svg", description: "光をわずかに返す硝子", weight: "24g", opacity: "65%", rarity: "C", weightValue: 100 },
@@ -39,13 +38,14 @@ const collectionItems = [
 let collectedItems = [];
 let collectionStats = {};
 
-function loadCollection(){
+function loadCollection() {
   const data = localStorage.getItem("glassCollection");
-  if(data) collectedItems = JSON.parse(data);
+  if (data) collectedItems = JSON.parse(data);
   const statsData = localStorage.getItem("glassCollectionStats");
-  if(statsData) collectionStats = JSON.parse(statsData);
+  if (statsData) collectionStats = JSON.parse(statsData);
 }
-function saveCollection(){
+
+function saveCollection() {
   localStorage.setItem("glassCollection", JSON.stringify(collectedItems));
   localStorage.setItem("glassCollectionStats", JSON.stringify(collectionStats));
 }
@@ -64,33 +64,11 @@ function updateTotalWeightDisplay() {
   return total;
 }
 
-/**
- * ── 【修正】レベルクリア時に未取得の中から確率で1つ抽選・画面表示を同期 ──
- */
-function addCollectionItem(clearedLevel){
-  // 1. 未取得の硝子片リストを作成
-  const uncollectedItems = collectionItems.filter(
-    item => !collectedItems.includes(Number(item.id))
-  );
+function addCollectionItem(clearedLevel) {
+  const uncollectedItems = collectionItems.filter(item => !collectedItems.includes(Number(item.id)));
+  if (uncollectedItems.length === 0) return;
 
-  // コンプリート時の処理
-  if (uncollectedItems.length === 0) {
-    console.log("硝子片はすべて収集済みです。");
-    if (typeof overlay !== 'undefined' && overlay) {
-      const taglines = overlay.querySelectorAll('.tagline');
-      if (taglines.length > 0) {
-        taglines[0].innerHTML = `LEVEL ${clearedLevel} CLEAR!<br><span style="color: #fb7185; font-size: 0.9em; margin-top: 10px; display: inline-block;">【全30種 コンプリート】</span>`;
-      }
-    }
-    return;
-  }
-
-  // 2. 未取得リストの重みの総和を計算
-  const totalWeightOfUncollected = uncollectedItems.reduce(
-    (sum, item) => sum + item.weightValue, 0
-  );
-
-  // 3. 重みに基づいて抽選
+  const totalWeightOfUncollected = uncollectedItems.reduce((sum, item) => sum + item.weightValue, 0);
   let randomValue = Math.random() * totalWeightOfUncollected;
   let selectedItem = uncollectedItems[0];
 
@@ -102,149 +80,79 @@ function addCollectionItem(clearedLevel){
     randomValue -= item.weightValue;
   }
 
-  if(!selectedItem) return;
-
-  // 4. コレクションに追加・統計更新・セーブ
-  if(!collectedItems.includes(selectedItem.id)){
-    collectedItems.push(selectedItem.id);
-  }
-
-  if(!collectionStats[selectedItem.id]){
+  if (!collectedItems.includes(selectedItem.id)) collectedItems.push(selectedItem.id);
+  
+  if (!collectionStats[selectedItem.id]) {
     const now = new Date();
-    const yyyy = now.getFullYear();
-    const mm = String(now.getMonth() + 1).padStart(2, '0');
-    const dd = String(now.getDate()).padStart(2, '0');
-    const hh = String(now.getHours()).padStart(2, '0');
-    const mi = String(now.getMinutes()).padStart(2, '0');
-    
     collectionStats[selectedItem.id] = {
-      date: `${yyyy}.${mm}.${dd} ${hh}:${mi}`,
+      date: `${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`,
       count: 1
     };
   } else {
     collectionStats[selectedItem.id].count += 1;
   }
 
-  saveCollection(); 
-  updateTotalWeightDisplay(); 
-  
-  // 5. クリア画面（overlay）の表示内容を、実際に抽選されたアイテム名に更新
-  if (typeof overlay !== 'undefined' && overlay) {
-    const taglines = overlay.querySelectorAll('.tagline');
-    if (taglines.length > 0) {
-      let rarityColor = '#ffffff'; // 常融 (C)
-      if (selectedItem.rarity === 'R') rarityColor = '#7dd3fc'; // 希硝 (R)
-      if (selectedItem.rarity === 'L') rarityColor = '#fb7185'; // 幻晶 (L)
-
-      taglines[0].innerHTML = `LEVEL ${clearedLevel} CLEAR!<br><span style="color: ${rarityColor}; font-size: 0.9em; margin-top: 10px; display: inline-block;">【${selectedItem.name}】を回収しました</span>`;
-    }
-  }
-
-  showCollectionGet(selectedItem);
+  saveCollection();
+  updateTotalWeightDisplay();
 }
 
-function showCollectionGet(item){
-  console.log("採取:", item.name);
-}
-
-function openCollection(){
+function openCollection() {
   const grid = document.getElementById("collectionGrid");
-  if(!grid) return;
-  grid.innerHTML="";
+  if (!grid) return;
+  grid.innerHTML = "";
 
-  collectionItems.forEach(item=>{
+  collectionItems.forEach(item => {
     const div = document.createElement("div");
-    
-    let rarityText = "常融";
-    if(item.rarity === "R") rarityText = "希硝";
-    if(item.rarity === "L") rarityText = "幻晶";
-
     const rarityClass = item.rarity ? item.rarity.toLowerCase() : "c";
+    let rarityText = item.rarity === 'R' ? "希硝" : (item.rarity === 'L' ? "幻晶" : "常融");
 
-    if(collectedItems.includes(Number(item.id))){
-      div.innerHTML=`
+    if (collectedItems.includes(Number(item.id))) {
+      div.innerHTML = `
         <span class="rarity-badge rarity-${rarityClass}">${rarityText}</span>
-        <img src="${item.image}" style="cursor: pointer; pointer-events: none;">
-        <h3 style="pointer-events: none;">${item.name}</h3>
+        <img src="${item.image}" onerror="this.style.display='none'; this.parentNode.classList.add('img-error');" style="cursor: pointer;">
+        <h3>${item.name}</h3>
       `;
-      div.style.cursor = "pointer";
-
       div.addEventListener('click', (e) => {
-        e.stopPropagation();
         const itemPopup = document.getElementById("itemPopup");
-        if (itemPopup) {
-          const stats = collectionStats[item.id] || { date: "----.--.-- --:--", count: 1 };
-          document.getElementById("popupImageWrap").innerHTML = `<img src="${item.image}">`;
-          document.getElementById("popupName").textContent = item.name;
-          document.getElementById("popupDesc").innerHTML = `
-            ${item.description}
-            <div class="popup-stats">
-              <table>
-                <tr><td>稀少度</td><td class="rarity-${rarityClass}">${rarityText}</td></tr>
-                <tr><td>重量</td><td>${item.weight}</td></tr>
-                <tr><td>透明度</td><td>${item.opacity}</td></tr>
-                <tr><td>採取日時</td><td>${stats.date}</td></tr>
-                <tr><td>再観測</td><td>${stats.count}回</td></tr>
-              </table>
-            </div>
-          `;
-          itemPopup.style.display = "flex";
-        }
+        const stats = collectionStats[item.id] || { date: "----.--.-- --:--", count: 1 };
+        document.getElementById("popupImageWrap").innerHTML = `<img src="${item.image}" onerror="this.style.display='none';">`;
+        document.getElementById("popupName").textContent = item.name;
+        document.getElementById("popupDesc").innerHTML = `
+          ${item.description}
+          <div class="popup-stats">
+            <table>
+              <tr><td>稀少度</td><td>${rarityText}</td></tr>
+              <tr><td>重量</td><td>${item.weight}</td></tr>
+              <tr><td>採取日時</td><td>${stats.date}</td></tr>
+              <tr><td>再観測</td><td>${stats.count}回</td></tr>
+            </table>
+          </div>
+        `;
+        itemPopup.style.display = "flex";
       });
-
     } else {
-      div.innerHTML=`
-        <span class="rarity-badge rarity-${rarityClass}">${rarityText}</span>
-        <div class="unknown">?</div>
-        <h3>未観測</h3>
-      `;
+      div.innerHTML = `<span class="rarity-badge rarity-${rarityClass}">${rarityText}</span><div class="unknown">?</div><h3>未観測</h3>`;
     }
-
     grid.appendChild(div);
   });
-
   document.getElementById("collectionView").style.display = "flex";
 }
 
-// ── イベントリスナー・初期化系ガード ──
-if (typeof itemPopup === 'undefined') { var itemPopup = document.getElementById("itemPopup"); }
-if (itemPopup) {
-  const closePopupAction = (e) => {
-    if (e.target === itemPopup) { e.preventDefault(); e.stopPropagation(); itemPopup.style.display = "none"; }
-  };
-  itemPopup.addEventListener("touchstart", closePopupAction, { passive: false });
-  itemPopup.addEventListener("click", closePopupAction);
-}
-if (typeof collectionBtn === 'undefined') { var collectionBtn = document.getElementById("collectionBtn"); }
-if (collectionBtn) {
-  const handleOpenCollection = (e) => {
-    e.preventDefault(); e.stopPropagation(); loadCollection(); updateTotalWeightDisplay(); openCollection();
-  };
-  collectionBtn.addEventListener("touchstart", handleOpenCollection, { passive: false });
-  collectionBtn.addEventListener("click", handleOpenCollection);
-}
-if (typeof closeCollection === 'undefined') { var closeCollection = document.getElementById("closeCollection"); }
-if (closeCollection) {
-  const handleCloseCollection = (e) => {
-    e.preventDefault(); e.stopPropagation(); document.getElementById("collectionView").style.display = "none";
-  };
-  closeCollection.addEventListener("touchstart", handleCloseCollection, { passive: false });
-  closeCollection.addEventListener("click", handleCloseCollection);
-}
-
-/**
- * ── 【追記】ゲームリセット時にコレクションのメモリ・ストレージを完全巻き戻す関数 ──
- */
+// 初期化・イベント設定
 window.resetCollectionMemory = function() {
   localStorage.removeItem("glassCollection");
   localStorage.removeItem("glassCollectionStats");
   collectedItems = [];
   collectionStats = {};
-  console.log("コレクション側のメモリおよびストレージの初期化が完了しました。");
 };
 
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", () => { loadCollection(); updateTotalWeightDisplay(); });
-} else {
-  loadCollection(); updateTotalWeightDisplay();
-}
+document.addEventListener("DOMContentLoaded", () => {
+  loadCollection();
+  updateTotalWeightDisplay();
+  
+  const closePopup = document.getElementById("itemPopup");
+  if (closePopup) closePopup.addEventListener("click", (e) => { if(e.target === closePopup) closePopup.style.display = "none"; });
+  
+  const btn = document.getElementById("collectionBtn");
+  if (btn) btn.addEventListener("click", openCollection);
+});
