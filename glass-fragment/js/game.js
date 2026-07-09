@@ -75,8 +75,8 @@ function resize() {
     
     gameArea.style.width   = size + 'px';
     gameArea.style.height  = size + 'px';
-    canvas.width   = size;
-    canvas.height  = size;
+    canvas.width           = size;
+    canvas.height          = size;
   }
   else {
     // ── 縦画面（スマホ）の処理 ──
@@ -98,8 +98,8 @@ function resize() {
     
     gameArea.style.width   = CW + 'px';
     gameArea.style.height  = CH + 'px';
-    canvas.width   = CW;
-    canvas.height  = CH;
+    canvas.width           = CW;
+    canvas.height          = CH;
   }
 }
 resize();
@@ -1002,7 +1002,6 @@ if (closeCollection) {
   closeCollection.ontouchstart = (e) => { e.preventDefault(); handleCollectionClose(e); };
 }
 
-// （末尾の resetDataBtn の処理が途切れていたため、安全に補完・終了させています）
 if (resetDataBtn) {
   const handleResetData = (e) => {
     e.stopPropagation();
@@ -1017,3 +1016,17 @@ if (resetDataBtn) {
   resetDataBtn.onclick = handleResetData;
   resetDataBtn.ontouchstart = handleResetData;
 }
+
+// ──【駆動コア】ゲームループの処理 ──
+function loop() {
+  if (!paused) {
+    update();
+    draw();
+  } else {
+    draw(); // 一時停止中も画面が消えないように描画だけは維持
+  }
+  requestAnimationFrame(loop);
+}
+
+// 最初のループ起動
+requestAnimationFrame(loop);
