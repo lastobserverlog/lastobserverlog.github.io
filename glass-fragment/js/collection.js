@@ -66,7 +66,11 @@ function updateTotalWeightDisplay() {
 
 function addCollectionItem(clearedLevel) {
   const uncollectedItems = collectionItems.filter(item => !collectedItems.includes(Number(item.id)));
-  if (uncollectedItems.length === 0) return;
+  
+  // 【修正】すべて集めきっている場合の安全弁
+  if (uncollectedItems.length === 0) {
+    return { name: "全硝子片 観測完了" };
+  }
 
   const totalWeightOfUncollected = uncollectedItems.reduce((sum, item) => sum + item.weightValue, 0);
   let randomValue = Math.random() * totalWeightOfUncollected;
@@ -94,6 +98,9 @@ function addCollectionItem(clearedLevel) {
 
   saveCollection();
   updateTotalWeightDisplay();
+
+  // ▼▼▼ 【追加】選ばれたアイテムの情報をgame.jsにバトンタッチする ▼▼▼
+  return selectedItem;
 }
 
 function openCollection() {
@@ -106,7 +113,11 @@ function openCollection() {
     const rarityClass = item.rarity ? item.rarity.toLowerCase() : "c";
     let rarityText = item.rarity === 'R' ? "希硝" : (item.rarity === 'L' ? "幻晶" : "常融");
 
+    // 全体の枠にもレア度のクラスを付与できるようにしておきます（デザイン用）
+    div.className = `collection-item-box rarity-border-${rarityClass}`;
+
     if (collectedItems.includes(Number(item.id))) {
+      // ── 【観測済み】の表示 ──
       div.innerHTML = `
         <span class="rarity-badge rarity-${rarityClass}">${rarityText}</span>
         <img src="${item.image}" onerror="this.style.display='none'; this.parentNode.classList.add('img-error');" style="cursor: pointer;">
@@ -121,7 +132,7 @@ function openCollection() {
           ${item.description}
           <div class="popup-stats">
             <table>
-              <tr><td>稀少度</td><td>${rarityText}</td></tr>
+              <tr><td>稀少度</td><td><span class="rarity-text-${rarityClass}">${rarityText}</span></td></tr>
               <tr><td>重量</td><td>${item.weight}</td></tr>
               <tr><td>採取日時</td><td>${stats.date}</td></tr>
               <tr><td>再観測</td><td>${stats.count}回</td></tr>
@@ -131,7 +142,13 @@ function openCollection() {
         itemPopup.style.display = "flex";
       });
     } else {
-      div.innerHTML = `<span class="rarity-badge rarity-${rarityClass}">${rarityText}</span><div class="unknown">?</div><h3>未観測</h3>`;
+      // ── 【未観測】の表示（ここを修正！） ──
+      // 未観測でも、枠の上にしっかりと色分けされたレア度バッジが出るようにしました
+      div.innerHTML = `
+        <span class="rarity-badge rarity-${rarityClass}">${rarityText}</span>
+        <div class="unknown">?</div>
+        <h3>未観測</h3>
+      `;
     }
     grid.appendChild(div);
   });
