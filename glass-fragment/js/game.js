@@ -1,4 +1,4 @@
-// ──【解決策A】重複エラーを回避する安全な宣言に差し替え ──
+// ──【解決策A】重複エラーを回避する安全な宣言に差し替え ── 
 if (typeof canvas === 'undefined') { var canvas = document.getElementById('c'); }
 if (typeof ctx === 'undefined') { var ctx = canvas ? canvas.getContext('2d') : null; }
 if (typeof canvasWrap === 'undefined') { var canvasWrap = document.getElementById('canvasWrap'); }
