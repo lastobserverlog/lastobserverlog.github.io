@@ -516,13 +516,14 @@ canvas { display:block; position:absolute; top:0; left:0; }
 }
 
 /* ==========================================================================
-   修正：世界観調和型・レア度色分けデザイン（オーラ発光仕様）
+   完全同期・直感カラー版（最高レア：幻晶ゴールド / ちょいレア：希硝シルバー / 普通：常融ブロンズ）
    ========================================================================== */
 
-/* ── 各アイテム枠（共通の土台） ── */
+/* 各アイテム枠（共通の土台） */
 #collectionGrid > div {
   position: relative !important;
   overflow: hidden;
+  background: rgba(10, 18, 32, 0.4) !important;
 }
 
 /* ── レア度バッジ（共通） ── */
@@ -530,7 +531,7 @@ canvas { display:block; position:absolute; top:0; left:0; }
   position: absolute !important;
   top: 4px !important;
   left: 4px !important;
-  font-size: 9px !important;
+  font-size: 10px !important;
   line-height: 1 !important;
   padding: 3px 6px !important;
   border-radius: 3px !important;
@@ -540,64 +541,64 @@ canvas { display:block; position:absolute; top:0; left:0; }
   font-family: 'Klee One', serif;
 }
 
-/* ── 【常融 / C】水硝子：静かに沈黙する薄青灰 ── */
-.rarity-c {
-  background: rgba(71, 85, 105, 0.2) !important;
-  color: #94a3b8 !important;
-  border: 1px solid rgba(71, 85, 105, 0.4) !important;
+/* ── 【普通 / C】常融：鉄・ブロンズ（身近な普通感、落ち着いた煤け色） ── */
+.rarity-badge.rarity-c {
+  background: rgba(139, 92, 26, 0.2) !important; /* くすんだ銅・琥珀 */
+  color: #cd7f32 !important; /* ブロンズ */
+  border: 1px solid rgba(139, 92, 26, 0.4) !important;
 }
 .rarity-border-c {
-  border-color: rgba(71, 85, 105, 0.2) !important;
+  border-color: rgba(139, 92, 26, 0.25) !important;
 }
 .rarity-text-c {
-  color: #94a3b8 !important;
+  color: #b48a60 !important;
 }
 
-/* ── 【希硝 / R】月光硝子：鋭く透き通る青の輝き ── */
-.rarity-r {
-  background: rgba(14, 165, 233, 0.15) !important;
-  color: #38bdf8 !important;
-  border: 1px solid rgba(14, 165, 233, 0.5) !important;
-  text-shadow: 0 0 4px rgba(14, 165, 233, 0.6);
+/* ── 【ちょいレア / R】希硝：シルバー・プラチナ（明らかに特別感のある輝く白銀） ── */
+.rarity-badge.rarity-r {
+  background: rgba(226, 232, 240, 0.15) !important;
+  color: #f1f5f9 !important; /* プラチナホワイト */
+  border: 1px solid rgba(226, 232, 240, 0.5) !important;
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.6);
 }
 .rarity-border-r {
-  border-color: rgba(14, 165, 233, 0.5) !important;
-  box-shadow: 0 0 6px rgba(14, 165, 233, 0.1), inset 0 0 6px rgba(14, 165, 233, 0.05) !important;
+  border-color: rgba(226, 232, 240, 0.4) !important;
+  box-shadow: 0 0 8px rgba(226, 232, 240, 0.15), inset 0 0 6px rgba(226, 232, 240, 0.05) !important;
 }
 .rarity-text-r {
-  color: #38bdf8 !important;
-  text-shadow: 0 0 4px rgba(14, 165, 233, 0.5);
+  color: #e2e8f0 !important;
+  text-shadow: 0 0 4px rgba(255, 255, 255, 0.4);
 }
 
-/* ── 【幻晶 / L】黎明結晶：夜明けの空のように色が移り変わる最高レア ── */
-.rarity-l {
-  /* バッジ自体をグラデーションにして特別な存在に */
-  background: linear-gradient(135deg, rgba(236, 72, 153, 0.3), rgba(168, 85, 247, 0.3)) !important;
-  color: #f472b6 !important;
-  border: 1px solid rgba(236, 72, 153, 0.6) !important;
-  text-shadow: 0 0 5px rgba(236, 72, 153, 0.8);
+/* ── 【最高レア / L】幻晶：ゴールド・レーザー虹（脳汁が出る圧倒的キングオブレア） ── */
+.rarity-badge.rarity-l {
+  /* 金ベースに、ほのかに紫が混ざる神々しいグラデーション */
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.4), rgba(147, 51, 234, 0.3)) !important;
+  color: #fde047 !important; /* ゴールド */
+  border: 1px solid rgba(250, 204, 21, 0.7) !important;
+  text-shadow: 0 0 8px rgba(250, 204, 21, 0.8);
 }
 .rarity-border-l {
-  /* 枠線をグラデーションのように見せるオーラアニメーション */
-  animation: auroraGlow 4s infinite alternate ease-in-out !important;
+  /* 枠自体が金色と琥珀色に怪しく明滅するアニメーション */
+  animation: goldGlow 3s infinite alternate ease-in-out !important;
 }
 .rarity-text-l {
-  color: #f472b6 !important;
-  text-shadow: 0 0 6px rgba(236, 72, 153, 0.6);
+  color: #facc15 !important;
+  text-shadow: 0 0 8px rgba(250, 204, 21, 0.6);
 }
 
-/* 幻晶（最高レア）用の幻想的なグラデーションオーラアニメーション */
-@keyframes auroraGlow {
+/* 最高レア用の黄金オーラ明滅 */
+@keyframes goldGlow {
   0% {
-    border-color: rgba(168, 85, 247, 0.4) !important; /* 紫 */
-    box-shadow: 0 0 8px rgba(168, 85, 247, 0.2), inset 0 0 6px rgba(168, 85, 247, 0.1) !important;
+    border-color: rgba(234, 179, 8, 0.5) !important;
+    box-shadow: 0 0 10px rgba(234, 179, 8, 0.2), inset 0 0 6px rgba(234, 179, 8, 0.1) !important;
   }
   50% {
-    border-color: rgba(192, 132, 252, 0.6) !important; /* 中間 */
-    box-shadow: 0 0 12px rgba(192, 132, 252, 0.3), inset 0 0 10px rgba(192, 132, 252, 0.15) !important;
+    border-color: rgba(250, 204, 21, 0.8) !important;
+    box-shadow: 0 0 16px rgba(250, 204, 21, 0.45), inset 0 0 12px rgba(250, 204, 21, 0.2) !important;
   }
   100% {
-    border-color: rgba(236, 72, 153, 0.5) !important; /* ピンク */
-    box-shadow: 0 0 16px rgba(236, 72, 153, 0.35), inset 0 0 12px rgba(236, 72, 153, 0.2) !important;
+    border-color: rgba(168, 85, 247, 0.6) !important; /* 頂点で一瞬、怪しい紫が混ざる */
+    box-shadow: 0 0 14px rgba(168, 85, 247, 0.3), inset 0 0 10px rgba(168, 85, 247, 0.15) !important;
   }
 }
