@@ -1,4 +1,4 @@
-// ──【解決策A】重複エラーを回避する安全な宣言に差し替え ──　
+// ──【解決策A】重複エラーを回避する安全な宣言に差し替え ──
 if (typeof canvas === 'undefined') { var canvas = document.getElementById('c'); }
 if (typeof ctx === 'undefined') { var ctx = canvas ? canvas.getContext('2d') : null; }
 if (typeof canvasWrap === 'undefined') { var canvasWrap = document.getElementById('canvasWrap'); }
@@ -53,6 +53,7 @@ function resize() {
   const LB_TOP  = 48;  
 
   if (availW >= availH) {
+    // ── 横画面（PC）の処理：ここは変更なし（正方形を維持） ──
     isPortrait = false;
     canvasWrap.style.flexDirection = 'row';
     leaderboard.classList.remove('lb-top');
@@ -61,17 +62,16 @@ function resize() {
       canvasWrap.insertBefore(leaderboard, gameArea);
     }
     
-    // 横幅の限界（全体の幅 - サイドバーの160px）と、縦幅の限界、小さい方をゲームサイズにする
     const size = Math.min(availW - LB_SIDE, availH);
-    CW = size; CH = size;
+    CW = size; CH = size; // 横画面は正方形
     
     gameArea.style.width   = size + 'px';
-    gameArea.style.height = size + 'px';
+    gameArea.style.height  = size + 'px';
     canvas.width   = size;
-    canvas.height = size;
+    canvas.height  = size;
   }
-  
   else {
+    // ── 縦画面（スマホ）の処理：ここを目いっぱい使うように修正 ──
     isPortrait = true;
     canvasWrap.style.flexDirection = 'column';
     leaderboard.classList.remove('lb-left');
@@ -80,12 +80,17 @@ function resize() {
       canvasWrap.insertBefore(leaderboard, gameArea);
     }
     const lbH = leaderboard.offsetHeight || LB_TOP;
-    const size = Math.min(availW, availH - lbH);
-    CW = size; CH = size;
-    gameArea.style.width   = size + 'px';
-    gameArea.style.height = size + 'px';
-    canvas.width   = size;
-    canvas.height = size;
+    
+    // 【修正】正方形制限（Math.min）を撤廃し、縦・横それぞれ限界まで広げる
+    // ※ 下部のHUD（スコア等）の高さ分、少しだけ余裕（50pxなど）を引くと綺麗に収まります
+    const paddingBottom = 60; 
+    CW = availW; 
+    CH = availH - lbH - paddingBottom; 
+    
+    gameArea.style.width   = CW + 'px';
+    gameArea.style.height  = CH + 'px';
+    canvas.width   = CW;
+    canvas.height  = CH;
   }
 }
 resize();
@@ -112,7 +117,7 @@ let score = 0, hi = 0, lives = 3, level = 1;
 let userEscaped = false;       
 let exitedIntentionally = false; 
 let paused = false;
-let paddleX = CW / 2, mouseX = CW / 2; 
+let paddleX = window.innerWidth / 2, mouseX = window.innerWidth / 2;
 let balls = [];
 let bricks = [];
 let started = false;
@@ -632,22 +637,46 @@ if (bricks.length > 0 && bricks.every(b => !b.alive)) {
     if (gameState === 'clear') return;
     gameState = 'clear';
     
-    // ── 【修正】オーバーレイ（モヤ）を先に表示する ──
     if (overlay) {
       overlay.style.display = 'flex';
       const glitch = overlay.querySelector('.glitch');
       if (glitch) glitch.textContent = '結晶共鳴';
-    }
+      
+      // ▼▼▼ 【ここから追加】クリア画面に獲得アイテム表示スペースを作る ▼▼▼
+      // 既存の古い表示があれば一旦消す
+      const oldDisplay = overlay.querySelector('.get-item-display');
+      if (oldDisplay) oldDisplay.remove();
 
-    // ── 【修正】コレクション側を呼び出し、ランダム選出＆テキスト書き換えを行わせる ──
-    if (typeof addCollectionItem === "function") {
-      addCollectionItem(level);
-    } else {
-      // フォールバック（関数がない場合）
-      const taglines = overlay ? overlay.querySelectorAll('.tagline') : [];
-      if (taglines.length > 0) {
-        taglines[0].textContent = `LEVEL ${level} CLEAR!`;
+      // 今回獲得したアイテムの情報を取得
+      // ※ addCollectionItem が獲得したアイテムのオブジェクト { name: "...", img: "..." } を返す想定です
+      if (typeof addCollectionItem === "function") {
+        const gottenItem = addCollectionItem(level); 
+        
+        if (gottenItem && gottenItem.name) {
+          // アイテム表示用のコンテナを作成
+          const itemDiv = document.createElement('div');
+          itemDiv.className = 'get-item-display';
+          itemDiv.style.cssText = 'margin: 20px 0; text-align: center; animation: popupFadeIn 0.3s ease-out;';
+
+          // 画像があれば表示
+          if (gottenItem.image) {  // ← img から image に修正
+            const itemImg = document.createElement('img');
+            itemImg.src = gottenItem.image; // ← img から image に修正
+            itemImg.style.cssText = 'width: 56px; height: 56px; object-fit: contain; filter: drop-shadow(0 0 8px rgba(56,189,248,0.6)); margin-bottom: 8px;';
+            itemDiv.appendChild(itemImg);
+          }
+
+          // アイテム名を指定
+          const itemName = document.createElement('div');
+          itemName.textContent = `【 獲得: ${gottenItem.name} 】`;
+          itemName.style.cssText = 'font-size: 15px; color: #7dd3fc; letter-spacing: 2px; text-shadow: 0 0 6px rgba(56,189,248,0.5);';
+          itemDiv.appendChild(itemName);
+
+          // クリア画面の「硝子片集」ボタンの上あたりに挿入する
+          overlay.insertBefore(itemDiv, collectionBtn);
+        }
       }
+      // ▲▲▲ 【ここまで追加】 ▲▲▲
     }
 
     if (startBtn) {
@@ -881,7 +910,11 @@ if (gameArea) {
   });
 
   gameArea.addEventListener('touchstart', e => {
-    if ((overlay && overlay.style.display !== 'none' && gameState !== 'clear') || gameState === 'idle' || gameState === 'over') return;
+    // 【修正】クリア画面、ゲームオーバー画面、タイトル画面ではゲーム自体のタッチ処理（preventDefault）を完全にスルーする
+    if ((overlay && overlay.style.display !== 'none') || gameState === 'clear' || gameState === 'idle' || gameState === 'over') {
+      return; 
+    }
+    
     e.preventDefault();
     const touch = e.touches[0];
     lastTouchX = touch.clientX;
@@ -889,16 +922,21 @@ if (gameArea) {
   }, { passive:false });
 
   gameArea.addEventListener('touchmove', e => {
-    e.preventDefault();
-    if (gameState !== 'playing' && gameState !== 'waiting') return;
-    const touch = e.touches[0];
-    const deltaX = touch.clientX - lastTouchX;
-    lastTouchX = touch.clientX;
-    mouseX = Math.max(0, Math.min(CW, mouseX + deltaX * 1.2));
+    // ゲームプレイ中、または発射待ちのときだけスクロールを禁止してパドルを動かす
+    if (gameState === 'playing' || gameState === 'waiting') {
+      e.preventDefault();
+      const touch = e.touches[0];
+      const deltaX = touch.clientX - lastTouchX;
+      lastTouchX = touch.clientX;
+      mouseX = Math.max(0, Math.min(CW, mouseX + deltaX * 1.2));
+    }
   }, { passive:false });
 
   if (!isMobile) {
-    gameArea.addEventListener('click', () => {
+    gameArea.addEventListener('click', e => {
+      // 【修正】クリア画面やゲームオーバー画面のボタンをクリックした時は、ポインターロック等の処理を邪魔しない
+      if (gameState === 'clear' || gameState === 'over' || gameState === 'idle') return;
+
       if (gameState === 'playing' || gameState === 'waiting') {
         if (document.pointerLockElement !== gameArea && !userEscaped) {
           exitedIntentionally = false;
