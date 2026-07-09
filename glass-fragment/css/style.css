@@ -39,21 +39,31 @@ body.hide-cursor { cursor: none; }
 }
 #homeBtn:hover { color:#7dd3fc; text-shadow: 0 0 8px rgba(56,189,248,0.6); }
 
-/* ── 修正：記録エリアが消えたので、完全に横幅100%を広く使う ── */
+/* ── 修正：記録が消えたので、画面の中央にゲーム領域を完全固定 ── */
 #canvasWrap {
-  flex:1; overflow:hidden;
-  display:flex; flex-direction:row; align-items:center; justify-content:center;
+  flex:1; 
+  overflow:hidden;
+  display:flex; 
+  align-items:center; 
+  justify-content:center; /* 左右中央に寄せる */
   background: #060b14;
   border-top: 1px solid rgba(56, 189, 248, 0.03);
   border-bottom: 1px solid rgba(56, 189, 248, 0.03);
   width: 100%;
 }
 
+/* ── 修正：ゲームエリア単体で自立するように調整 ── */
 #gameArea {
   position:relative;
-  flex-shrink:0;
+  width: 100%;
+  max-width: 800px; /* コレクションの最大幅に合わせる */
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   outline: 1px solid rgba(56, 189, 248, 0.08);
 }
+
 #ideoLink {
   margin-top:16px; padding:12px 36px;
   border:1px solid rgba(56, 189, 248, 0.2); color:rgba(125, 211, 252, 0.7);
@@ -72,7 +82,7 @@ body.hide-cursor { cursor: none; }
 #botbar span { display: flex; align-items: center; gap: 6px; }
 #botbar b { font-family: 'Share Tech Mono', monospace; color: #7dd3fc; font-weight: normal; text-shadow: 0 0 4px rgba(56,189,248,0.3); }
 
-canvas { display:block; position:absolute; top:0; left:0; }
+canvas { display:block; position:absolute; }
 
 /* 環境エフェクト：星雲の塵が漂うような薄い膜 */
 #scanlines {
@@ -138,7 +148,7 @@ canvas { display:block; position:absolute; top:0; left:0; }
   box-shadow:0 0 10px rgba(56,189,248,.2);
 }
 
-/* ── 硝子片集（コレクション一覧）外枠（PCデフォルト） ── */
+/* ── 硝子片集（コレクション一覧）外枠 ── */
 #collectionView {
   position: absolute;
   inset: 0;
@@ -152,7 +162,7 @@ canvas { display:block; position:absolute; top:0; left:0; }
   pointer-events: auto !important;
 }
 
-/* ── 【30個対応】レスポンシブ・グリッド（PCデフォルト） ── */
+/* ── レスポンシブ・グリッド ── */
 #collectionGrid {
   display: grid !important;
   grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)) !important;
@@ -166,12 +176,12 @@ canvas { display:block; position:absolute; top:0; left:0; }
   -webkit-overflow-scrolling: touch;
 }
 
-/* スクロールバーの意匠 */
+/* スクロールバー */
 #collectionGrid::-webkit-scrollbar { width: 4px; }
 #collectionGrid::-webkit-scrollbar-track { background: rgba(56, 189, 248, 0.02); }
 #collectionGrid::-webkit-scrollbar-thumb { background: rgba(56, 189, 248, 0.15); border-radius: 2px; }
 
-/* 各アイテムのカード枠（PCデフォルト） */
+/* 各アイテムのカード枠 */
 #collectionGrid > div {
   border: 1px solid rgba(125, 211, 252, 0.3) !important;
   background: rgba(6, 11, 20, 0.6) !important;
@@ -213,7 +223,7 @@ canvas { display:block; position:absolute; top:0; left:0; }
   border: 1px dashed rgba(56, 189, 248, 0.15);
 }
 
-/* コレクション内のテキスト調整（PCデフォルト） */
+/* コレクション内のテキスト調整 */
 #collectionGrid h3 {
   color: #ffffff;
   font-size: 12px;
@@ -227,7 +237,7 @@ canvas { display:block; position:absolute; top:0; left:0; }
 }
 
 /* ──────────────────────────────────────────────
-   スマートフォン向け（Galaxy S24等対応）：スクロール・レイアウト・重なり順修正
+   スマートフォン向け（Galaxy S24等対応）
    ────────────────────────────────────────────── */
 @media screen and (max-width: 1080px) {
   html, body, #wrap {
@@ -249,6 +259,7 @@ canvas { display:block; position:absolute; top:0; left:0; }
   }
   #gameArea{
     flex:none;
+    max-width: 100%;
   }
 
   #collectionView {
@@ -352,7 +363,7 @@ canvas { display:block; position:absolute; top:0; left:0; }
   justify-content: center;
 }
 
-/* ── ポップアップの中身（白いカード部分） ── */
+/* ── ポップアップの中身 ── */
 .popup-content {
   background: rgba(10, 18, 32, 0.95);
   border: 1px solid rgba(56, 189, 248, 0.3);
@@ -431,9 +442,8 @@ canvas { display:block; position:absolute; top:0; left:0; }
 }
 
 /* ==========================================================================
-   完全同期・世界観調和カラー版（最高レア：鮮烈水色 / ちょいレア：深海紺碧 / 普通：沈黙灰）
+   完全同期・世界観調和カラー版
    ========================================================================== */
-
 #collectionGrid > div {
   position: relative !important;
   overflow: hidden;
