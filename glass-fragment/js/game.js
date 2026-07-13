@@ -471,11 +471,10 @@ function initGame() {
   started = true;
   updHUD();
   
-  setTimeout(() => {
-    gameState = 'waiting';
-    showDot(false);
-    if (!isMobile) requestPointerLock();
-  }, 80);
+setTimeout(() => {
+  gameState = 'waiting';
+  showDot(true);
+}, 80);
 } 
   
 function launch() {
@@ -483,9 +482,9 @@ function launch() {
   balls[0].vx = 3.75 * (Math.random() > 0.5 ? 1 : -1);
   balls[0].vy = -6.25;
   gameState = 'playing';
-  if (!isMobile && document.pointerLockElement !== gameArea) {
-    requestPointerLock();
-  }
+ //if (!isMobile && document.pointerLockElement !== gameArea) {
+ //   requestPointerLock();
+ // }
 }
   
 function updHUD() {
@@ -517,7 +516,7 @@ const ROW_BD = [
 ];
 
 function update() {
-  if (gameState === 'idle') return;
+  if (gameState === 'idle' || gameState === 'over') return;
 
   if (shakeTime > 0) shakeTime--; 
   updateParticles();
@@ -620,11 +619,15 @@ function update() {
       showDot(true);
       setTimeout(() => {
         if (overlay) {
+
+          const oldDisplay = overlay.querySelector('.get-item-display');
+          if (oldDisplay) oldDisplay.remove();
+          
           overlay.style.display = 'flex'; 
           const glitch = overlay.querySelector('.glitch');
           if (glitch) glitch.textContent = '散逸'; 
           const taglines = overlay.querySelectorAll('.tagline');
-          if (taglines.length > 0) taglines[0].textContent = '残片R: ' + String(score).padStart(6,'0');
+          if (taglines.length > 0) taglines[0].textContent = '終端観測値: ' + String(score).padStart(6,'0');
         }
         if (startBtn) startBtn.textContent = '[ もう一度 ]';
         const ideoLink = document.getElementById('ideoLink');
@@ -663,39 +666,50 @@ if (bricks.length > 0 && bricks.every(b => !b.alive)) {
 
           // ── ★修正2: レア度バッジの生成と追加 ──
           // gottenItem.rarity（おそらく 'c', 'r', 'l' のいずれか）を取得
-          const rKey = (gottenItem.rarity || 'c').toLowerCase();
-          
-          // レア度に応じた表示名を設定
-          let rName = '常融';
-          if (rKey === 'r') rName = '希硝';
-          if (rKey === 'l') rName = '幻晶';
+// 全硝子片観測完了は専用演出
+if (gottenItem.name === "全硝子片 観測完了") {
 
-          // バッジ要素を作成
-          const badgeSpan = document.createElement('span');
-          badgeSpan.className = `rarity-badge rarity-${rKey}`;
-          badgeSpan.textContent = rName;
-          // 獲得画面中央に綺麗に並べるためのスタイル調整
-          badgeSpan.style.cssText = 'position: relative !important; display: inline-block; margin-bottom: 12px; padding: 3px 10px !important; font-size: 11px !important;';
-          itemDiv.appendChild(badgeSpan);
-          // ──────────────────────────────────────
+  const itemName = document.createElement('div');
+  itemName.textContent = `【 ${gottenItem.name} 】`;
+  itemName.style.cssText =
+    'font-size:15px; letter-spacing:2px; font-weight:600; color:#eafcff;';
+  itemDiv.appendChild(itemName);
 
-          if (gottenItem.image) {  
-            const itemImg = document.createElement('img');
-            itemImg.src = gottenItem.image; 
-            // レア度に応じた枠線アニメーション・カラークラスを付与
-            itemImg.className = `rarity-border-${rKey}`;
-            itemImg.style.cssText = 'width: 56px; height: 56px; object-fit: contain; margin: 0 auto 8px auto; display: block;';
-            itemDiv.appendChild(itemImg);
-          }
+} else {
 
-          const itemName = document.createElement('div');
-          itemName.textContent = `【 獲得: ${gottenItem.name} 】`;
-          // レア度に応じたテキストカラークラスを付与
-          itemName.className = `rarity-text-${rKey}`;
-          itemName.style.cssText = 'font-size: 15px; letter-spacing: 2px; font-weight: 600;';
-          itemDiv.appendChild(itemName);
+  const rKey = (gottenItem.rarity || 'c').toLowerCase();
 
-          overlay.insertBefore(itemDiv, collectionBtn);
+  // レア度に応じた表示名を設定
+  let rName = '常融';
+  if (rKey === 'r') rName = '希硝';
+  if (rKey === 'l') rName = '幻晶';
+
+  // バッジ要素を作成
+  const badgeSpan = document.createElement('span');
+  badgeSpan.className = `rarity-badge rarity-${rKey}`;
+  badgeSpan.textContent = rName;
+  badgeSpan.style.cssText =
+    'position: relative !important; display: inline-block; margin-bottom: 12px; padding: 3px 10px !important; font-size: 11px !important;';
+  itemDiv.appendChild(badgeSpan);
+
+  if (gottenItem.image) {
+    const itemImg = document.createElement('img');
+    itemImg.src = gottenItem.image;
+    itemImg.className = `rarity-border-${rKey}`;
+    itemImg.style.cssText =
+      'width: 56px; height: 56px; object-fit: contain; margin: 0 auto 8px auto; display: block;';
+    itemDiv.appendChild(itemImg);
+  }
+
+  const itemName = document.createElement('div');
+  itemName.textContent = `【 獲得: ${gottenItem.name} 】`;
+  itemName.className = `rarity-text-${rKey}`;
+  itemName.style.cssText =
+    'font-size: 15px; letter-spacing: 2px; font-weight: 600;';
+  itemDiv.appendChild(itemName);
+}
+
+overlay.insertBefore(itemDiv, collectionBtn);
         }
       }
     }
@@ -723,10 +737,28 @@ function draw() {
   ctx.fillStyle = '#050A15';
   ctx.fillRect(0, 0, CW, CH);
 
+  // 既存のグリッド描画
   ctx.strokeStyle = 'rgba(56, 189, 248, 0.025)';
   ctx.lineWidth = 0.5;
   for (let x = 0; x < CW; x += 40) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, CH); ctx.stroke(); }
   for (let y = 0; y < CH; y += 40) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(CW, y); ctx.stroke(); }
+
+  // ── ここから追加 ──
+  ctx.strokeStyle = 'rgba(56, 189, 248, 0.15)'; // グリッドより少し濃い青
+  ctx.lineWidth = 1;
+  
+  // 左の壁
+  ctx.beginPath();
+  ctx.moveTo(0, 0);
+  ctx.lineTo(0, CH);
+  ctx.stroke();
+  
+  // 右の壁
+  ctx.beginPath();
+  ctx.moveTo(CW, 0);
+  ctx.lineTo(CW, CH);
+  ctx.stroke();
+  // ── ここまで追加 ──
 
   bricks.forEach(b => {
     if (!b.alive) return;
@@ -737,6 +769,8 @@ function draw() {
     ctx.lineWidth = 1;
     ctx.strokeRect(b.x + 0.5, b.y + 0.5, b.w - 1, b.h - 1);
   });
+
+  // （このあとに続くエフェクトやパドルの描画処理はそのまま）
 
   drawParticles();
   drawDrops();
@@ -879,9 +913,8 @@ function resumeGame() {
   if (!paused) return;
   paused = false;
   if (pauseOverlay) pauseOverlay.style.display = 'none';
-  showDot(false);
+  showDot(true);
   userEscaped = false;
-  if (!isMobile) requestPointerLock();
 }
 
 if (resumeBtn) {
@@ -922,7 +955,8 @@ if (gameArea) {
       mouseX = Math.max(0, Math.min(CW, mouseX + e.movementX));
     } else if (!isMobile) {
       const r = gameArea.getBoundingClientRect();
-      mouseX = e.clientX - r.left;
+      // gameAreaの実際の表示幅(r.width)と、ゲーム内の論理幅(CW)の比率を考慮して、正確な座標を出す
+      mouseX = (e.clientX - r.left) * (CW / r.width);
     }
   });
 
@@ -952,13 +986,12 @@ if (gameArea) {
       if (gameState === 'clear' || gameState === 'over' || gameState === 'idle') return;
 
       if (gameState === 'playing' || gameState === 'waiting') {
-        if (document.pointerLockElement !== gameArea && !userEscaped) {
-          exitedIntentionally = false;
-          paused = false;
-          if (pauseOverlay) pauseOverlay.style.display = 'none';
-          requestPointerLock();
-          showDot(false);
-        }
+      if (document.pointerLockElement !== gameArea && !userEscaped) {
+        exitedIntentionally = false;
+        paused = false;
+        if (pauseOverlay) pauseOverlay.style.display = 'none';
+        showDot(true);
+      }
         if (gameState === 'waiting') { launch(); }
       }
     });
@@ -969,21 +1002,26 @@ function handleStartAction(e) {
   e.stopPropagation();
   e.preventDefault();
   
-  if (gameState === 'clear') {
-    level++;
-    buildBricks();
-    balls = [makeBall()];
-    if (overlay) overlay.style.display = 'none'; 
-    updHUD();
+  // リスタート時は、まず強制的にオーバーレイを視覚的に消す
+  if (overlay) overlay.style.display = 'none';
+  if (pauseOverlay) pauseOverlay.style.display = 'none';
+  
+if (gameState === 'clear') {
+  level++;
+  buildBricks();
+  balls = [makeBall()];
+  updHUD();
     
-    setTimeout(() => {
-      gameState = 'waiting';
-      showDot(false);
-      if (!isMobile) requestPointerLock();
-    }, 80);
-  } else {
-    initGame();
-  }
+  setTimeout(() => {
+    gameState = 'waiting';
+    showDot(true);
+  }, 80);
+
+} else {
+  exitedIntentionally = true; 
+  initGame();
+  setTimeout(() => { exitedIntentionally = false; }, 100);
+}
 }
 
 if (startBtn) {
