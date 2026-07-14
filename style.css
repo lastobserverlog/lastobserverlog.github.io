@@ -197,13 +197,6 @@ body::before {
 }
 
 /* =========================
-   人魂本体のスクロール判定バグ対策
-========================= */
-#soul {
-    pointer-events: none;
-}
-
-/* =========================
    署名
 ========================= */
 .signature {
@@ -215,8 +208,99 @@ body::before {
     transition: 2s;
 }
 
-人魂（マウスストーカー）
+/* ==========================================
+   人魂（マウスストーカー）★魔改造メラメラ版
+========================================== */
+#soul {
+    position: fixed; 
+    top: 0;
+    left: 0;
+    width: 32px;  /* 炎らしく少し大きく */
+    height: 32px;
+    pointer-events: none; 
+    
+    /* bodyのアニメーション（filter）の影響を完全に断ち切るため、
+       HTML直下（body外）に配置して z-index を最強にする */
+    z-index: 100; 
+    
+    will-change: transform;
+    
+    /* 開いた瞬間に左上に残るのを防ぐため初期状態は透明 */
+    opacity: 0;
+    transition: opacity 0.4s ease;
 
+    /* 周囲を不気味に照らす大きな光輪 */
+    filter: 
+        drop-shadow(0 0 12px rgba(180, 255, 230, 0.8))
+        drop-shadow(0 -5px 25px rgba(0, 180, 255, 0.4));
+}
+
+/* 人魂の核（メラメラ動く炎の本体） */
+.soul-core {
+    position: absolute;
+    inset: 0;
+    /* 上がシュッと細い、有機的な火の玉の形 */
+    border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+    
+    /* 中心を純白にして発光感を出し、外側へ青緑〜青に抜けるグラデーション */
+    background: radial-gradient(
+        circle at 50% 60%, 
+        #ffffff 0%, 
+        rgba(200, 255, 240, 1) 35%, 
+        rgba(0, 210, 255, 0.8) 65%, 
+        transparent 100%
+    );
+
+    /* 炎の歪みと明滅アニメーションをループ */
+    animation: 
+        flameMelt 1.2s ease-in-out infinite alternate,
+        flameTwist 2.5s linear infinite;
+}
+
+/* 人魂の尾っぽ（立ち上る煙・揺らぎ） */
+.soul-tail {
+    position: absolute;
+    top: -20px; 
+    left: 4px;
+    width: 24px;
+    height: 40px;
+    border-radius: 50%;
+    background: radial-gradient(ellipse at 50% 80%, rgba(0, 255, 180, 0.4) 0%, transparent 70%);
+    filter: blur(4px);
+    mix-blend-mode: screen;
+    
+    /* 本体とは少し周期をずらして波打たせる */
+    animation: tailWaver 0.8s ease-in-out infinite alternate;
+}
+
+/* 炎のアニメーション定義 */
+@keyframes flameMelt {
+    0% {
+        transform: scaleX(0.9) scaleY(1.1);
+        border-radius: 45% 55% 40% 60% / 40% 40% 60% 60%;
+    }
+    100% {
+        transform: scaleX(1.1) scaleY(0.85);
+        border-radius: 55% 45% 60% 40% / 35% 45% 55% 65%;
+    }
+}
+
+@keyframes flameTwist {
+    0%   { filter: hue-rotate(0deg) brightness(1); }
+    50%  { filter: hue-rotate(-10deg) brightness(1.3); } /* 途中で発光をより強く */
+    100% { filter: hue-rotate(0deg) brightness(1); }
+}
+
+@keyframes tailWaver {
+    0% {
+        transform: translateY(0) scaleX(0.8) skewX(-5deg);
+        opacity: 0.8;
+    }
+    100% {
+        transform: translateY(-8px) scaleX(1.2) skewX(5deg);
+        opacity: 0.3;
+    }
+}
 
 /* =========================
    レスポンシブ（スマホ）
