@@ -215,30 +215,7 @@ body::before {
     transition: 2s;
 }
 
-/* =========================
-   人魂（マウスストーカー）
-========================= */
-#soul {
-    position: fixed; /* スクロールしても画面基準で動くように fixed */
-    top: 0;
-    left: 0;
-    width: 24px;
-    height: 24px;
-    background: radial-gradient(circle, rgba(220, 255, 240, 1) 0%, rgba(180, 255, 220, 0.4) 60%, transparent 100%);
-    border-radius: 50%;
-    pointer-events: none; /* マウスイベントを透過してクリックを邪魔しない */
-    z-index: 50; /* テキスト（40）の上、ノイズ（60）の下 */
-    
-    /* 青白い怪しい光の演出 */
-    filter: drop-shadow(0 0 15px rgba(180, 255, 220, 0.8));
-    
-    /* JSでの座標移動を滑らかにする */
-    will-change: transform;
-
-    /* 💡 ★ここを追加：初期状態は透明にして、JSでのフェードインを許可する */
-    opacity: 0;
-    transition: opacity 0.4s ease;
-}
+人魂（マウスストーカー）
 
 
 /* =========================
