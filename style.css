@@ -232,8 +232,12 @@ body::before {
     /* 青白い怪しい光の演出 */
     filter: drop-shadow(0 0 15px rgba(180, 255, 220, 0.8));
     
-    /* JSでの座標移動を滑らかにする（ここが「少し遅れて追従」のキモ） */
+    /* JSでの座標移動を滑らかにする */
     will-change: transform;
+
+    /* 💡 ★ここを追加：初期状態は透明にして、JSでのフェードインを許可する */
+    opacity: 0;
+    transition: opacity 0.4s ease;
 }
 
 
