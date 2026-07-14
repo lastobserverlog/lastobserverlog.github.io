@@ -5,6 +5,7 @@ const sig = document.getElementById("sig");
 // 初期状態は人魂を透明にしておく（左上の映り込み対策）
 if (soul) {
     soul.style.opacity = "0";
+    // CSS側にもtransitionが入っているが、念のためここでも設定
     soul.style.transition = "opacity 0.4s ease";
 }
 
@@ -71,60 +72,35 @@ let soulY = mouseY;
 let hasMoved = false; // マウスが動いたかどうかのフラグ
 
 document.addEventListener("mousemove", e => {
+    // clientX/Y を使うことで、画面基準の座標を取得
     mouseX = e.clientX;
     mouseY = e.clientY;
     
-    // 💡 最初にマウスが動いた瞬間に人魂をふわっと表示させる
+    // 最初にマウスが動いた瞬間に人魂をふわっと表示させる
     if (!hasMoved && soul) {
         soul.style.opacity = "1";
         hasMoved = true;
     }
 });
 
+// スクロール時の余計な計算を削除し、明滅判定だけを行う
 window.addEventListener("scroll", () => {
-    // 💡 position: fixed なので座標の引き算は不要。文字の明滅判定だけを強制実行
+    // ここで座標を再キャッシュする必要はない。
+    // animateSoul()のループ内で、最新の画面内座標を使って比較するため。
     illuminateChars();
 }, { passive: true });
-
-// 文字の座標を事前にキャッシュする配列
-let cachedCharPositions = [];
-
-function cachePositions() {
-    const currentX = window.scrollX;
-    const currentY = window.scrollY;
-
-    cachedCharPositions = chars.map(char => {
-        const rect = char.getBoundingClientRect();
-        const w = rect.width || 18; 
-        const h = rect.height || 21; 
-
-        return {
-            element: char,
-            // スクロール差分をあらかじめ吸収した「ドキュメント絶対座標」
-            cx: rect.left + w / 2 + currentX,
-            cy: rect.top + h / 2 + currentY
-        };
-    });
-}
-
-// 文字が長いため、開いてすぐに1回キャッシュを作る
-setTimeout(cachePositions, 100); 
-const cacheDelay = Math.max(2500, totalTime - 1000);
-setTimeout(cachePositions, cacheDelay);
-
-window.addEventListener("resize", cachePositions);
-
 
 function animateSoul() {
     if (!soul) return;
 
-    // 通常時のねっとり追従
+    // 通常時のねっとり追従（常にclientX/Yを目指す）
     soulX += (mouseX - soulX) * 0.18;
     soulY += (mouseY - soulY) * 0.18;
 
-    // 12px引くことで、24pxサイズの人魂の中心をカーソルに合わせる
+    // 人魂の中心をカーソルに合わせる
     soul.style.transform = `translate3d(${soulX - 12}px, ${soulY - 12}px, 0)`;
 
+    // 💡 ★このループ内で毎フレーム明滅判定を呼び出す
     illuminateChars();
     requestAnimationFrame(animateSoul);
 }
@@ -134,32 +110,41 @@ animateSoul();
 
 
 /* =========================
-   文字照射（絶対座標比較版・軽量）
+   文字照射（画面基準・軽量版）
 ========================= */
+// 💡 ★この関数を大幅に修正
 function illuminateChars() {
-    const len = cachedCharPositions.length;
-    if (len === 0) return; 
+    if (!hasMoved) return; // マウスが一度も動いていないなら判定しない
 
-    const currentScrollX = window.scrollX;
-    const currentScrollY = window.scrollY;
-    
-    // 人魂の現在の「ドキュメント上の絶対座標」を算出
-    const absoluteSoulX = soulX + currentScrollX;
-    const absoluteSoulY = soulY + currentScrollY;
+    // 画面内にある`.char`要素だけを対象にする（パフォーマンス対策）
+    const len = chars.length;
     
     for (let i = 0; i < len; i++) {
-        const charData = cachedCharPositions[i];
+        const charElement = chars[i];
         
-        // 絶対座標同士で比較するから、スクロールの計算ズレが発生しない
-        const dx = charData.cx - absoluteSoulX;
-        const dy = charData.cy - absoluteSoulY;
+        // 💡 毎フレーム、文字の最新の「画面基準の座標」を取得
+        // これにより、スクロールされても自動的に座標が更新される
+        const rect = charElement.getBoundingClientRect();
+        
+        // 画面外（上下）にある文字は判定をスキップして高速化
+        if (rect.top > window.innerHeight || rect.bottom < 0) {
+            charElement.classList.remove("lit");
+            continue;
+        }
+
+        const charCX = rect.left + rect.width / 2;
+        const charCY = rect.top + rect.height / 2;
+        
+        // 人魂の「画面基準の座標（soulX, soulY）」と比較
+        const dx = charCX - soulX;
+        const dy = charCY - soulY;
 
         const distanceSq = dx * dx + dy * dy;
 
         if (distanceSq < 6400) { // 範囲の広さ（80pxの2乗）
-            charData.element.classList.add("lit");
+            charElement.classList.add("lit");
         } else {
-            charData.element.classList.remove("lit");
+            charElement.classList.remove("lit");
         }
     }
 }
